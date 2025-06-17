@@ -19,6 +19,7 @@ import { calcularEstres } from "./utils/calcularEstres";
 import { calcularExtralaboral } from "./utils/calcularExtralaboral";
 import { calcularFormaA } from "./utils/calcularFormaA";
 import { calcularFormaB } from "./utils/calcularFormaB";
+import { calcularGlobalAExtrala } from "./utils/calcularGlobalA";
 
 type RolUsuario = "ninguno" | "psicologa" | "dueno";
 
@@ -48,6 +49,7 @@ export default function App() {
   const [resultadoExtralaboral, setResultadoExtralaboral] = useState<any>(null);
   const [resultadoFormaA, setResultadoFormaA] = useState<any>(null);
   const [resultadoFormaB, setResultadoFormaB] = useState<any>(null);
+  const [resultadoGlobalAExtra, setResultadoGlobalAExtra] = useState<any>(null);
 
   // Manejo de login (muy básico)
   const [rol, setRol] = useState<RolUsuario>("ninguno");
@@ -57,12 +59,20 @@ export default function App() {
     if (step === "final") {
       // Calcula resultados por formulario
       let resultadoForma = null;
+      let resultadoGlobal = null;
       if (formType === "A" && respuestas.bloques) {
         const arr = Array.from({ length: preguntasA.length }, (_, i) =>
           respuestas.bloques[i] ?? ""
         );
         resultadoForma = calcularFormaA(arr);
         setResultadoFormaA(resultadoForma);
+        if (resultadoExtralaboral) {
+          resultadoGlobal = calcularGlobalAExtrala(
+            resultadoForma.total.suma,
+            resultadoExtralaboral.puntajeBrutoTotal
+          );
+          setResultadoGlobalAExtra(resultadoGlobal);
+        }
       } else if (formType === "B" && respuestas.bloques) {
         const arr = Array.from({ length: preguntasB.length }, (_, i) =>
           respuestas.bloques[i] ?? ""
@@ -77,6 +87,7 @@ export default function App() {
         respuestas,
         resultadoFormaA: formType === "A" ? resultadoForma : undefined,
         resultadoFormaB: formType === "B" ? resultadoForma : undefined,
+        resultadoGlobalAExtralaboral: formType === "A" ? resultadoGlobal : undefined,
         resultadoEstres,
         resultadoExtralaboral,
         tipo: formType,
