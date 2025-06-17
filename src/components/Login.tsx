@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-
-// Puedes agregar aquí las claves/empresas permitidas
-const usuarios = [
-  { usuario: "psicologa", password: "cogent2024", rol: "psicologa" },
-  { usuario: "sonria", password: "sonria123", rol: "dueno", empresa: "Sonria" },
-  { usuario: "aeropuerto", password: "eldorado123", rol: "dueno", empresa: "Aeropuerto El Dorado" },
-  // Agrega aquí más empresas si quieres
-];
+import usuarios from "../config/credentials.json";
 
 type Props = {
   onLogin: (rol: "psicologa" | "dueno", empresa?: string) => void;
@@ -61,9 +54,13 @@ export default function Login({ onLogin, onCancel }: Props) {
           </button>
         )}
         <div className="text-xs mt-2 text-gray-400">
-          <b>Psicóloga</b>: psicologa / cogent2024<br />
-          <b>Sonria</b>: sonria / sonria123<br />
-          <b>Aeropuerto</b>: aeropuerto / eldorado123
+          {usuarios.map((u) => (
+            <div key={u.usuario}>
+              <b>{u.rol === "psicologa" ? "Psicóloga" : u.empresa}</b>: {u.usuario}
+              {" / "}
+              {u.password}
+            </div>
+          ))}
         </div>
       </form>
     </div>

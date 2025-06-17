@@ -10,7 +10,7 @@ type Bloque = {
 
 type Pregunta = {
   texto: string;
-  tipo: "likert" | "yesno";
+  tipo: "likert" | "yesno" | "estres";
   filtro?: boolean; // true si es pregunta filtro (sí/no)
 };
 

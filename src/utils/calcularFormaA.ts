@@ -59,11 +59,17 @@ export function calcularFormaA(respuestas: Respuestas) {
       (acc, num) => acc + respuestaAPuntaje(num, mapRespuestas[num] || ""),
       0
     );
-    const factor = factoresFormaA.dimensiones[dimension] ?? preguntas.length;
+    const factor =
+      factoresFormaA.dimensiones[
+        dimension as keyof typeof factoresFormaA.dimensiones
+      ] ?? preguntas.length;
     const transformado = Math.round(((suma * 100) / factor) * 10) / 10;
-    const baremo = baremosFormaA.dimensiones[dimension] || [];
+    const baremo =
+      baremosFormaA.dimensiones[
+        dimension as keyof typeof baremosFormaA.dimensiones
+      ] || [];
     const nivel =
-      baremo.find(b => transformado >= b.min && transformado <= b.max)?.nivel ||
+      baremo.find((b: any) => transformado >= b.min && transformado <= b.max)?.nivel ||
       "No clasificado";
     resultadoDimensiones[dimension] = { suma, transformado, nivel };
   });
@@ -74,11 +80,17 @@ export function calcularFormaA(respuestas: Respuestas) {
       (acc, num) => acc + respuestaAPuntaje(num, mapRespuestas[num] || ""),
       0
     );
-    const factor = factoresFormaA.dominios[dominio] ?? preguntas.length;
+    const factor =
+      factoresFormaA.dominios[
+        dominio as keyof typeof factoresFormaA.dominios
+      ] ?? preguntas.length;
     const transformado = Math.round(((suma * 100) / factor) * 10) / 10;
-    const baremo = baremosFormaA.dominios[dominio] || [];
+    const baremo =
+      baremosFormaA.dominios[
+        dominio as keyof typeof baremosFormaA.dominios
+      ] || [];
     const nivel =
-      baremo.find(b => transformado >= b.min && transformado <= b.max)?.nivel ||
+      baremo.find((b: any) => transformado >= b.min && transformado <= b.max)?.nivel ||
       "No clasificado";
     resultadoDominios[dominio] = { suma, transformado, nivel };
   });
