@@ -9,6 +9,7 @@ const colores = ["#2a57d3", "#1db2f5", "#ffbc1c", "#f2600e", "#d7263d", "#9b59b6
 type Props = {
   soloGenerales?: boolean;
   empresaFiltro?: string;
+  onBack?: () => void;
 };
 
 // Dominios y dimensiones (adapta los nombres si cambian)
@@ -70,7 +71,7 @@ const nivelesEstres = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto"];
 const nivelesExtra = ["Sin riesgo", "Riesgo bajo", "Riesgo medio", "Riesgo alto", "Riesgo muy alto"];
 const nivelesForma = ["Sin riesgo", "Riesgo bajo", "Riesgo medio", "Riesgo alto", "Riesgo muy alto"];
 
-export default function DashboardResultados({ soloGenerales, empresaFiltro }: Props) {
+export default function DashboardResultados({ soloGenerales, empresaFiltro, onBack }: Props) {
   const [datos, setDatos] = useState<any[]>([]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState(empresaFiltro || "todas");
   const [tab, setTab] = useState("formaA");
@@ -443,8 +444,16 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
         </TabsContent>
       </Tabs>
 
-      {/* Botón para exportar */}
-      <div className="flex justify-end">
+      {/* Botones de acciones */}
+      <div className="flex justify-between items-center">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="bg-gray-300 text-cogent-navy px-4 py-2 rounded-lg font-bold shadow hover:bg-gray-400"
+          >
+            Volver al inicio
+          </button>
+        )}
         <button
           onClick={handleExportar}
           className="bg-cogent-blue text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-cogent-sky"
