@@ -86,6 +86,26 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
     }
   };
 
+  // Botón retroceder: busca el bloque anterior visible
+  const handleRetroceder = () => {
+    let prev = bloqueActual - 1;
+    while (prev >= 0 && !debeMostrar(bloques[prev])) {
+      prev--;
+    }
+    if (prev >= 0) {
+      setBloqueActual(prev);
+    }
+  };
+
+  // ¿Existe un bloque previo visible?
+  const tieneAnterior = (() => {
+    let prev = bloqueActual - 1;
+    while (prev >= 0 && !debeMostrar(bloques[prev])) {
+      prev--;
+    }
+    return prev >= 0;
+  })();
+
   // Render
   return (
     <div className="max-w-2xl bg-white rounded-2xl shadow-xl p-8 flex flex-col gap-4">
@@ -140,12 +160,22 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
        </div>
       );
       })} 
-      <button
-        className="bg-cogent-blue text-white px-8 py-2 rounded-lg font-bold shadow hover:bg-cogent-sky mt-4"
-        onClick={handleSiguiente}
-      >
-        {bloqueActual === bloques.length - 1 ? "Finalizar" : "Siguiente"}
-      </button>
+      <div className="flex gap-4 mt-4">
+        {tieneAnterior && (
+          <button
+            className="bg-gray-300 text-cogent-navy px-8 py-2 rounded-lg font-bold shadow hover:bg-gray-400"
+            onClick={handleRetroceder}
+          >
+            Retroceder
+          </button>
+        )}
+        <button
+          className="bg-cogent-blue text-white px-8 py-2 rounded-lg font-bold shadow hover:bg-cogent-sky"
+          onClick={handleSiguiente}
+        >
+          {bloqueActual === bloques.length - 1 ? "Finalizar" : "Siguiente"}
+        </button>
+      </div>
     </div>
   );
 }
