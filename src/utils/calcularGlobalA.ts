@@ -25,3 +25,26 @@ export function calcularGlobalAExtrala(
     nivelGlobal: baremo?.nivel ?? "No clasificado"
   };
 }
+
+// Calcula el puntaje global intralaboral (forma B) + extralaboral
+// utilizando los factores y baremos propios de la Forma B
+import { factoresFormaB } from "../data/factoresFormaB";
+import { baremosFormaB } from "../data/baremosFormaB";
+
+export function calcularGlobalBExtrala(
+  puntajeBrutoB: number,
+  puntajeBrutoExtralaboral: number
+) {
+  const FACTOR = factoresFormaB.global;
+  let global = (puntajeBrutoB + puntajeBrutoExtralaboral) * 100 / FACTOR;
+  global = Math.round(global * 10) / 10;
+  if (global < 0) global = 0;
+  if (global > 100) global = 100;
+  const baremo = baremosFormaB.global.find(
+    (b: any) => global >= b.min && global <= b.max
+  );
+  return {
+    puntajeGlobal: global,
+    nivelGlobal: baremo?.nivel ?? "No clasificado"
+  };
+}

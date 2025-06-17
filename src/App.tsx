@@ -19,7 +19,7 @@ import { calcularEstres } from "./utils/calcularEstres";
 import { calcularExtralaboral } from "./utils/calcularExtralaboral";
 import { calcularFormaA } from "./utils/calcularFormaA";
 import { calcularFormaB } from "./utils/calcularFormaB";
-import { calcularGlobalAExtrala } from "./utils/calcularGlobalA";
+import { calcularGlobalAExtrala, calcularGlobalBExtrala } from "./utils/calcularGlobalA";
 
 type RolUsuario = "ninguno" | "psicologa" | "dueno";
 
@@ -50,6 +50,7 @@ export default function App() {
   const [resultadoFormaA, setResultadoFormaA] = useState<any>(null);
   const [resultadoFormaB, setResultadoFormaB] = useState<any>(null);
   const [resultadoGlobalAExtra, setResultadoGlobalAExtra] = useState<any>(null);
+  const [resultadoGlobalBExtra, setResultadoGlobalBExtra] = useState<any>(null);
 
   // Manejo de login (muy básico)
   const [rol, setRol] = useState<RolUsuario>("ninguno");
@@ -79,6 +80,13 @@ export default function App() {
         );
         resultadoForma = calcularFormaB(arr);
         setResultadoFormaB(resultadoForma);
+        if (resultadoExtralaboral) {
+          resultadoGlobal = calcularGlobalBExtrala(
+            resultadoForma.total.suma,
+            resultadoExtralaboral.puntajeBrutoTotal
+          );
+          setResultadoGlobalBExtra(resultadoGlobal);
+        }
       }
 
       // Guarda todo lo que quieras conservar
@@ -88,6 +96,7 @@ export default function App() {
         resultadoFormaA: formType === "A" ? resultadoForma : undefined,
         resultadoFormaB: formType === "B" ? resultadoForma : undefined,
         resultadoGlobalAExtralaboral: formType === "A" ? resultadoGlobal : undefined,
+        resultadoGlobalBExtralaboral: formType === "B" ? resultadoGlobal : undefined,
         resultadoEstres,
         resultadoExtralaboral,
         tipo: formType,
