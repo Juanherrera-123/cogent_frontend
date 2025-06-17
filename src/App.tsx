@@ -20,7 +20,7 @@ import { calcularExtralaboral } from "./utils/calcularExtralaboral";
 import { calcularFormaA } from "./utils/calcularFormaA";
 import { calcularFormaB } from "./utils/calcularFormaB";
 
-type RolUsuario = "ninguno" | "psicologo" | "dueno";
+type RolUsuario = "ninguno" | "psicologa" | "dueno";
 
 export default function App() {
   const [step, setStep] = useState<
