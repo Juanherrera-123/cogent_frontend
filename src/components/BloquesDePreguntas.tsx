@@ -117,7 +117,7 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
   return (
     <div key={idx} className="mb-4">
       <label className="font-semibold block mb-1">
-        {preg.texto.replace(/^\d+\./, "")}
+        {`${idx + 1}. ${preg.texto.replace(/^\d+\.?\s*/, "")}`}
       </label>
       {preg.tipo === "likert" && (
         <select
