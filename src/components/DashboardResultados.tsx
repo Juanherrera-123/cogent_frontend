@@ -75,6 +75,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState(empresaFiltro || "todas");
   const [tab, setTab] = useState("formaA");
   const [tabIntra, setTabIntra] = useState("global"); // Para sub-tabs de formaA/B
+  const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
 
   useEffect(() => {
     const arr = JSON.parse(localStorage.getItem("resultadosCogent") || "[]");
@@ -271,47 +272,81 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
     resumen,
     titulo,
     keyData = "cantidad",
+    chartType,
   }: {
     resumen: any[];
     titulo: string;
     keyData?: string;
+    chartType: "bar" | "histogram" | "pie";
   }) {
     return (
       <div className="flex-1">
         <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
         <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={resumen}>
-            <XAxis dataKey="nombre" interval={0} angle={-18} textAnchor="end" height={70} />
-            <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey={keyData} name={keyData === "promedio" ? "Promedio" : keyData}>
-              {resumen.map((_, i) => (
-                <Cell key={i} fill={colores[i % colores.length]} />
-              ))}
-            </Bar>
-          </BarChart>
+          {chartType === "pie" ? (
+            <PieChart>
+              <Pie data={resumen} dataKey={keyData} nameKey="nombre" label>
+                {resumen.map((_, i) => (
+                  <Cell key={i} fill={colores[i % colores.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          ) : (
+            <BarChart data={resumen} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
+              <XAxis dataKey="nombre" interval={0} angle={-18} textAnchor="end" height={70} />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey={keyData} name={keyData === "promedio" ? "Promedio" : keyData}>
+                {resumen.map((_, i) => (
+                  <Cell key={i} fill={colores[i % colores.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          )}
         </ResponsiveContainer>
       </div>
     );
   }
 
-  function GraficaBarraSimple({ resumen, titulo }: { resumen: any[]; titulo: string }) {
+  function GraficaBarraSimple({
+    resumen,
+    titulo,
+    chartType,
+  }: {
+    resumen: any[];
+    titulo: string;
+    chartType: "bar" | "histogram" | "pie";
+  }) {
     return (
       <div className="flex-1">
         <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
         <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={resumen}>
-            <XAxis dataKey="nivel" />
-            <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="cantidad" name="Cantidad">
-              {resumen.map((_, i) => (
-                <Cell key={i} fill={colores[i % colores.length]} />
-              ))}
-            </Bar>
-          </BarChart>
+          {chartType === "pie" ? (
+            <PieChart>
+              <Pie data={resumen} dataKey="cantidad" nameKey="nivel" label>
+                {resumen.map((_, i) => (
+                  <Cell key={i} fill={colores[i % colores.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          ) : (
+            <BarChart data={resumen} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
+              <XAxis dataKey="nivel" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="cantidad" name="Cantidad">
+                {resumen.map((_, i) => (
+                  <Cell key={i} fill={colores[i % colores.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          )}
         </ResponsiveContainer>
       </div>
     );
@@ -339,6 +374,20 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
         </div>
       )}
 
+      {/* Selector tipo de gráfico */}
+      <div className="flex gap-2 items-center mb-4">
+        <label className="font-semibold mr-2">Tipo de gráfico:</label>
+        <select
+          value={chartType}
+          onChange={(e) => setChartType(e.target.value as "bar" | "histogram" | "pie")}
+          className="input"
+        >
+          <option value="bar">Barras</option>
+          <option value="histogram">Histograma</option>
+          <option value="pie">Pastel</option>
+        </select>
+      </div>
+
       {/* Tabs/Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="w-full">
         <TabsList className="mb-6 w-full flex flex-wrap gap-2">
@@ -361,7 +410,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
                 ? <div className="text-gray-500 py-4">No hay resultados de Forma A.</div>
                 : (
                   <>
-                    <GraficaBarraSimple resumen={resumenA} titulo="Niveles de Forma A" />
+                    <GraficaBarraSimple resumen={resumenA} titulo="Niveles de Forma A" chartType={chartType} />
                     {!soloGenerales && <TablaIndividual datos={datosA} tipo="formaA" />}
                   </>
                 )
@@ -370,13 +419,13 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
             <TabsContent value="dominios">
               {datosA.length === 0
                 ? <div className="text-gray-500 py-4">No hay datos para dominios.</div>
-                : <GraficaBarra resumen={promediosDominiosA} titulo="Promedio de Puntaje Transformado por Dominio" keyData="promedio" />
+                : <GraficaBarra resumen={promediosDominiosA} titulo="Promedio de Puntaje Transformado por Dominio" keyData="promedio" chartType={chartType} />
               }
             </TabsContent>
             <TabsContent value="dimensiones">
               {datosA.length === 0
                 ? <div className="text-gray-500 py-4">No hay datos para dimensiones.</div>
-                : <GraficaBarra resumen={promediosDimensionesA} titulo="Promedio de Puntaje Transformado por Dimensión" keyData="promedio" />
+                : <GraficaBarra resumen={promediosDimensionesA} titulo="Promedio de Puntaje Transformado por Dimensión" keyData="promedio" chartType={chartType} />
               }
             </TabsContent>
           </Tabs>
@@ -395,7 +444,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
                 ? <div className="text-gray-500 py-4">No hay resultados de Forma B.</div>
                 : (
                   <>
-                    <GraficaBarraSimple resumen={resumenB} titulo="Niveles de Forma B" />
+                    <GraficaBarraSimple resumen={resumenB} titulo="Niveles de Forma B" chartType={chartType} />
                     {!soloGenerales && <TablaIndividual datos={datosB} tipo="formaB" />}
                   </>
                 )
@@ -404,13 +453,13 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
             <TabsContent value="dominios">
               {datosB.length === 0
                 ? <div className="text-gray-500 py-4">No hay datos para dominios.</div>
-                : <GraficaBarra resumen={promediosDominiosB} titulo="Promedio de Puntaje Transformado por Dominio" keyData="promedio" />
+                : <GraficaBarra resumen={promediosDominiosB} titulo="Promedio de Puntaje Transformado por Dominio" keyData="promedio" chartType={chartType} />
               }
             </TabsContent>
             <TabsContent value="dimensiones">
               {datosB.length === 0
                 ? <div className="text-gray-500 py-4">No hay datos para dimensiones.</div>
-                : <GraficaBarra resumen={promediosDimensionesB} titulo="Promedio de Puntaje Transformado por Dimensión" keyData="promedio" />
+                : <GraficaBarra resumen={promediosDimensionesB} titulo="Promedio de Puntaje Transformado por Dimensión" keyData="promedio" chartType={chartType} />
               }
             </TabsContent>
           </Tabs>
@@ -422,7 +471,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
             ? <div className="text-gray-500 py-4">No hay resultados Extralaborales.</div>
             : (
               <>
-                <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" />
+                <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" chartType={chartType} />
                 {!soloGenerales && <TablaIndividual datos={datosExtra} tipo="extralaboral" />}
               </>
             )
@@ -435,7 +484,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
             ? <div className="text-gray-500 py-4">No hay resultados de Estrés.</div>
             : (
               <>
-                <GraficaBarraSimple resumen={resumenEstres} titulo="Niveles de Estrés" />
+                <GraficaBarraSimple resumen={resumenEstres} titulo="Niveles de Estrés" chartType={chartType} />
                 {!soloGenerales && <TablaIndividual datos={datosEstres} tipo="estres" />}
               </>
             )
