@@ -3,6 +3,7 @@ import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, Resp
 import * as XLSX from "xlsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { exportElementToPDF } from "@/utils/pdfExport";
+import { dimensionesExtralaboral } from "@/data/esquemaExtralaboral";
 
 // Personaliza tus colores de barras
 const colores = ["#2a57d3", "#1db2f5", "#ffbc1c", "#f2600e", "#d7263d", "#9b59b6", "#45a049", "#0e668b", "#e67e22"];
@@ -67,6 +68,7 @@ const dimensionesB = [
   "Recompensas derivadas de la pertenencia a la organización y del trabajo que se realiza",
   "Reconocimiento y compensación",
 ];
+const dimensionesExtra = dimensionesExtralaboral.map((d) => d.nombre);
 
 const nivelesEstres = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto"];
 const nivelesExtra = ["Sin riesgo", "Riesgo bajo", "Riesgo medio", "Riesgo alto", "Riesgo muy alto"];
@@ -77,6 +79,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState(empresaFiltro || "todas");
   const [tab, setTab] = useState("formaA");
   const [tabIntra, setTabIntra] = useState("global"); // Para sub-tabs de formaA/B
+  const [tabExtra, setTabExtra] = useState("global");
 
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
   const pdfRef = useRef<HTMLDivElement>(null);
@@ -141,7 +144,11 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     campos.forEach((nombre) => {
       const valores = datos
         .map((d) => {
-          const seccion = d[key]?.[subkey]?.[nombre];
+          let seccion = d[key]?.[subkey]?.[nombre];
+          if (Array.isArray(d[key]?.[subkey])) {
+            const item = d[key][subkey].find((x: any) => x.nombre === nombre);
+            seccion = item;
+          }
           if (typeof seccion === "object") {
             return seccion.transformado ?? seccion.puntajeTransformado;
           }
@@ -166,6 +173,12 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   const promediosDimensionesA = calcularPromedios(datosA, "resultadoFormaA", dimensionesA, "dimensiones");
   const promediosDominiosB = calcularPromedios(datosB, "resultadoFormaB", dominiosB, "dominios");
   const promediosDimensionesB = calcularPromedios(datosB, "resultadoFormaB", dimensionesB, "dimensiones");
+  const promediosDimensionesExtra = calcularPromedios(
+    datosExtra,
+    "resultadoExtralaboral",
+    dimensionesExtra,
+    "dimensiones"
+  );
 
   // ---- Exportar a Excel ----
   const handleExportar = () => {
@@ -298,6 +311,46 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
                   </>
                 )}
                 <td>{d.fecha ? new Date(d.fecha).toLocaleString() : ""}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
+  function TablaDimensiones({ datos, dimensiones, keyResultado }: { datos: any[]; dimensiones: string[]; keyResultado: string }) {
+    if (datos.length === 0) return <div className="py-6 text-gray-400">No hay resultados de dimensiones para mostrar.</div>;
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs border mt-2">
+          <thead className="bg-cogent-blue text-white">
+            <tr>
+              <th>#</th>
+              <th>Empresa</th>
+              <th>Nombre</th>
+              {dimensiones.map((dim, idx) => (
+                <th key={idx}>{dim}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {datos.map((d, i) => (
+              <tr key={i} className="border-b">
+                <td>{i + 1}</td>
+                <td>{d.ficha?.empresa}</td>
+                <td>{d.ficha?.nombre}</td>
+                {dimensiones.map((dim, idx) => {
+                  let seccion = d[keyResultado]?.dimensiones?.[dim];
+                  if (Array.isArray(d[keyResultado]?.dimensiones)) {
+                    const item = d[keyResultado].dimensiones.find((x: any) => x.nombre === dim);
+                    seccion = item;
+                  }
+                  const valor = typeof seccion === "object"
+                    ? seccion.transformado ?? seccion.puntajeTransformado
+                    : d[keyResultado]?.puntajesDimension?.[dim];
+                  return <td key={idx}>{valor ?? ""}</td>;
+                })}
               </tr>
             ))}
           </tbody>
@@ -466,7 +519,23 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
             <TabsContent value="dimensiones">
               {datosA.length === 0
                 ? <div className="text-gray-500 py-4">No hay datos para dimensiones.</div>
-                : <GraficaBarra resumen={promediosDimensionesA} titulo="Promedio de Puntaje Transformado por Dimensión" keyData="promedio" chartType={chartType} />
+                : (
+                  <>
+                    <GraficaBarra
+                      resumen={promediosDimensionesA}
+                      titulo="Promedio de Puntaje Transformado por Dimensión"
+                      keyData="promedio"
+                      chartType={chartType}
+                    />
+                    {!soloGenerales && (
+                      <TablaDimensiones
+                        datos={datosA}
+                        dimensiones={dimensionesA}
+                        keyResultado="resultadoFormaA"
+                      />
+                    )}
+                  </>
+                )
               }
             </TabsContent>
           </Tabs>
@@ -500,7 +569,23 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
             <TabsContent value="dimensiones">
               {datosB.length === 0
                 ? <div className="text-gray-500 py-4">No hay datos para dimensiones.</div>
-                : <GraficaBarra resumen={promediosDimensionesB} titulo="Promedio de Puntaje Transformado por Dimensión" keyData="promedio" chartType={chartType} />
+                : (
+                  <>
+                    <GraficaBarra
+                      resumen={promediosDimensionesB}
+                      titulo="Promedio de Puntaje Transformado por Dimensión"
+                      keyData="promedio"
+                      chartType={chartType}
+                    />
+                    {!soloGenerales && (
+                      <TablaDimensiones
+                        datos={datosB}
+                        dimensiones={dimensionesB}
+                        keyResultado="resultadoFormaB"
+                      />
+                    )}
+                  </>
+                )
               }
             </TabsContent>
           </Tabs>
@@ -508,15 +593,45 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
 
         {/* ---- EXTRALABORAL ---- */}
         <TabsContent value="extralaboral">
-          {datosExtra.length === 0
-            ? <div className="text-gray-500 py-4">No hay resultados Extralaborales.</div>
-            : (
-              <>
-                <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" chartType={chartType} />
-                {!soloGenerales && <TablaIndividual datos={datosExtra} tipo="extralaboral" />}
-              </>
-            )
-          }
+          <Tabs value={tabExtra} onValueChange={setTabExtra} className="w-full">
+            <TabsList className="mb-4 w-full flex gap-2">
+              <TabsTrigger value="global">Global</TabsTrigger>
+              <TabsTrigger value="dimensiones">Por Dimensión</TabsTrigger>
+            </TabsList>
+            <TabsContent value="global">
+              {datosExtra.length === 0
+                ? <div className="text-gray-500 py-4">No hay resultados Extralaborales.</div>
+                : (
+                  <>
+                    <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" chartType={chartType} />
+                    {!soloGenerales && <TablaIndividual datos={datosExtra} tipo="extralaboral" />}
+                  </>
+                )
+              }
+            </TabsContent>
+            <TabsContent value="dimensiones">
+              {datosExtra.length === 0
+                ? <div className="text-gray-500 py-4">No hay datos para dimensiones.</div>
+                : (
+                  <>
+                    <GraficaBarra
+                      resumen={promediosDimensionesExtra}
+                      titulo="Promedio de Puntaje Transformado por Dimensión"
+                      keyData="promedio"
+                      chartType={chartType}
+                    />
+                    {!soloGenerales && (
+                      <TablaDimensiones
+                        datos={datosExtra}
+                        dimensiones={dimensionesExtra}
+                        keyResultado="resultadoExtralaboral"
+                      />
+                    )}
+                  </>
+                )
+              }
+            </TabsContent>
+          </Tabs>
         </TabsContent>
 
         {/* ---- GLOBAL A + EXTRA ---- */}
