@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import * as XLSX from "xlsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { gatherFlatResults } from "@/utils/gatherResults";
 import { exportElementToPDF } from "@/utils/pdfExport";
 import { dimensionesExtralaboral } from "@/data/esquemaExtralaboral";
 
@@ -88,7 +89,6 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
 
 
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
-  const pdfRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     const arr = JSON.parse(localStorage.getItem("resultadosCogent") || "[]");
@@ -194,6 +194,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
 
   // ---- Exportar a Excel ----
   const handleExportar = () => {
+    const filas = gatherFlatResults();
+
     let datosExportar: any[] = [];
     if (tab === "formaA") datosExportar = datosA;
     else if (tab === "formaB") datosExportar = datosB;
@@ -248,14 +250,34 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(filas);
     XLSX.utils.book_append_sheet(wb, ws, "Resultados");
-    XLSX.writeFile(wb, `resultados_${tab}.xlsx`);
+    XLSX.writeFile(wb, "resultados.xlsx");
   };
 
   // ---- Exportar a PDF ----
   const handleExportPDF = async () => {
-    if (pdfRef.current) {
-      await exportElementToPDF(pdfRef.current, `resultados_${tab}.pdf`);
-    }
+    const filas = gatherFlatResults();
+    if (filas.length === 0) return;
+    const headers = Object.keys(filas[0]);
+    const table = document.createElement("table");
+    table.style.visibility = "hidden";
+    const thead = table.createTHead();
+    const headRow = thead.insertRow();
+    headers.forEach((h) => {
+      const th = document.createElement("th");
+      th.textContent = h;
+      headRow.appendChild(th);
+    });
+    const tbody = table.createTBody();
+    filas.forEach((fila) => {
+      const tr = tbody.insertRow();
+      headers.forEach((h) => {
+        const td = tr.insertCell();
+        td.textContent = fila[h] ?? "";
+      });
+    });
+    document.body.appendChild(table);
+    await exportElementToPDF(table, "resultados.pdf");
+    table.remove();
   };
 
   // ---- Render tablas individuales (solo para psicóloga) ----
@@ -488,7 +510,6 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   // ---- Pestañas ----
   return (
     <div className="max-w-6xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-xl mt-8 flex flex-col gap-8">
-      <div ref={pdfRef}>
         <h2 className="text-2xl md:text-3xl font-bold text-cogent-blue mb-2 md:mb-4">Dashboard de Resultados</h2>
 
         {/* Filtro empresa, solo para psicóloga */}
