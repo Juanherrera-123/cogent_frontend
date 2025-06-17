@@ -171,8 +171,14 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
         "Nivel Forma A": d.resultadoFormaA?.total?.nivel ?? "",
       }),
       ...(tab === "formaB" && {
-        "Puntaje Forma B": d.resultadoFormaB?.total?.transformado ?? "",
-        "Nivel Forma B": d.resultadoFormaB?.total?.nivel ?? "",
+        "Puntaje Forma B":
+          d.resultadoFormaB?.total?.transformado ??
+          d.resultadoFormaB?.puntajeTransformadoTotal ??
+          "",
+        "Nivel Forma B":
+          d.resultadoFormaB?.total?.nivel ??
+          d.resultadoFormaB?.nivelTotal ??
+          "",
       }),
       ...(tab === "extralaboral" && {
         "Puntaje Extralaboral": d.resultadoExtralaboral?.puntajeTransformadoTotal ?? "",
@@ -227,8 +233,16 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
                 )}
                 {tipo === "formaB" && (
                   <>
-                    <td>{d.resultadoFormaB?.total?.transformado ?? ""}</td>
-                    <td>{d.resultadoFormaB?.total?.nivel ?? ""}</td>
+                    <td>
+                      {d.resultadoFormaB?.total?.transformado ??
+                        d.resultadoFormaB?.puntajeTransformadoTotal ??
+                        ""}
+                    </td>
+                    <td>
+                      {d.resultadoFormaB?.total?.nivel ??
+                        d.resultadoFormaB?.nivelTotal ??
+                        ""}
+                    </td>
                   </>
                 )}
                 {tipo === "extralaboral" && (
