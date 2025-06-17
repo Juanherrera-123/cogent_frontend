@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import * as XLSX from "xlsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { exportElementToPDF } from "@/utils/pdfExport";
 
 // Personaliza tus colores de barras
 const colores = ["#2a57d3", "#1db2f5", "#ffbc1c", "#f2600e", "#d7263d", "#9b59b6", "#45a049", "#0e668b", "#e67e22"];
@@ -75,6 +76,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState(empresaFiltro || "todas");
   const [tab, setTab] = useState("formaA");
   const [tabIntra, setTabIntra] = useState("global"); // Para sub-tabs de formaA/B
+  const pdfRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const arr = JSON.parse(localStorage.getItem("resultadosCogent") || "[]");
@@ -195,6 +197,13 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
     const ws = XLSX.utils.json_to_sheet(filas);
     XLSX.utils.book_append_sheet(wb, ws, "Resultados");
     XLSX.writeFile(wb, `resultados_${tab}.xlsx`);
+  };
+
+  // ---- Exportar a PDF ----
+  const handleExportPDF = async () => {
+    if (pdfRef.current) {
+      await exportElementToPDF(pdfRef.current, `resultados_${tab}.pdf`);
+    }
   };
 
   // ---- Render tablas individuales (solo para psicóloga) ----
@@ -320,11 +329,12 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
   // ---- Pestañas ----
   return (
     <div className="max-w-6xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-xl mt-8 flex flex-col gap-8">
-      <h2 className="text-2xl md:text-3xl font-bold text-cogent-blue mb-2 md:mb-4">Dashboard de Resultados</h2>
+      <div ref={pdfRef}>
+        <h2 className="text-2xl md:text-3xl font-bold text-cogent-blue mb-2 md:mb-4">Dashboard de Resultados</h2>
 
-      {/* Filtro empresa, solo para psicóloga */}
-      {!empresaFiltro && (
-        <div className="flex gap-2 items-center mb-2">
+        {/* Filtro empresa, solo para psicóloga */}
+        {!empresaFiltro && (
+          <div className="flex gap-2 items-center mb-2">
           <label className="font-semibold mr-2">Filtrar por empresa:</label>
           <select
             value={empresaSeleccionada}
@@ -442,14 +452,21 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
           }
         </TabsContent>
       </Tabs>
+      </div>
 
-      {/* Botón para exportar */}
-      <div className="flex justify-end">
+      {/* Botones para exportar */}
+      <div className="flex justify-end gap-2">
         <button
           onClick={handleExportar}
           className="bg-cogent-blue text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-cogent-sky"
         >
           Descargar Excel
+        </button>
+        <button
+          onClick={handleExportPDF}
+          className="bg-cogent-blue text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-cogent-sky"
+        >
+          Descargar PDF
         </button>
       </div>
     </div>
