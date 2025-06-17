@@ -59,3 +59,11 @@ npm run lint
 - `public/` - Static assets served directly
 - `index.html` - Entry point for the application
 
+## Sample credentials
+
+Default demo accounts are defined in `src/config/credentials.json`:
+
+- **Psicóloga**: `psicologa` / `cogent2024`
+- **Sonria**: `sonria` / `sonria123`
+- **Aeropuerto**: `aeropuerto` / `eldorado123`
+
