@@ -74,7 +74,6 @@ const dimensionesExtra = dimensionesExtralaboral.map((d) => d.nombre);
 const nivelesEstres = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto"];
 const nivelesExtra = ["Sin riesgo", "Riesgo bajo", "Riesgo medio", "Riesgo alto", "Riesgo muy alto"];
 const nivelesForma = ["Sin riesgo", "Riesgo bajo", "Riesgo medio", "Riesgo alto", "Riesgo muy alto"];
-const nombresExtra = dimensionesExtralaboral.map((d) => d.nombre);
 
 export default function DashboardResultados({ soloGenerales, empresaFiltro, onBack }: Props) {
   const [datos, setDatos] = useState<any[]>([]);
@@ -83,9 +82,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   const [tabIntra, setTabIntra] = useState("global"); // Para sub-tabs de formaA/B
 
   const [tabExtra, setTabExtra] = useState("global");
-  const [tabExtra, setTabExtra] = useState("A"); // Para sub-tabs global extra
-
-  const [tabExtra, setTabExtra] = useState("global");
+  const [tabGlobalExtra, setTabGlobalExtra] = useState("A"); // Para sub-tabs global extra
 
 
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
@@ -188,19 +185,16 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     dimensionesExtra,
     "dimensiones"
   );
-=======
-  const promediosDimensionesExtra = calcularPromedios(datosExtra, "resultadoExtralaboral", nombresExtra, "dimensiones");
 
 
   // ---- Exportar a Excel ----
   const handleExportar = () => {
-    const filas = gatherFlatResults();
-
     let datosExportar: any[] = [];
     if (tab === "formaA") datosExportar = datosA;
     else if (tab === "formaB") datosExportar = datosB;
     else if (tab === "extralaboral") datosExportar = datosExtra;
-    else if (tab === "globalExtra") datosExportar = tabExtra === "A" ? datosGlobalAE : datosGlobalBE;
+    else if (tab === "globalExtra") datosExportar =
+      tabGlobalExtra === "A" ? datosGlobalAE : datosGlobalBE;
     else if (tab === "estres") datosExportar = datosEstres;
 
     const filas = datosExportar.map((d, i) => ({
@@ -366,11 +360,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   }
 
   function TablaDimensiones({ datos, dimensiones, keyResultado }: { datos: any[]; dimensiones: string[]; keyResultado: string }) {
-    if (datos.length === 0) return <div className="py-6 text-gray-400">No hay resultados de dimensiones para mostrar.</div>;
-=======
-  function TablaDimensiones({ datos, nombres }: { datos: any[]; nombres: string[] }) {
     if (datos.length === 0)
-      return <div className="py-6 text-gray-400">No hay resultados individuales para mostrar.</div>;
+      return <div className="py-6 text-gray-400">No hay resultados de dimensiones para mostrar.</div>;
 
     return (
       <div className="overflow-x-auto">
@@ -380,12 +371,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
               <th>#</th>
               <th>Empresa</th>
               <th>Nombre</th>
-
               {dimensiones.map((dim, idx) => (
                 <th key={idx}>{dim}</th>
-=======
-              {nombres.map((n, idx) => (
-                <th key={idx}>{n}</th>
               ))}
             </tr>
           </thead>
@@ -395,7 +382,6 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
                 <td>{i + 1}</td>
                 <td>{d.ficha?.empresa}</td>
                 <td>{d.ficha?.nombre}</td>
-
                 {dimensiones.map((dim, idx) => {
                   let seccion = d[keyResultado]?.dimensiones?.[dim];
                   if (Array.isArray(d[keyResultado]?.dimensiones)) {
@@ -407,13 +393,6 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
                     : d[keyResultado]?.puntajesDimension?.[dim];
                   return <td key={idx}>{valor ?? ""}</td>;
                 })}
-=======
-                {nombres.map((nombre, j) => (
-                  <td key={j}>
-                    {d.resultadoExtralaboral?.dimensiones?.find((x: any) => x.nombre === nombre)?.puntajeTransformado ?? ""}
-                  </td>
-                ))}
-
               </tr>
             ))}
           </tbody>
@@ -690,38 +669,18 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
                       />
                     )}
                   </>
-                )
-              }
-=======
-              <TabsTrigger value="dimensiones">Dimensiones</TabsTrigger>
-            </TabsList>
-            <TabsContent value="global">
-              {datosExtra.length === 0 ? (
-                <div className="text-gray-500 py-4">No hay resultados Extralaborales.</div>
-              ) : (
-                <>
-                  <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" chartType={chartType} />
-                  {!soloGenerales && <TablaIndividual datos={datosExtra} tipo="extralaboral" />}
-                </>
-              )}
-            </TabsContent>
-            <TabsContent value="dimensiones">
-              {datosExtra.length === 0 ? (
-                <div className="text-gray-500 py-4">No hay datos para dimensiones.</div>
-              ) : (
-                <>
-                  <GraficaBarra resumen={promediosDimensionesExtra} titulo="Promedio de Puntaje Transformado por Dimensión" keyData="promedio" chartType={chartType} />
-                  {!soloGenerales && <TablaDimensiones datos={datosExtra} nombres={nombresExtra} />}
-                </>
-              )}
-
+                )}
             </TabsContent>
           </Tabs>
         </TabsContent>
 
         {/* ---- GLOBAL EXTRA ---- */}
         <TabsContent value="globalExtra">
-          <Tabs value={tabExtra} onValueChange={setTabExtra} className="w-full">
+          <Tabs
+            value={tabGlobalExtra}
+            onValueChange={setTabGlobalExtra}
+            className="w-full"
+          >
             <TabsList className="mb-4 w-full flex gap-2">
               <TabsTrigger value="A">Forma A</TabsTrigger>
               <TabsTrigger value="B">Forma B</TabsTrigger>
@@ -762,7 +721,6 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
           }
         </TabsContent>
       </Tabs>
-      </div>
 
       {/* Botones de acciones */}
       <div className="flex justify-between items-center">
