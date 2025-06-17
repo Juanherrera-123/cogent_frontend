@@ -100,7 +100,12 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
   const resumenNivel = (datos: any[], key: string, niveles: string[]) =>
     niveles.map((nivel) => ({
       nivel,
-      cantidad: datos.filter((d) => d[key]?.nivel === nivel || d[key]?.nivelGlobal === nivel).length,
+      cantidad: datos.filter((d) => {
+        const r = d[key];
+        const nivelRes =
+          r?.total?.nivel ?? r?.nivelTotal ?? r?.nivelGlobal ?? r?.nivel;
+        return nivelRes === nivel;
+      }).length,
     }));
 
   const resumenA = resumenNivel(datosA, "resultadoFormaA", nivelesForma);
@@ -110,10 +115,14 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
 
   // ---- Promedios por dominio/dimensión ----
   function calcularPromedios(datos: any[], key: string, campos: string[], subkey: "dominios" | "dimensiones") {
-    // datos: array de usuarios, cada uno con resultadoFormaA/B.dimensiones/dominios[dim] = { puntajeTransformado, ... }
+    // datos: array de usuarios, cada uno con resultadoFormaA/B.dimensiones/dominios[dim] = { transformado/puntajeTransformado, ... }
     const resultado: { nombre: string, promedio: number }[] = [];
     campos.forEach((nombre) => {
-      const valores = datos.map(d => d[key]?.[subkey]?.[nombre]?.puntajeTransformado)
+      const valores = datos
+        .map(d => {
+          const seccion = d[key]?.[subkey]?.[nombre];
+          return seccion?.transformado ?? seccion?.puntajeTransformado;
+        })
         .filter(x => typeof x === "number");
       const promedio = valores.length ? valores.reduce((a, b) => a + b, 0) / valores.length : 0;
       resultado.push({ nombre, promedio: Math.round(promedio * 10) / 10 });
@@ -140,15 +149,15 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
       Sexo: d.ficha?.sexo || "",
       Cargo: d.ficha?.cargo || "",
       ...(tab === "formaA" && {
-        "Puntaje Forma A": d.resultadoFormaA?.puntajeTransformado ?? "",
-        "Nivel Forma A": d.resultadoFormaA?.nivel ?? "",
+        "Puntaje Forma A": d.resultadoFormaA?.total?.transformado ?? "",
+        "Nivel Forma A": d.resultadoFormaA?.total?.nivel ?? "",
       }),
       ...(tab === "formaB" && {
-        "Puntaje Forma B": d.resultadoFormaB?.puntajeTransformado ?? "",
-        "Nivel Forma B": d.resultadoFormaB?.nivel ?? "",
+        "Puntaje Forma B": d.resultadoFormaB?.puntajeTotal ?? "",
+        "Nivel Forma B": d.resultadoFormaB?.nivelTotal ?? "",
       }),
       ...(tab === "extralaboral" && {
-        "Puntaje Extralaboral": d.resultadoExtralaboral?.puntajeGlobal ?? "",
+        "Puntaje Extralaboral": d.resultadoExtralaboral?.puntajeTransformadoTotal ?? "",
         "Nivel Extralaboral": d.resultadoExtralaboral?.nivelGlobal ?? "",
       }),
       ...(tab === "estres" && {
@@ -194,19 +203,19 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
                 <td>{d.ficha?.cargo}</td>
                 {tipo === "formaA" && (
                   <>
-                    <td>{d.resultadoFormaA?.puntajeTransformado ?? ""}</td>
-                    <td>{d.resultadoFormaA?.nivel ?? ""}</td>
+                    <td>{d.resultadoFormaA?.total?.transformado ?? ""}</td>
+                    <td>{d.resultadoFormaA?.total?.nivel ?? ""}</td>
                   </>
                 )}
                 {tipo === "formaB" && (
                   <>
-                    <td>{d.resultadoFormaB?.puntajeTransformado ?? ""}</td>
-                    <td>{d.resultadoFormaB?.nivel ?? ""}</td>
+                    <td>{d.resultadoFormaB?.puntajeTotal ?? ""}</td>
+                    <td>{d.resultadoFormaB?.nivelTotal ?? ""}</td>
                   </>
                 )}
                 {tipo === "extralaboral" && (
                   <>
-                    <td>{d.resultadoExtralaboral?.puntajeGlobal ?? ""}</td>
+                    <td>{d.resultadoExtralaboral?.puntajeTransformadoTotal ?? ""}</td>
                     <td>{d.resultadoExtralaboral?.nivelGlobal ?? ""}</td>
                   </>
                 )}
