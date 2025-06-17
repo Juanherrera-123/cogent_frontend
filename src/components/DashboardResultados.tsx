@@ -114,17 +114,35 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
   const resumenEstres = resumenNivel(datosEstres, "resultadoEstres", nivelesEstres);
 
   // ---- Promedios por dominio/dimensión ----
-  function calcularPromedios(datos: any[], key: string, campos: string[], subkey: "dominios" | "dimensiones") {
-    // datos: array de usuarios, cada uno con resultadoFormaA/B.dimensiones/dominios[dim] = { transformado/puntajeTransformado, ... }
-    const resultado: { nombre: string, promedio: number }[] = [];
+  function calcularPromedios(
+    datos: any[],
+    key: string,
+    campos: string[],
+    subkey: "dominios" | "dimensiones"
+  ) {
+    // datos: array de usuarios, cada uno con resultadoFormaA/B.dimensiones/dominios[dim]
+    // = { transformado | puntajeTransformado | valor }
+    const resultado: { nombre: string; promedio: number }[] = [];
     campos.forEach((nombre) => {
       const valores = datos
-        .map(d => {
+        .map((d) => {
           const seccion = d[key]?.[subkey]?.[nombre];
-          return seccion?.transformado ?? seccion?.puntajeTransformado;
+          if (typeof seccion === "object") {
+            return seccion.transformado ?? seccion.puntajeTransformado;
+          }
+          // Compatibilidad con estructura de Forma B (puntajesDimension/puntajesDominio)
+          if (subkey === "dimensiones") {
+            return d[key]?.puntajesDimension?.[nombre];
+          }
+          if (subkey === "dominios") {
+            return d[key]?.puntajesDominio?.[nombre];
+          }
+          return undefined;
         })
-        .filter(x => typeof x === "number");
-      const promedio = valores.length ? valores.reduce((a, b) => a + b, 0) / valores.length : 0;
+        .filter((x) => typeof x === "number");
+      const promedio = valores.length
+        ? valores.reduce((a, b) => a + b, 0) / valores.length
+        : 0;
       resultado.push({ nombre, promedio: Math.round(promedio * 10) / 10 });
     });
     return resultado;
@@ -235,7 +253,15 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
   }
 
   // ---- Render gráficos ----
-  function GraficaBarra({ resumen, titulo, keyData = "cantidad" }: { resumen: any[], titulo: string, keyData?: string }) {
+  function GraficaBarra({
+    resumen,
+    titulo,
+    keyData = "cantidad",
+  }: {
+    resumen: any[];
+    titulo: string;
+    keyData?: string;
+  }) {
     return (
       <div className="flex-1">
         <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
@@ -245,7 +271,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
             <YAxis allowDecimals={false} />
             <Tooltip />
             <Legend />
-            <Bar dataKey={keyData}>
+            <Bar dataKey={keyData} name={keyData === "promedio" ? "Promedio" : keyData}>
               {resumen.map((_, i) => (
                 <Cell key={i} fill={colores[i % colores.length]} />
               ))}
@@ -256,7 +282,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
     );
   }
 
-  function GraficaBarraSimple({ resumen, titulo }: { resumen: any[], titulo: string }) {
+  function GraficaBarraSimple({ resumen, titulo }: { resumen: any[]; titulo: string }) {
     return (
       <div className="flex-1">
         <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
@@ -266,7 +292,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
             <YAxis allowDecimals={false} />
             <Tooltip />
             <Legend />
-            <Bar dataKey="cantidad">
+            <Bar dataKey="cantidad" name="Cantidad">
               {resumen.map((_, i) => (
                 <Cell key={i} fill={colores[i % colores.length]} />
               ))}
