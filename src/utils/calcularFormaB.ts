@@ -54,27 +54,31 @@ export function calcularFormaB(respuestas: string[]) {
   const porDominio = agruparPor(esquemaFormaB, "dominio");
 
   // Calcular puntajes por dimensión
-  const puntajesDimension: { [dim: string]: number } = {};
+  const resultadosDimension: Record<string, { suma: number; transformado: number; nivel: string }> = {};
   Object.entries(porDimension).forEach(([dimension, preguntas]) => {
     const suma = preguntas.reduce(
       (acc, num) => acc + respuestaAPuntaje(num, mapRespuestas[num] || ""),
       0
     );
     const factor = factoresFormaB.dimension[dimension] ?? preguntas.length;
-    const puntaje = (suma * 100) / factor;
-    puntajesDimension[dimension] = Math.round(puntaje * 10) / 10;
+    const transformado = Math.round(((suma * 100) / factor) * 10) / 10;
+    const baremo = baremosFormaB.dimension[dimension] || [];
+    const nivel = baremo.find(b => transformado >= b.min && transformado <= b.max)?.nivel || "No clasificado";
+    resultadosDimension[dimension] = { suma, transformado, nivel };
   });
 
   // Calcular puntajes por dominio
-  const puntajesDominio: { [dom: string]: number } = {};
+  const resultadosDominio: Record<string, { suma: number; transformado: number; nivel: string }> = {};
   Object.entries(porDominio).forEach(([dominio, preguntas]) => {
     const suma = preguntas.reduce(
       (acc, num) => acc + respuestaAPuntaje(num, mapRespuestas[num] || ""),
       0
     );
     const factor = factoresFormaB.dominio[dominio] ?? preguntas.length;
-    const puntaje = (suma * 100) / factor;
-    puntajesDominio[dominio] = Math.round(puntaje * 10) / 10;
+    const transformado = Math.round(((suma * 100) / factor) * 10) / 10;
+    const baremo = baremosFormaB.dominio[dominio] || [];
+    const nivel = baremo.find(b => transformado >= b.min && transformado <= b.max)?.nivel || "No clasificado";
+    resultadosDominio[dominio] = { suma, transformado, nivel };
   });
 
   // Puntaje total
@@ -84,33 +88,17 @@ export function calcularFormaB(respuestas: string[]) {
   );
   const puntajeTotal = Math.round((sumaTotal * 100 / factoresFormaB.total) * 10) / 10;
 
-  // Nivel por dimensión
-  const nivelesDimension: { [dim: string]: string } = {};
-  Object.entries(puntajesDimension).forEach(([dimension, puntaje]) => {
-    const baremo = baremosFormaB.dimension[dimension] || [];
-    const nivel = baremo.find(b => puntaje >= b.min && puntaje <= b.max)?.nivel || "No clasificado";
-    nivelesDimension[dimension] = nivel;
-  });
-
-  // Nivel por dominio
-  const nivelesDominio: { [dom: string]: string } = {};
-  Object.entries(puntajesDominio).forEach(([dominio, puntaje]) => {
-    const baremo = baremosFormaB.dominio[dominio] || [];
-    const nivel = baremo.find(b => puntaje >= b.min && puntaje <= b.max)?.nivel || "No clasificado";
-    nivelesDominio[dominio] = nivel;
-  });
-
   // Nivel total
   const baremoTotal = baremosFormaB.total || [];
   const nivelTotal = baremoTotal.find(b => puntajeTotal >= b.min && puntajeTotal <= b.max)?.nivel || "No clasificado";
 
   return {
-    valido: true,
-    puntajesDimension,
-    puntajesDominio,
-    puntajeTotal,
-    nivelesDimension,
-    nivelesDominio,
-    nivelTotal,
+    dimensiones: resultadosDimension,
+    dominios: resultadosDominio,
+    total: {
+      suma: sumaTotal,
+      transformado: puntajeTotal,
+      nivel: nivelTotal,
+    },
   };
 }
