@@ -558,6 +558,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
           Descargar PDF
         </button>
       </div>
-    </div>
-  );
-}
+      </div>
+      </div>
+    );
+  }
