@@ -199,17 +199,17 @@ export const bloquesFormaB = [
   },
   {
     bloque: 12,
-    preguntas: [78, 87], // 80-88 (primera parte del bloque condicional, si la F3 es afirmativa)
-    enunciado: "Las siguientes preguntas están relacionadas con la satisfacción, reconocimiento y la seguridad que le ofrece su trabajo.",
-    condicional: "F3",
-    obligatorio: false
-  },
-  {
-    bloque: 13,
     preguntas: [88, 88], // índice de la pregunta filtro F3
     enunciado: "¿En mi trabajo debo brindar servicio a clientes o usuarios?",
     condicional: null,
     obligatorio: true
+  },
+  {
+    bloque: 13,
+    preguntas: [78, 87], // 80-88 (primera parte del bloque condicional, si la F3 es afirmativa)
+    enunciado: "Las siguientes preguntas están relacionadas con la satisfacción, reconocimiento y la seguridad que le ofrece su trabajo.",
+    condicional: "F3",
+    obligatorio: false
   },
   {
     bloque: 14,
