@@ -4,6 +4,7 @@ import * as XLSX from "xlsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { gatherFlatResults } from "@/utils/gatherResults";
 import { exportElementToPDF } from "@/utils/pdfExport";
+import { dimensionesExtralaboral } from "@/data/esquemaExtralaboral";
 
 // Personaliza tus colores de barras
 const colores = ["#2a57d3", "#1db2f5", "#ffbc1c", "#f2600e", "#d7263d", "#9b59b6", "#45a049", "#0e668b", "#e67e22"];
@@ -68,16 +69,24 @@ const dimensionesB = [
   "Recompensas derivadas de la pertenencia a la organización y del trabajo que se realiza",
   "Reconocimiento y compensación",
 ];
+const dimensionesExtra = dimensionesExtralaboral.map((d) => d.nombre);
 
 const nivelesEstres = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto"];
 const nivelesExtra = ["Sin riesgo", "Riesgo bajo", "Riesgo medio", "Riesgo alto", "Riesgo muy alto"];
 const nivelesForma = ["Sin riesgo", "Riesgo bajo", "Riesgo medio", "Riesgo alto", "Riesgo muy alto"];
+const nombresExtra = dimensionesExtralaboral.map((d) => d.nombre);
 
 export default function DashboardResultados({ soloGenerales, empresaFiltro, onBack }: Props) {
   const [datos, setDatos] = useState<any[]>([]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState(empresaFiltro || "todas");
   const [tab, setTab] = useState("formaA");
   const [tabIntra, setTabIntra] = useState("global"); // Para sub-tabs de formaA/B
+
+  const [tabExtra, setTabExtra] = useState("global");
+  const [tabExtra, setTabExtra] = useState("A"); // Para sub-tabs global extra
+
+  const [tabExtra, setTabExtra] = useState("global");
+
 
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
   
@@ -109,6 +118,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     (d) => d.resultadoEstres && d.resultadoEstres.valido !== false
   );
   const datosGlobalAE = datosMostrados.filter((d) => d.resultadoGlobalAExtralaboral);
+  const datosGlobalBE = datosMostrados.filter((d) => d.resultadoGlobalBExtralaboral);
 
   // ---- Resúmenes para gráficos ----
   const resumenNivel = (datos: any[], key: string, niveles: string[]) =>
@@ -127,6 +137,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   const resumenExtra = resumenNivel(datosExtra, "resultadoExtralaboral", nivelesExtra);
   const resumenEstres = resumenNivel(datosEstres, "resultadoEstres", nivelesEstres);
   const resumenGlobalAE = resumenNivel(datosGlobalAE, "resultadoGlobalAExtralaboral", nivelesForma);
+  const resumenGlobalBE = resumenNivel(datosGlobalBE, "resultadoGlobalBExtralaboral", nivelesForma);
 
   // ---- Promedios por dominio/dimensión ----
   function calcularPromedios(
@@ -141,7 +152,11 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     campos.forEach((nombre) => {
       const valores = datos
         .map((d) => {
-          const seccion = d[key]?.[subkey]?.[nombre];
+          let seccion = d[key]?.[subkey]?.[nombre];
+          if (Array.isArray(d[key]?.[subkey])) {
+            const item = d[key][subkey].find((x: any) => x.nombre === nombre);
+            seccion = item;
+          }
           if (typeof seccion === "object") {
             return seccion.transformado ?? seccion.puntajeTransformado;
           }
@@ -167,9 +182,71 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   const promediosDominiosB = calcularPromedios(datosB, "resultadoFormaB", dominiosB, "dominios");
   const promediosDimensionesB = calcularPromedios(datosB, "resultadoFormaB", dimensionesB, "dimensiones");
 
+  const promediosDimensionesExtra = calcularPromedios(
+    datosExtra,
+    "resultadoExtralaboral",
+    dimensionesExtra,
+    "dimensiones"
+  );
+=======
+  const promediosDimensionesExtra = calcularPromedios(datosExtra, "resultadoExtralaboral", nombresExtra, "dimensiones");
+
+
   // ---- Exportar a Excel ----
   const handleExportar = () => {
     const filas = gatherFlatResults();
+
+    let datosExportar: any[] = [];
+    if (tab === "formaA") datosExportar = datosA;
+    else if (tab === "formaB") datosExportar = datosB;
+    else if (tab === "extralaboral") datosExportar = datosExtra;
+    else if (tab === "globalExtra") datosExportar = tabExtra === "A" ? datosGlobalAE : datosGlobalBE;
+    else if (tab === "estres") datosExportar = datosEstres;
+
+    const filas = datosExportar.map((d, i) => ({
+      Nro: i + 1,
+      Empresa: d.ficha?.empresa || "",
+      Nombre: d.ficha?.nombre || "",
+      Sexo: d.ficha?.sexo || "",
+      Cargo: d.ficha?.cargo || "",
+      ...(tab === "formaA" && {
+        "Puntaje Forma A": d.resultadoFormaA?.total?.transformado ?? "",
+        "Nivel Forma A": d.resultadoFormaA?.total?.nivel ?? "",
+      }),
+      ...(tab === "formaB" && {
+        "Puntaje Forma B":
+          d.resultadoFormaB?.total?.transformado ??
+          d.resultadoFormaB?.puntajeTransformadoTotal ??
+          d.resultadoFormaB?.puntajeTransformado ??
+          d.resultadoFormaB?.puntajeTotalTransformado ??
+          "",
+        "Nivel Forma B":
+          d.resultadoFormaB?.total?.nivel ??
+          d.resultadoFormaB?.nivelTotal ??
+          d.resultadoFormaB?.nivel ??
+          "",
+      }),
+      ...(tab === "extralaboral" && {
+        "Puntaje Extralaboral": d.resultadoExtralaboral?.puntajeTransformadoTotal ?? "",
+        "Nivel Extralaboral": d.resultadoExtralaboral?.nivelGlobal ?? "",
+      }),
+      ...(tab === "globalExtra" && {
+        "Puntaje Global A+Extra":
+          d.resultadoGlobalAExtralaboral?.puntajeGlobal ??
+          d.resultadoGlobalBExtralaboral?.puntajeGlobal ??
+          "",
+        "Nivel Global":
+          d.resultadoGlobalAExtralaboral?.nivelGlobal ??
+          d.resultadoGlobalBExtralaboral?.nivelGlobal ??
+          "",
+      }),
+      ...(tab === "estres" && {
+        "Puntaje Estrés": d.resultadoEstres?.puntajeTransformado ?? "",
+        "Nivel Estrés": d.resultadoEstres?.nivel ?? "",
+      }),
+      Fecha: d.fecha ? new Date(d.fecha).toLocaleString() : "",
+    }));
+
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(filas);
     XLSX.utils.book_append_sheet(wb, ws, "Resultados");
@@ -219,7 +296,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
               {tipo === "formaA" && (<><th>Puntaje Forma A</th><th>Nivel Forma A</th></>)}
               {tipo === "formaB" && (<><th>Puntaje Forma B</th><th>Nivel Forma B</th></>)}
               {tipo === "extralaboral" && (<><th>Puntaje Extralaboral</th><th>Nivel Extra</th></>)}
-              {tipo === "globalAE" && (<><th>Puntaje Global A+Extra</th><th>Nivel Global</th></>)}
+              {tipo === "globalExtra" && (<><th>Puntaje Global A+Extra</th><th>Nivel Global</th></>)}
               {tipo === "estres" && (<><th>Puntaje Estrés</th><th>Nivel Estrés</th></>)}
               <th>Fecha</th>
             </tr>
@@ -261,10 +338,16 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
                     <td>{d.resultadoExtralaboral?.nivelGlobal ?? ""}</td>
                   </>
                 )}
-                {tipo === "globalAE" && (
+                {tipo === "globalExtra" && (
                   <>
-                    <td>{d.resultadoGlobalAExtralaboral?.puntajeGlobal ?? ""}</td>
-                    <td>{d.resultadoGlobalAExtralaboral?.nivelGlobal ?? ""}</td>
+                    <td>
+                      {d.resultadoGlobalAExtralaboral?.puntajeGlobal ??
+                        d.resultadoGlobalBExtralaboral?.puntajeGlobal ?? ""}
+                    </td>
+                    <td>
+                      {d.resultadoGlobalAExtralaboral?.nivelGlobal ??
+                        d.resultadoGlobalBExtralaboral?.nivelGlobal ?? ""}
+                    </td>
                   </>
                 )}
                 {tipo === "estres" && (
@@ -274,6 +357,63 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
                   </>
                 )}
                 <td>{d.fecha ? new Date(d.fecha).toLocaleString() : ""}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
+  function TablaDimensiones({ datos, dimensiones, keyResultado }: { datos: any[]; dimensiones: string[]; keyResultado: string }) {
+    if (datos.length === 0) return <div className="py-6 text-gray-400">No hay resultados de dimensiones para mostrar.</div>;
+=======
+  function TablaDimensiones({ datos, nombres }: { datos: any[]; nombres: string[] }) {
+    if (datos.length === 0)
+      return <div className="py-6 text-gray-400">No hay resultados individuales para mostrar.</div>;
+
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs border mt-2">
+          <thead className="bg-cogent-blue text-white">
+            <tr>
+              <th>#</th>
+              <th>Empresa</th>
+              <th>Nombre</th>
+
+              {dimensiones.map((dim, idx) => (
+                <th key={idx}>{dim}</th>
+=======
+              {nombres.map((n, idx) => (
+                <th key={idx}>{n}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {datos.map((d, i) => (
+              <tr key={i} className="border-b">
+                <td>{i + 1}</td>
+                <td>{d.ficha?.empresa}</td>
+                <td>{d.ficha?.nombre}</td>
+
+                {dimensiones.map((dim, idx) => {
+                  let seccion = d[keyResultado]?.dimensiones?.[dim];
+                  if (Array.isArray(d[keyResultado]?.dimensiones)) {
+                    const item = d[keyResultado].dimensiones.find((x: any) => x.nombre === dim);
+                    seccion = item;
+                  }
+                  const valor = typeof seccion === "object"
+                    ? seccion.transformado ?? seccion.puntajeTransformado
+                    : d[keyResultado]?.puntajesDimension?.[dim];
+                  return <td key={idx}>{valor ?? ""}</td>;
+                })}
+=======
+                {nombres.map((nombre, j) => (
+                  <td key={j}>
+                    {d.resultadoExtralaboral?.dimensiones?.find((x: any) => x.nombre === nombre)?.puntajeTransformado ?? ""}
+                  </td>
+                ))}
+
               </tr>
             ))}
           </tbody>
@@ -409,7 +549,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
           <TabsTrigger value="formaA">Forma A (Intralaboral)</TabsTrigger>
           <TabsTrigger value="formaB">Forma B (Intralaboral)</TabsTrigger>
           <TabsTrigger value="extralaboral">Extralaboral</TabsTrigger>
-          <TabsTrigger value="globalAE">Global A + Extra</TabsTrigger>
+          <TabsTrigger value="globalExtra">Global Extra</TabsTrigger>
           <TabsTrigger value="estres">Estrés</TabsTrigger>
         </TabsList>
 
@@ -441,7 +581,23 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
             <TabsContent value="dimensiones">
               {datosA.length === 0
                 ? <div className="text-gray-500 py-4">No hay datos para dimensiones.</div>
-                : <GraficaBarra resumen={promediosDimensionesA} titulo="Promedio de Puntaje Transformado por Dimensión" keyData="promedio" chartType={chartType} />
+                : (
+                  <>
+                    <GraficaBarra
+                      resumen={promediosDimensionesA}
+                      titulo="Promedio de Puntaje Transformado por Dimensión"
+                      keyData="promedio"
+                      chartType={chartType}
+                    />
+                    {!soloGenerales && (
+                      <TablaDimensiones
+                        datos={datosA}
+                        dimensiones={dimensionesA}
+                        keyResultado="resultadoFormaA"
+                      />
+                    )}
+                  </>
+                )
               }
             </TabsContent>
           </Tabs>
@@ -475,7 +631,23 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
             <TabsContent value="dimensiones">
               {datosB.length === 0
                 ? <div className="text-gray-500 py-4">No hay datos para dimensiones.</div>
-                : <GraficaBarra resumen={promediosDimensionesB} titulo="Promedio de Puntaje Transformado por Dimensión" keyData="promedio" chartType={chartType} />
+                : (
+                  <>
+                    <GraficaBarra
+                      resumen={promediosDimensionesB}
+                      titulo="Promedio de Puntaje Transformado por Dimensión"
+                      keyData="promedio"
+                      chartType={chartType}
+                    />
+                    {!soloGenerales && (
+                      <TablaDimensiones
+                        datos={datosB}
+                        dimensiones={dimensionesB}
+                        keyResultado="resultadoFormaB"
+                      />
+                    )}
+                  </>
+                )
               }
             </TabsContent>
           </Tabs>
@@ -483,28 +655,98 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
 
         {/* ---- EXTRALABORAL ---- */}
         <TabsContent value="extralaboral">
-          {datosExtra.length === 0
-            ? <div className="text-gray-500 py-4">No hay resultados Extralaborales.</div>
-            : (
-              <>
-                <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" chartType={chartType} />
-                {!soloGenerales && <TablaIndividual datos={datosExtra} tipo="extralaboral" />}
-              </>
-            )
-          }
+          <Tabs value={tabExtra} onValueChange={setTabExtra} className="w-full">
+            <TabsList className="mb-4 w-full flex gap-2">
+              <TabsTrigger value="global">Global</TabsTrigger>
+              <TabsTrigger value="dimensiones">Por Dimensión</TabsTrigger>
+            </TabsList>
+            <TabsContent value="global">
+              {datosExtra.length === 0
+                ? <div className="text-gray-500 py-4">No hay resultados Extralaborales.</div>
+                : (
+                  <>
+                    <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" chartType={chartType} />
+                    {!soloGenerales && <TablaIndividual datos={datosExtra} tipo="extralaboral" />}
+                  </>
+                )
+              }
+            </TabsContent>
+            <TabsContent value="dimensiones">
+              {datosExtra.length === 0
+                ? <div className="text-gray-500 py-4">No hay datos para dimensiones.</div>
+                : (
+                  <>
+                    <GraficaBarra
+                      resumen={promediosDimensionesExtra}
+                      titulo="Promedio de Puntaje Transformado por Dimensión"
+                      keyData="promedio"
+                      chartType={chartType}
+                    />
+                    {!soloGenerales && (
+                      <TablaDimensiones
+                        datos={datosExtra}
+                        dimensiones={dimensionesExtra}
+                        keyResultado="resultadoExtralaboral"
+                      />
+                    )}
+                  </>
+                )
+              }
+=======
+              <TabsTrigger value="dimensiones">Dimensiones</TabsTrigger>
+            </TabsList>
+            <TabsContent value="global">
+              {datosExtra.length === 0 ? (
+                <div className="text-gray-500 py-4">No hay resultados Extralaborales.</div>
+              ) : (
+                <>
+                  <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" chartType={chartType} />
+                  {!soloGenerales && <TablaIndividual datos={datosExtra} tipo="extralaboral" />}
+                </>
+              )}
+            </TabsContent>
+            <TabsContent value="dimensiones">
+              {datosExtra.length === 0 ? (
+                <div className="text-gray-500 py-4">No hay datos para dimensiones.</div>
+              ) : (
+                <>
+                  <GraficaBarra resumen={promediosDimensionesExtra} titulo="Promedio de Puntaje Transformado por Dimensión" keyData="promedio" chartType={chartType} />
+                  {!soloGenerales && <TablaDimensiones datos={datosExtra} nombres={nombresExtra} />}
+                </>
+              )}
+
+            </TabsContent>
+          </Tabs>
         </TabsContent>
 
-        {/* ---- GLOBAL A + EXTRA ---- */}
-        <TabsContent value="globalAE">
-          {datosGlobalAE.length === 0
-            ? <div className="text-gray-500 py-4">No hay resultados Globales.</div>
-            : (
-              <>
-                <GraficaBarraSimple resumen={resumenGlobalAE} titulo="Niveles Global A + Extra" />
-                {!soloGenerales && <TablaIndividual datos={datosGlobalAE} tipo="globalAE" />}
-              </>
-            )
-          }
+        {/* ---- GLOBAL EXTRA ---- */}
+        <TabsContent value="globalExtra">
+          <Tabs value={tabExtra} onValueChange={setTabExtra} className="w-full">
+            <TabsList className="mb-4 w-full flex gap-2">
+              <TabsTrigger value="A">Forma A</TabsTrigger>
+              <TabsTrigger value="B">Forma B</TabsTrigger>
+            </TabsList>
+            <TabsContent value="A">
+              {datosGlobalAE.length === 0 ? (
+                <div className="text-gray-500 py-4">No hay resultados Globales A.</div>
+              ) : (
+                <>
+                  <GraficaBarraSimple resumen={resumenGlobalAE} titulo="Niveles Global A + Extra" />
+                  {!soloGenerales && <TablaIndividual datos={datosGlobalAE} tipo="globalExtra" />}
+                </>
+              )}
+            </TabsContent>
+            <TabsContent value="B">
+              {datosGlobalBE.length === 0 ? (
+                <div className="text-gray-500 py-4">No hay resultados Globales B.</div>
+              ) : (
+                <>
+                  <GraficaBarraSimple resumen={resumenGlobalBE} titulo="Niveles Global B + Extra" />
+                  {!soloGenerales && <TablaIndividual datos={datosGlobalBE} tipo="globalExtra" />}
+                </>
+              )}
+            </TabsContent>
+          </Tabs>
         </TabsContent>
 
         {/* ---- ESTRÉS ---- */}
