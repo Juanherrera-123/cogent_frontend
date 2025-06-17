@@ -1,54 +1,61 @@
-# React + TypeScript + Vite
+# COGENT Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+COGENT Frontend is a web application built with React, TypeScript and [Vite](https://vitejs.dev/). It provides the interface for administering the **Batería de Riesgo Psicosocial COGENT** questionnaires and visualizing their results.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Purpose
 
-## Expanding the ESLint configuration
+This frontend allows psychologists and administrators to distribute and review COGENT questionnaires, compute scores and generate reports on psychosocial risk factors within an organization.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Prerequisites
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- [Node.js](https://nodejs.org/) (version 18 or later)
+- npm, which is included with Node.js
+
+## Installing dependencies
+
+Clone the repository and install the required packages:
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Development server
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Start the local development server with hot reloading:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm run dev
 ```
+
+The application will be available at `http://localhost:5173` by default.
+
+## Building for production
+
+To create an optimized production build, run:
+
+```bash
+npm run build
+```
+
+This command compiles the TypeScript sources and outputs the final assets to the `dist` directory. The build can be previewed locally using:
+
+```bash
+npm run preview
+```
+
+## Linting
+
+Run ESLint on the project files with:
+
+```bash
+npm run lint
+```
+
+## Project structure
+
+- `src/` - Application source code
+- `public/` - Static assets served directly
+- `index.html` - Entry point for the application
+
