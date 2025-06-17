@@ -58,10 +58,16 @@ export default function App() {
       // Calcula resultados por formulario
       let resultadoForma = null;
       if (formType === "A" && respuestas.bloques) {
-        resultadoForma = calcularFormaA(Object.values(respuestas.bloques));
+        const arr = Array.from({ length: preguntasA.length }, (_, i) =>
+          respuestas.bloques[i] ?? ""
+        );
+        resultadoForma = calcularFormaA(arr);
         setResultadoFormaA(resultadoForma);
       } else if (formType === "B" && respuestas.bloques) {
-        resultadoForma = calcularFormaB(Object.values(respuestas.bloques));
+        const arr = Array.from({ length: preguntasB.length }, (_, i) =>
+          respuestas.bloques[i] ?? ""
+        );
+        resultadoForma = calcularFormaB(arr);
         setResultadoFormaB(resultadoForma);
       }
 
@@ -154,7 +160,11 @@ export default function App() {
           bloques={formType === "A" ? bloquesFormaA : bloquesFormaB}
           preguntas={formType === "A" ? preguntasA : preguntasB}
           onFinish={(respuestasBloques) => {
-            setRespuestas((prev: any) => ({ ...prev, bloques: respuestasBloques }));
+            const ordered = Array.from(
+              { length: formType === "A" ? preguntasA.length : preguntasB.length },
+              (_, i) => respuestasBloques[i] ?? ""
+            );
+            setRespuestas((prev: any) => ({ ...prev, bloques: ordered }));
             setStep("extralaboral");
           }}
         />
@@ -164,14 +174,18 @@ export default function App() {
           bloques={bloqueExtralaboral}
           preguntas={preguntasExtralaboral}
           onFinish={(respuestasExtra) => {
+            const ordered = Array.from(
+              { length: preguntasExtralaboral.length },
+              (_, i) => respuestasExtra[i] ?? ""
+            );
             const resultado = calcularExtralaboral(
-              Object.values(respuestasExtra),
+              ordered,
               formType as "A" | "B"
             );
             setResultadoExtralaboral(resultado);
             setRespuestas((prev: any) => ({
               ...prev,
-              extralaboral: respuestasExtra,
+              extralaboral: ordered,
               resultadoExtralaboral: resultado
             }));
             setStep("estres");
@@ -183,14 +197,18 @@ export default function App() {
           bloques={bloqueEstres}
           preguntas={preguntasEstres}
           onFinish={(respuestasEstres) => {
+            const ordered = Array.from(
+              { length: preguntasEstres.length },
+              (_, i) => respuestasEstres[i] ?? ""
+            );
             const resultado = calcularEstres(
-              Object.values(respuestasEstres),
+              ordered,
               formType as "A" | "B"
             );
             setResultadoEstres(resultado);
             setRespuestas((prev: any) => ({
               ...prev,
-              estres: respuestasEstres,
+              estres: ordered,
               resultadoEstres: resultado
             }));
             setStep("final");
