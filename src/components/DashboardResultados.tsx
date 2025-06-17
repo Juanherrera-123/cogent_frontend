@@ -97,6 +97,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
   const datosB = datosMostrados.filter((d) => d.tipo === "B" && d.resultadoFormaB);
   const datosExtra = datosMostrados.filter((d) => d.resultadoExtralaboral);
   const datosEstres = datosMostrados.filter((d) => d.resultadoEstres);
+  const datosGlobalAE = datosMostrados.filter((d) => d.resultadoGlobalAExtralaboral);
 
   // ---- Resúmenes para gráficos ----
   const resumenNivel = (datos: any[], key: string, niveles: string[]) =>
@@ -114,6 +115,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
   const resumenB = resumenNivel(datosB, "resultadoFormaB", nivelesForma);
   const resumenExtra = resumenNivel(datosExtra, "resultadoExtralaboral", nivelesExtra);
   const resumenEstres = resumenNivel(datosEstres, "resultadoEstres", nivelesEstres);
+  const resumenGlobalAE = resumenNivel(datosGlobalAE, "resultadoGlobalAExtralaboral", nivelesForma);
 
   // ---- Promedios por dominio/dimensión ----
   function calcularPromedios(
@@ -160,6 +162,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
     if (tab === "formaA") datosExportar = datosA;
     else if (tab === "formaB") datosExportar = datosB;
     else if (tab === "extralaboral") datosExportar = datosExtra;
+    else if (tab === "globalAE") datosExportar = datosGlobalAE;
     else if (tab === "estres") datosExportar = datosEstres;
 
     const filas = datosExportar.map((d, i) => ({
@@ -185,6 +188,10 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
       ...(tab === "extralaboral" && {
         "Puntaje Extralaboral": d.resultadoExtralaboral?.puntajeTransformadoTotal ?? "",
         "Nivel Extralaboral": d.resultadoExtralaboral?.nivelGlobal ?? "",
+      }),
+      ...(tab === "globalAE" && {
+        "Puntaje Global A+Extra": d.resultadoGlobalAExtralaboral?.puntajeGlobal ?? "",
+        "Nivel Global": d.resultadoGlobalAExtralaboral?.nivelGlobal ?? "",
       }),
       ...(tab === "estres" && {
         "Puntaje Estrés": d.resultadoEstres?.puntajeTransformado ?? "",
@@ -222,6 +229,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
               {tipo === "formaA" && (<><th>Puntaje Forma A</th><th>Nivel Forma A</th></>)}
               {tipo === "formaB" && (<><th>Puntaje Forma B</th><th>Nivel Forma B</th></>)}
               {tipo === "extralaboral" && (<><th>Puntaje Extralaboral</th><th>Nivel Extra</th></>)}
+              {tipo === "globalAE" && (<><th>Puntaje Global A+Extra</th><th>Nivel Global</th></>)}
               {tipo === "estres" && (<><th>Puntaje Estrés</th><th>Nivel Estrés</th></>)}
               <th>Fecha</th>
             </tr>
@@ -258,6 +266,12 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
                   <>
                     <td>{d.resultadoExtralaboral?.puntajeTransformadoTotal ?? ""}</td>
                     <td>{d.resultadoExtralaboral?.nivelGlobal ?? ""}</td>
+                  </>
+                )}
+                {tipo === "globalAE" && (
+                  <>
+                    <td>{d.resultadoGlobalAExtralaboral?.puntajeGlobal ?? ""}</td>
+                    <td>{d.resultadoGlobalAExtralaboral?.nivelGlobal ?? ""}</td>
                   </>
                 )}
                 {tipo === "estres" && (
@@ -355,6 +369,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
           <TabsTrigger value="formaA">Forma A (Intralaboral)</TabsTrigger>
           <TabsTrigger value="formaB">Forma B (Intralaboral)</TabsTrigger>
           <TabsTrigger value="extralaboral">Extralaboral</TabsTrigger>
+          <TabsTrigger value="globalAE">Global A + Extra</TabsTrigger>
           <TabsTrigger value="estres">Estrés</TabsTrigger>
         </TabsList>
 
@@ -434,6 +449,19 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro }: Pr
               <>
                 <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" />
                 {!soloGenerales && <TablaIndividual datos={datosExtra} tipo="extralaboral" />}
+              </>
+            )
+          }
+        </TabsContent>
+
+        {/* ---- GLOBAL A + EXTRA ---- */}
+        <TabsContent value="globalAE">
+          {datosGlobalAE.length === 0
+            ? <div className="text-gray-500 py-4">No hay resultados Globales.</div>
+            : (
+              <>
+                <GraficaBarraSimple resumen={resumenGlobalAE} titulo="Niveles Global A + Extra" />
+                {!soloGenerales && <TablaIndividual datos={datosGlobalAE} tipo="globalAE" />}
               </>
             )
           }
