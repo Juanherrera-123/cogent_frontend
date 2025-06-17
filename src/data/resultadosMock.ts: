@@ -1,0 +1,58 @@
+// src/data/resultadosMock.ts
+
+export const resultadosMock = [
+  {
+    ficha: {
+      nombre: "Juan Pérez",
+      empresa: "Sonria",
+      cargo: "Auxiliar",
+      area: "Logística",
+      tipoContrato: "Término indefinido",
+      sexo: "Masculino",
+      nacimiento: 1988
+    },
+    tipo: "A",
+    extralaboral: {
+      puntajes: {
+        total: 17.2,
+        dimensiones: [
+          { nombre: "Tiempo fuera del trabajo", valor: 14.2, nivel: "Bajo" },
+          { nombre: "Relaciones familiares", valor: 21.3, nivel: "Medio" },
+        ]
+      }
+    },
+    estres: {
+      puntajeBruto: 19.3,
+      puntajeTransformado: 12.4,
+      nivel: "Medio"
+    },
+    fecha: "2025-06-13"
+  },
+  {
+    ficha: {
+      nombre: "Marta Gómez",
+      empresa: "Aeropuerto El Dorado",
+      cargo: "Operaria",
+      area: "Servicios Generales",
+      tipoContrato: "Prestación de servicios",
+      sexo: "Femenino",
+      nacimiento: 1992
+    },
+    tipo: "B",
+    extralaboral: {
+      puntajes: {
+        total: 25.2,
+        dimensiones: [
+          { nombre: "Tiempo fuera del trabajo", valor: 7.5, nivel: "Sin riesgo" },
+          { nombre: "Relaciones familiares", valor: 33.3, nivel: "Alto" },
+        ]
+      }
+    },
+    estres: {
+      puntajeBruto: 9.2,
+      puntajeTransformado: 6.7,
+      nivel: "Bajo"
+    },
+    fecha: "2025-06-12"
+  }
+];
