@@ -225,7 +225,7 @@ export const bloqueExtralaboral = [
 ];
 
 export const bloqueEstres = [
-  { bloque: 1, preguntas: [0, 29], enunciado: "A continuación encontrará una serie de síntomas y situaciones, marque con qué frecuencia las ha experimentado en los últimos meses.", condicional: null, obligatorio: true }
+  { bloque: 1, preguntas: [0, 30], enunciado: "A continuación encontrará una serie de síntomas y situaciones, marque con qué frecuencia las ha experimentado en los últimos meses.", condicional: null, obligatorio: true }
 ];
 
 export const preguntasA = [
