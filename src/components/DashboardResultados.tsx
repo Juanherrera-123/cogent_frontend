@@ -96,10 +96,18 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   );
 
   // ---- Agrupación por tipo de resultado ----
-  const datosA = datosMostrados.filter((d) => d.tipo === "A" && d.resultadoFormaA);
-  const datosB = datosMostrados.filter((d) => d.tipo === "B" && d.resultadoFormaB);
-  const datosExtra = datosMostrados.filter((d) => d.resultadoExtralaboral);
-  const datosEstres = datosMostrados.filter((d) => d.resultadoEstres);
+  const datosA = datosMostrados.filter(
+    (d) => d.tipo === "A" && d.resultadoFormaA && d.resultadoFormaA.valido !== false
+  );
+  const datosB = datosMostrados.filter(
+    (d) => d.tipo === "B" && d.resultadoFormaB && d.resultadoFormaB.valido !== false
+  );
+  const datosExtra = datosMostrados.filter(
+    (d) => d.resultadoExtralaboral && d.resultadoExtralaboral.valido !== false
+  );
+  const datosEstres = datosMostrados.filter(
+    (d) => d.resultadoEstres && d.resultadoEstres.valido !== false
+  );
   const datosGlobalAE = datosMostrados.filter((d) => d.resultadoGlobalAExtralaboral);
 
   // ---- Resúmenes para gráficos ----
