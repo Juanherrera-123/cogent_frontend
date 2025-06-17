@@ -216,9 +216,17 @@ export default function App() {
         />
       )}
       {step === "final" && (
-        <div className="p-8 bg-white rounded-xl shadow-md text-cogent-navy font-bold text-2xl">
-          ¡Encuesta completada!<br />
-          Gracias por tu participación.
+        <div className="p-8 bg-white rounded-xl shadow-md text-cogent-navy font-bold text-2xl flex flex-col items-center gap-4">
+          <div>
+            ¡Encuesta completada!<br />
+            Gracias por tu participación.
+          </div>
+          <button
+            className="bg-cogent-blue text-white px-6 py-2 rounded-lg shadow hover:bg-cogent-sky text-base"
+            onClick={() => setStep("inicio")}
+          >
+            Volver al inicio
+          </button>
         </div>
       )}
     </div>
