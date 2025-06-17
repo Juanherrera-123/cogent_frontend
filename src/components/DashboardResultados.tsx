@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import * as XLSX from "xlsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { gatherFlatResults } from "@/utils/gatherResults";
 import { exportElementToPDF } from "@/utils/pdfExport";
 
 // Personaliza tus colores de barras
@@ -79,7 +80,6 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   const [tabIntra, setTabIntra] = useState("global"); // Para sub-tabs de formaA/B
 
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
-  const pdfRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     const arr = JSON.parse(localStorage.getItem("resultadosCogent") || "[]");
@@ -169,62 +169,38 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
 
   // ---- Exportar a Excel ----
   const handleExportar = () => {
-    let datosExportar: any[] = [];
-    if (tab === "formaA") datosExportar = datosA;
-    else if (tab === "formaB") datosExportar = datosB;
-    else if (tab === "extralaboral") datosExportar = datosExtra;
-    else if (tab === "globalAE") datosExportar = datosGlobalAE;
-    else if (tab === "estres") datosExportar = datosEstres;
-
-    const filas = datosExportar.map((d, i) => ({
-      Nro: i + 1,
-      Empresa: d.ficha?.empresa || "",
-      Nombre: d.ficha?.nombre || "",
-      Sexo: d.ficha?.sexo || "",
-      Cargo: d.ficha?.cargo || "",
-      ...(tab === "formaA" && {
-        "Puntaje Forma A": d.resultadoFormaA?.total?.transformado ?? "",
-        "Nivel Forma A": d.resultadoFormaA?.total?.nivel ?? "",
-      }),
-      ...(tab === "formaB" && {
-        "Puntaje Forma B":
-          d.resultadoFormaB?.total?.transformado ??
-          d.resultadoFormaB?.puntajeTransformadoTotal ??
-          d.resultadoFormaB?.puntajeTransformado ??
-          d.resultadoFormaB?.puntajeTotalTransformado ??
-          "",
-        "Nivel Forma B":
-          d.resultadoFormaB?.total?.nivel ??
-          d.resultadoFormaB?.nivelTotal ??
-          d.resultadoFormaB?.nivel ??
-          "",
-      }),
-      ...(tab === "extralaboral" && {
-        "Puntaje Extralaboral": d.resultadoExtralaboral?.puntajeTransformadoTotal ?? "",
-        "Nivel Extralaboral": d.resultadoExtralaboral?.nivelGlobal ?? "",
-      }),
-      ...(tab === "globalAE" && {
-        "Puntaje Global A+Extra": d.resultadoGlobalAExtralaboral?.puntajeGlobal ?? "",
-        "Nivel Global": d.resultadoGlobalAExtralaboral?.nivelGlobal ?? "",
-      }),
-      ...(tab === "estres" && {
-        "Puntaje Estrés": d.resultadoEstres?.puntajeTransformado ?? "",
-        "Nivel Estrés": d.resultadoEstres?.nivel ?? "",
-      }),
-      Fecha: d.fecha ? new Date(d.fecha).toLocaleString() : "",
-    }));
-
+    const filas = gatherFlatResults();
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(filas);
     XLSX.utils.book_append_sheet(wb, ws, "Resultados");
-    XLSX.writeFile(wb, `resultados_${tab}.xlsx`);
+    XLSX.writeFile(wb, "resultados.xlsx");
   };
 
   // ---- Exportar a PDF ----
   const handleExportPDF = async () => {
-    if (pdfRef.current) {
-      await exportElementToPDF(pdfRef.current, `resultados_${tab}.pdf`);
-    }
+    const filas = gatherFlatResults();
+    if (filas.length === 0) return;
+    const headers = Object.keys(filas[0]);
+    const table = document.createElement("table");
+    table.style.visibility = "hidden";
+    const thead = table.createTHead();
+    const headRow = thead.insertRow();
+    headers.forEach((h) => {
+      const th = document.createElement("th");
+      th.textContent = h;
+      headRow.appendChild(th);
+    });
+    const tbody = table.createTBody();
+    filas.forEach((fila) => {
+      const tr = tbody.insertRow();
+      headers.forEach((h) => {
+        const td = tr.insertCell();
+        td.textContent = fila[h] ?? "";
+      });
+    });
+    document.body.appendChild(table);
+    await exportElementToPDF(table, "resultados.pdf");
+    table.remove();
   };
 
   // ---- Render tablas individuales (solo para psicóloga) ----
@@ -394,7 +370,6 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   // ---- Pestañas ----
   return (
     <div className="max-w-6xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-xl mt-8 flex flex-col gap-8">
-      <div ref={pdfRef}>
         <h2 className="text-2xl md:text-3xl font-bold text-cogent-blue mb-2 md:mb-4">Dashboard de Resultados</h2>
 
         {/* Filtro empresa, solo para psicóloga */}
