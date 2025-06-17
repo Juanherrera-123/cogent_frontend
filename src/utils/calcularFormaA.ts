@@ -2,75 +2,102 @@ import { esquemaFormaA } from "../data/esquemaFormaA";
 import { factoresFormaA } from "../data/factoresFormaA";
 import { baremosFormaA } from "../data/baremosFormaA";
 
-type Respuestas = string[]; // ["Siempre", "Casi siempre", ...] con el orden correcto
+type Respuestas = string[];
 
-// Esquema de puntaje
-const PUNTAJE_DIRECTO = { "Siempre": 0, "Casi siempre": 1, "Algunas veces": 2, "Casi nunca": 3, "Nunca": 4 };
-const PUNTAJE_INVERSO = { "Siempre": 4, "Casi siempre": 3, "Algunas veces": 2, "Casi nunca": 1, "Nunca": 0 };
+// Preguntas con esquema directo e inverso
+const directas = new Set(
+  esquemaFormaA.filter(q => q.esquema === "directo").map(q => q.numero)
+);
+const inversas = new Set(
+  esquemaFormaA.filter(q => q.esquema === "inverso").map(q => q.numero)
+);
 
-// Función robusta de calificación
-export function calcularFormaA(respuestas: Respuestas) {
-  // 1. Mapea cada respuesta con su pregunta correspondiente en el esquema
-  //    El esquema debe estar en orden: [ {numero, dominio, dimension, esquema}, ... ]
-  let puntajes: { num: number, valor: number, dominio: string, dimension: string }[] = [];
-
-  for (let i = 0; i < respuestas.length; i++) {
-    const pregunta = esquemaFormaA[i];
-    if (!pregunta || !pregunta.dominio || !pregunta.dimension || !pregunta.esquema) {
-      // Omite preguntas no calificables (como las de filtro)
-      continue;
-    }
-    const resp = respuestas[i];
-    let valor = 0;
-    if (pregunta.esquema === "directo") {
-      valor = PUNTAJE_DIRECTO[resp] ?? 0;
-    } else if (pregunta.esquema === "inverso") {
-      valor = PUNTAJE_INVERSO[resp] ?? 0;
-    } else {
-      console.warn(`Pregunta ${pregunta.numero} no tiene esquema válido`);
-    }
-    puntajes.push({ num: pregunta.numero, valor, dominio: pregunta.dominio, dimension: pregunta.dimension });
+// Traduce la respuesta a puntaje según su esquema
+function respuestaAPuntaje(pregunta: number, respuesta: string) {
+  const resp = respuesta.toLowerCase().trim();
+  if (directas.has(pregunta)) {
+    if (resp === "siempre") return 0;
+    if (resp === "casi siempre") return 1;
+    if (resp === "algunas veces") return 2;
+    if (resp === "casi nunca") return 3;
+    if (resp === "nunca") return 4;
   }
+  if (inversas.has(pregunta)) {
+    if (resp === "siempre") return 4;
+    if (resp === "casi siempre") return 3;
+    if (resp === "algunas veces") return 2;
+    if (resp === "casi nunca") return 1;
+    if (resp === "nunca") return 0;
+  }
+  return 0;
+}
 
-  // 2. Agrupa y calcula por dimensión
-  let resultadoDimensiones: Record<string, any> = {};
-  Object.entries(factoresFormaA.dimensiones).forEach(([dimension, { preguntas, factor }]) => {
-    const puntos = puntajes.filter(p => preguntas.includes(p.num)).map(p => p.valor);
-    const suma = puntos.reduce((a, b) => a + b, 0);
-    const transformado = (suma * 100) / factor;
-    const baremo = baremosFormaA.dimensiones[dimension]?.find(b => transformado >= b.min && transformado <= b.max);
-    resultadoDimensiones[dimension] = {
-      suma,
-      transformado: Number(transformado.toFixed(1)),
-      nivel: baremo?.nivel || "No clasificado"
-    };
+// Agrupa preguntas por la clave indicada
+function agruparPor(arr: typeof esquemaFormaA, clave: "dimension" | "dominio") {
+  const grupos: { [key: string]: number[] } = {};
+  arr.forEach(q => {
+    const key = q[clave];
+    if (!key) return;
+    if (!grupos[key]) grupos[key] = [];
+    grupos[key].push(q.numero);
+  });
+  return grupos;
+}
+
+export function calcularFormaA(respuestas: Respuestas) {
+  const mapRespuestas: { [num: number]: string } = {};
+  respuestas.forEach((resp, idx) => {
+    mapRespuestas[idx + 1] = resp;
   });
 
-  // 3. Agrupa y calcula por dominio
-  let resultadoDominios: Record<string, any> = {};
-  Object.entries(factoresFormaA.dominios).forEach(([dominio, { preguntas, factor }]) => {
-    const puntos = puntajes.filter(p => preguntas.includes(p.num)).map(p => p.valor);
-    const suma = puntos.reduce((a, b) => a + b, 0);
-    const transformado = (suma * 100) / factor;
-    const baremo = baremosFormaA.dominios[dominio]?.find(b => transformado >= b.min && transformado <= b.max);
-    resultadoDominios[dominio] = {
-      suma,
-      transformado: Number(transformado.toFixed(1)),
-      nivel: baremo?.nivel || "No clasificado"
-    };
+  const porDimension = agruparPor(esquemaFormaA, "dimension");
+  const porDominio = agruparPor(esquemaFormaA, "dominio");
+
+  const resultadoDimensiones: Record<string, { suma: number; transformado: number; nivel: string }> = {};
+  Object.entries(porDimension).forEach(([dimension, preguntas]) => {
+    const suma = preguntas.reduce(
+      (acc, num) => acc + respuestaAPuntaje(num, mapRespuestas[num] || ""),
+      0
+    );
+    const factor = factoresFormaA.dimensiones[dimension] ?? preguntas.length;
+    const transformado = Math.round(((suma * 100) / factor) * 10) / 10;
+    const baremo = baremosFormaA.dimensiones[dimension] || [];
+    const nivel =
+      baremo.find(b => transformado >= b.min && transformado <= b.max)?.nivel ||
+      "No clasificado";
+    resultadoDimensiones[dimension] = { suma, transformado, nivel };
   });
 
-  // 4. Total global
-  const total = puntajes.reduce((a, b) => a + b.valor, 0);
-  const totalTransformado = (total * 100) / factoresFormaA.total;
-  const baremoTotal = baremosFormaA.total.find(b => totalTransformado >= b.min && totalTransformado <= b.max);
+  const resultadoDominios: Record<string, { suma: number; transformado: number; nivel: string }> = {};
+  Object.entries(porDominio).forEach(([dominio, preguntas]) => {
+    const suma = preguntas.reduce(
+      (acc, num) => acc + respuestaAPuntaje(num, mapRespuestas[num] || ""),
+      0
+    );
+    const factor = factoresFormaA.dominios[dominio] ?? preguntas.length;
+    const transformado = Math.round(((suma * 100) / factor) * 10) / 10;
+    const baremo = baremosFormaA.dominios[dominio] || [];
+    const nivel =
+      baremo.find(b => transformado >= b.min && transformado <= b.max)?.nivel ||
+      "No clasificado";
+    resultadoDominios[dominio] = { suma, transformado, nivel };
+  });
+
+  const sumaTotal = Object.keys(mapRespuestas).reduce(
+    (acc, numStr) => acc + respuestaAPuntaje(Number(numStr), mapRespuestas[Number(numStr)] || ""),
+    0
+  );
+  const totalTransformado = Math.round((sumaTotal * 100 / factoresFormaA.total) * 10) / 10;
+  const baremoTotal = baremosFormaA.total.find(
+    b => totalTransformado >= b.min && totalTransformado <= b.max
+  );
 
   return {
     dimensiones: resultadoDimensiones,
     dominios: resultadoDominios,
     total: {
-      suma: total,
-      transformado: Number(totalTransformado.toFixed(1)),
+      suma: sumaTotal,
+      transformado: totalTransformado,
       nivel: baremoTotal?.nivel || "No clasificado"
     }
   };
