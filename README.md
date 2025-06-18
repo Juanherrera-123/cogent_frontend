@@ -61,7 +61,8 @@ npm run lint
 
 ## Sample credentials
 
-Default demo accounts are defined in `src/config/credentials.json`:
+Default demo accounts are defined in `src/config/credentials.json`.
+You can adjust or add accounts by editing this file:
 
 - **Psicóloga**: `psicologa` / `cogent2024`
 - **Sonria**: `sonria` / `sonria123`
