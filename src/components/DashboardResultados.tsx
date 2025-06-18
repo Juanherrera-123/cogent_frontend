@@ -170,7 +170,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     nombre: string,
     valor: number,
     origen: "formaA" | "formaB" | "extra",
-    tipo: "dimensiones" | "dominios"
+    tipo: "dimensiones" | "dominios",
+    datos?: any[]
   ) {
     let baremo: { nivel: string; min: number; max: number }[] = [];
     if (origen === "formaA") {
@@ -186,6 +187,30 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
         baremo = (baremosFormaB.dominio as any)[nombre] || [];
       }
     } else if (origen === "extra") {
+      if (datos && datos.length) {
+        const dim = dimensionesExtralaboral.find((d) => d.nombre === nombre);
+        if (dim) {
+          const indices = datos
+            .map((d) => {
+              const form = d.tipo;
+              let seccion = d.resultadoExtralaboral?.dimensiones?.[nombre];
+              if (Array.isArray(d.resultadoExtralaboral?.dimensiones)) {
+                seccion = d.resultadoExtralaboral.dimensiones.find((x: any) => x.nombre === nombre);
+              }
+              const puntaje = seccion?.transformado ?? seccion?.puntajeTransformado;
+              if (typeof puntaje !== "number") return undefined;
+              const lista = form === "B" ? dim.baremosB : dim.baremosA;
+              const b = lista.find((x) => puntaje >= x.min && puntaje <= x.max);
+              const nivel = b?.nivel ? (b.nivel === "Sin riesgo" ? "Riesgo muy bajo" : b.nivel) : undefined;
+              return nivel ? nivelesRiesgo.indexOf(nivel) : undefined;
+            })
+            .filter((x) => typeof x === "number") as number[];
+          if (indices.length) {
+            const idx = Math.round(indices.reduce((a, b) => a + b, 0) / indices.length);
+            return nivelesRiesgo[idx] || "No clasificado";
+          }
+        }
+      }
       const dim = dimensionesExtralaboral.find((d) => d.nombre === nombre);
       baremo = dim?.baremosA || [];
     }
@@ -235,7 +260,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
         ? valores.reduce((a, b) => a + b, 0) / valores.length
         : 0;
       const promedioRedondeado = Math.round(promedio * 10) / 10;
-      const nivel = nivelPromedio(nombre, promedioRedondeado, origen, subkey);
+      const nivel = nivelPromedio(nombre, promedioRedondeado, origen, subkey, datos);
       const indice = nivelesRiesgo.indexOf(nivel);
       resultado.push({ nombre, promedio: promedioRedondeado, nivel, indice });
     });
