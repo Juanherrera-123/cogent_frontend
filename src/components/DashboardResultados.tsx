@@ -298,12 +298,14 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   const fichaConteosB: Record<string, any[]> = {};
   const fichaConteosExtra: Record<string, any[]> = {};
   const fichaConteosEstres: Record<string, any[]> = {};
+  const fichaConteosGlobal: Record<string, any[]> = {};
 
   categoriasFicha.forEach((cat) => {
     fichaConteosA[cat.key] = conteosPorFicha(datosA, cat.key);
     fichaConteosB[cat.key] = conteosPorFicha(datosB, cat.key);
     fichaConteosExtra[cat.key] = conteosPorFicha(datosExtra, cat.key);
     fichaConteosEstres[cat.key] = conteosPorFicha(datosEstres, cat.key);
+    fichaConteosGlobal[cat.key] = conteosPorFicha(datosMostrados, cat.key);
   });
 
 
@@ -735,19 +737,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
                 </TabsList>
                 {categoriasFicha.map((c) => (
                   <TabsContent key={c.key} value={c.key}>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      {datosA.length > 0 && (
-                        <GraficaBarraCategorias datos={fichaConteosA[c.key]} titulo={`Forma A - ${c.label}`} chartType={chartType} />
-                      )}
-                      {datosB.length > 0 && (
-                        <GraficaBarraCategorias datos={fichaConteosB[c.key]} titulo={`Forma B - ${c.label}`} chartType={chartType} />
-                      )}
-                      {datosExtra.length > 0 && (
-                        <GraficaBarraCategorias datos={fichaConteosExtra[c.key]} titulo={`Extralaboral - ${c.label}`} chartType={chartType} />
-                      )}
-                      {datosEstres.length > 0 && (
-                        <GraficaBarraCategorias datos={fichaConteosEstres[c.key]} titulo={`Estrés - ${c.label}`} chartType={chartType} />
-                      )}
+                    <div className="grid gap-4">
+                      <GraficaBarraCategorias datos={fichaConteosGlobal[c.key]} titulo={c.label} chartType={chartType} />
                     </div>
                   </TabsContent>
                 ))}
