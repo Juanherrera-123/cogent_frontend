@@ -461,7 +461,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
   // ---- Pestañas ----
   return (
     <div className="max-w-6xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-xl mt-8 flex flex-col gap-8">
-        <h2 className="text-2xl md:text-3xl font-bold text-cogent-blue mb-2 md:mb-4">Dashboard de Resultados</h2>
+        <h2 className="text-2xl md:text-3xl font-bold text-primary-main mb-2 md:mb-4">Dashboard de Resultados</h2>
 
         {/* Filtro empresa, solo para psicóloga */}
         {!empresaFiltro && (
@@ -776,7 +776,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
           ) : (
             <div className="overflow-auto max-h-96">
               <table className="w-full text-xs border mt-2">
-                <thead className="bg-cogent-blue text-white">
+                <thead className="bg-primary-main text-white">
                   <tr>
                     {allHeaders.map((h, idx) => (
                       <th key={idx} className="px-2 py-1">
@@ -808,7 +808,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
               <>
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs border mt-2">
-                    <thead className="bg-cogent-blue text-white">
+                    <thead className="bg-primary-main text-white">
                       <tr>
                         <th></th>
                         <th>#</th>
@@ -861,7 +861,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         {onBack && (
           <button
             onClick={onBack}
-            className="bg-gray-300 text-cogent-navy px-4 py-2 rounded-lg font-bold shadow hover:bg-gray-400"
+            className="bg-gray-300 text-text-main px-4 py-2 rounded-lg font-bold shadow hover:bg-gray-400"
           >
             Volver al inicio
           </button>
@@ -870,13 +870,13 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
       <div className="flex justify-end gap-2">
         <button
           onClick={handleExportar}
-          className="bg-cogent-blue text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-cogent-sky"
+          className="bg-primary-main text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-primary-light"
         >
           Descargar Excel
         </button>
         <button
           onClick={handleExportPDF}
-          className="bg-cogent-blue text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-cogent-sky"
+          className="bg-primary-main text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-primary-light"
         >
           Descargar PDF
         </button>

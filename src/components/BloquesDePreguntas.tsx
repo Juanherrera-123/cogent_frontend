@@ -109,7 +109,7 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
   // Render
   return (
     <div className="max-w-2xl bg-white rounded-2xl shadow-xl p-8 flex flex-col gap-4">
-      <h3 className="font-bold text-cogent-blue text-xl mb-2">
+      <h3 className="font-bold text-primary-main text-xl mb-2">
         {bloque.enunciado}
       </h3>
       {preguntasBloque.map((preg, i) => {
@@ -163,6 +163,7 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
       <div className="flex gap-4 mt-4">
         {tieneAnterior && (
           <button
+
             className="btn-secondary"
             onClick={handleRetroceder}
           >
@@ -170,6 +171,7 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
           </button>
         )}
         <button
+
           className="btn-primary"
           onClick={handleSiguiente}
         >

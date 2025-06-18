@@ -7,7 +7,7 @@ export default function TablaIndividual({ datos, tipo }: { datos: any[]; tipo: s
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-xs border mt-2">
-        <thead className="bg-cogent-blue text-white">
+        <thead className="bg-primary-main text-white">
           <tr>
             <th>#</th>
             <th>Empresa</th>

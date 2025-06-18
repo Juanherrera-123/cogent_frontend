@@ -3,7 +3,7 @@ import React from "react";
 export default function Consentimiento({ onAceptar }: { onAceptar: () => void }) {
   return (
     <div className="max-w-xl bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center">
-      <h1 className="text-3xl font-display text-cogent-blue mb-4">Consentimiento Informado</h1>
+      <h1 className="text-3xl font-display text-primary-main mb-4">Consentimiento Informado</h1>
       <div className="text-base font-sans text-gray-800 mb-6 text-justify">
         <p>
           Usted ha sido invitado a participar en la <b>Batería de Riesgo Psicosocial COGENT</b>.
@@ -19,7 +19,9 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
         </p>
       </div>
       <button
+
         className="btn-primary mt-4 text-lg"
+
         onClick={onAceptar}
       >
         Acepto y deseo continuar

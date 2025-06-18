@@ -64,7 +64,7 @@ export default function Encuesta({ tipo = "A" }: { tipo?: TipoFormulario }) {
   // Render
   return (
     <div className="max-w-xl mx-auto my-10">
-      <h2 className="text-2xl font-display text-cogent-blue mb-2">
+      <h2 className="text-2xl font-display text-primary-main mb-2">
         {bloque.enunciado}
       </h2>
 
@@ -75,15 +75,15 @@ export default function Encuesta({ tipo = "A" }: { tipo?: TipoFormulario }) {
       {filtroBloque && (
         <div className="my-6">
           <p className="font-bold">{filtroBloque.texto}</p>
-          <button onClick={() => responderFiltro(filtroBloque.filtro, true)} className="mr-2 bg-cogent-blue text-white p-2 rounded">Sí</button>
-          <button onClick={() => responderFiltro(filtroBloque.filtro, false)} className="bg-cogent-blue text-white p-2 rounded">No</button>
+          <button onClick={() => responderFiltro(filtroBloque.filtro, true)} className="mr-2 bg-primary-main text-white p-2 rounded">Sí</button>
+          <button onClick={() => responderFiltro(filtroBloque.filtro, false)} className="bg-primary-main text-white p-2 rounded">No</button>
         </div>
       )}
 
       {/* Botón siguiente solo si no hay filtro pendiente */}
       {!filtroBloque && (
         <button
-          className="mt-4 bg-cogent-sky text-white p-2 px-4 rounded"
+          className="mt-4 bg-primary-light text-white p-2 px-4 rounded"
           onClick={siguiente}
         >
           Siguiente bloque

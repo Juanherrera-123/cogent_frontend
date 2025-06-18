@@ -29,6 +29,11 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem
+    --primary-gradient-from: 207 90% 77%;
+    --primary-gradient-to: 198 61% 39%;
+    --primary-dark: 227 49% 21%;
+    --text-main: 227 49% 21%;
+    --background-main: 216 33% 97%;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -55,6 +60,11 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%
+    --primary-gradient-from: 207 90% 77%;
+    --primary-gradient-to: 198 61% 39%;
+    --primary-dark: 227 49% 21%;
+    --text-main: 0 0% 98%;
+    --background-main: 0 0% 3.9%;
   }
 }
 
@@ -68,6 +78,7 @@
 }
 
 @layer components {
+
   .btn-primary {
     @apply font-bold text-white shadow px-6 py-3 rounded-[16px];
     background-image: linear-gradient(to right, var(--primary-gradient-from), var(--primary-gradient-to));
@@ -77,5 +88,6 @@
     @apply font-bold shadow px-6 py-3 rounded-[16px];
     background-color: #E6EAF0;
     color: var(--text-main);
+
   }
 }

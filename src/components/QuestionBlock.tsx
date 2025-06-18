@@ -51,11 +51,11 @@ export default function QuestionBlock({ onNext }: { onNext: () => void }) {
 
   return (
     <div className="bg-white shadow-xl rounded-2xl p-8 max-w-xl mx-auto mt-10">
-      <h2 className="font-display text-2xl text-cogent-navy mb-6">Bloque 1 de preguntas</h2>
+      <h2 className="font-display text-2xl text-text-main mb-6">Bloque 1 de preguntas</h2>
       <form>
         {questions.map((q, idx) => (
           <div key={q.id} className="mb-6">
-            <p className="font-sans text-cogent-navy mb-2">{q.text}</p>
+            <p className="font-sans text-text-main mb-2">{q.text}</p>
             <div className="flex gap-4">
               {options.map((opt) => (
                 <label key={opt.value} className="font-sans">
@@ -75,7 +75,7 @@ export default function QuestionBlock({ onNext }: { onNext: () => void }) {
       </form>
       <button
         className={`mt-4 px-6 py-2 rounded-xl text-white font-bold ${
-          allAnswered ? "bg-cogent-blue hover:bg-cogent-deep" : "bg-gray-300 cursor-not-allowed"
+          allAnswered ? "bg-primary-main hover:bg-primary-dark" : "bg-gray-300 cursor-not-allowed"
         }`}
         disabled={!allAnswered}
         onClick={onNext}
