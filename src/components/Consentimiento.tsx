@@ -20,7 +20,7 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
       </div>
       <button
 
-        className="btn-primary mt-4 text-lg"
+        className="bg-primary-main text-white rounded-lg px-8 py-3 text-lg font-bold mt-4 shadow-lg hover:bg-primary-light transition"
 
         onClick={onAceptar}
       >

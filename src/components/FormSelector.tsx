@@ -7,7 +7,7 @@ export default function FormSelector({ onSelect }: { onSelect: (form: "A" | "B")
       <div className="flex flex-col gap-4">
         <button
 
-          className="btn-primary"
+          className="bg-primary-main hover:bg-primary-dark text-white font-bold py-3 rounded-xl"
 
           onClick={() => onSelect("A")}
         >
@@ -15,7 +15,7 @@ export default function FormSelector({ onSelect }: { onSelect: (form: "A" | "B")
         </button>
         <button
 
-          className="btn-primary"
+          className="bg-primary-main hover:bg-primary-dark text-white font-bold py-3 rounded-xl"
 
           onClick={() => onSelect("B")}
         >

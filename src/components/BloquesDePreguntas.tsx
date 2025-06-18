@@ -164,7 +164,8 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
         {tieneAnterior && (
           <button
 
-            className="btn-secondary"
+            className="bg-gray-300 text-text-main px-8 py-2 rounded-lg font-bold shadow hover:bg-gray-400"
+
             onClick={handleRetroceder}
           >
             Retroceder
@@ -172,7 +173,8 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
         )}
         <button
 
-          className="btn-primary"
+          className="bg-primary-main text-white px-8 py-2 rounded-lg font-bold shadow hover:bg-primary-light"
+
           onClick={handleSiguiente}
         >
           {bloqueActual === bloques.length - 1 ? "Finalizar" : "Siguiente"}

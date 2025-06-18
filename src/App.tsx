@@ -144,7 +144,9 @@ export default function App() {
           Iniciar nueva encuesta
         </button>
         <button
+
           className="bg-cogent-gray text-primary-main font-bold px-6 py-3 rounded-xl shadow hover:bg-primary-main/10"
+
           onClick={() => setStep("login")}
         >
           Ver resultados
@@ -265,7 +267,7 @@ export default function App() {
       )}
       {step === "final" && (
 
-        <div className="p-8 bg-white rounded-xl shadow-md text-[var(--text-main)] font-bold text-2xl flex flex-col items-center gap-4">
+        <div className="p-8 bg-white rounded-xl shadow-md text-text-main font-bold text-2xl flex flex-col items-center gap-4">
 
           <div>
             ¡Encuesta completada!<br />

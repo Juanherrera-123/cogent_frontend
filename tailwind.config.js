@@ -15,11 +15,7 @@ module.exports = {
                         'primary-gradient-to': '#277DA1',
                         'text-main': '#1B264F',
                         'background-main': '#F5F7FA',
-                        'cogent-deep': '#1B264F',
-                        'cogent-navy': '#1B264F',
-                        'cogent-black': '#1B264F',
-                        'cogent-gray-light': '#F5F7FA',
-                        'cogent-gray': '#ADB5BD',
+
                         success: '#22C55E',
                         warning: '#EAB308',
                         orange: '#FB923C',

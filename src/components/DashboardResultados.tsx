@@ -461,8 +461,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
   // ---- Pestañas ----
   return (
 
-    <div className="max-w-6xl mx-auto bg-[var(--background-main)] p-6 md:p-8 rounded-2xl shadow-xl mt-8 flex flex-col gap-8">
-        <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-main)] mb-2 md:mb-4">Dashboard de Resultados</h2>
+    <div className="max-w-6xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-xl mt-8 flex flex-col gap-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-primary-main mb-2 md:mb-4">Dashboard de Resultados</h2>
 
 
         {/* Filtro empresa, solo para psicóloga */}
