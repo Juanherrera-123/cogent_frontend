@@ -35,9 +35,8 @@ const tipoSalario = [
 ];
 
 export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Props) {
-  const [empresas, setEmpresas] = useState<string[]>(empresasIniciales);
+  const empresas = empresasIniciales;
   const [empresa, setEmpresa] = useState("");
-  const [nuevaEmpresa, setNuevaEmpresa] = useState("");
 
   const [datos, setDatos] = useState<any>({
     nombre: "",
@@ -67,15 +66,6 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
   });
 
   const [error, setError] = useState<string>("");
-
-  const handleAgregarEmpresa = () => {
-    if (nuevaEmpresa.trim() && !empresas.includes(nuevaEmpresa.trim())) {
-      setEmpresas([...empresas, nuevaEmpresa.trim()]);
-      setEmpresa(nuevaEmpresa.trim());
-      setNuevaEmpresa("");
-      setDatos({ ...datos, empresa: nuevaEmpresa.trim() });
-    }
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type, checked } = e.target;
@@ -134,23 +124,6 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
             <option key={i} value={em}>{em}</option>
           ))}
         </select>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            placeholder="Agregar nueva empresa"
-            className="input flex-1"
-            value={nuevaEmpresa}
-            onChange={(e) => setNuevaEmpresa(e.target.value)}
-          />
-          <button
-            type="button"
-            className="bg-cogent-blue text-white px-3 rounded-lg shadow hover:bg-cogent-sky"
-            onClick={handleAgregarEmpresa}
-            disabled={!nuevaEmpresa.trim()}
-          >
-            +
-          </button>
-        </div>
       </div>
       {/* Nombre y cédula */}
       <div className="flex gap-4">

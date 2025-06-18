@@ -5,6 +5,7 @@ import FichaDatosGenerales from "./components/FichaDatosGenerales";
 import BloquesDePreguntas from "./components/BloquesDePreguntas";
 import DashboardResultados from "./components/DashboardResultados";
 import Login from "./components/Login";
+import credencialesBase from "./config/credentials.json";
 import {
   bloquesFormaA,
   bloquesFormaB,
@@ -40,7 +41,14 @@ export default function App() {
   const [formType, setFormType] = useState<"A" | "B" | null>(null);
   const [ficha, setFicha] = useState<any>(null);
 
-  const empresasIniciales = ["Sonria", "Aeropuerto El Dorado"];
+  const [empresasIniciales, setEmpresasIniciales] = useState<string[]>(() => {
+    const guardadas = JSON.parse(localStorage.getItem("empresasCogent") || "[]");
+    return guardadas.length ? guardadas : ["Sonria", "Aeropuerto El Dorado"];
+  });
+  const [credenciales, setCredenciales] = useState<any[]>(() => {
+    const extras = JSON.parse(localStorage.getItem("credencialesCogent") || "[]");
+    return [...credencialesBase, ...extras];
+  });
 
   // Para guardar todas las respuestas por sección
   const [respuestas, setRespuestas] = useState<any>({});
@@ -54,6 +62,21 @@ export default function App() {
 
   // Manejo de login (muy básico)
   const [rol, setRol] = useState<RolUsuario>("ninguno");
+
+  const agregarEmpresa = (
+    nombre: string,
+    usuario: string,
+    password: string
+  ) => {
+    const nuevasEmpresas = [...empresasIniciales, nombre];
+    setEmpresasIniciales(nuevasEmpresas);
+    localStorage.setItem("empresasCogent", JSON.stringify(nuevasEmpresas));
+
+    const extras = JSON.parse(localStorage.getItem("credencialesCogent") || "[]");
+    extras.push({ usuario, password, rol: "dueno", empresa: nombre });
+    localStorage.setItem("credencialesCogent", JSON.stringify(extras));
+    setCredenciales([...credencialesBase, ...extras]);
+  };
 
   // Cuando finaliza la encuesta (luego del bloque de estrés)
   useEffect(() => {
@@ -133,6 +156,7 @@ export default function App() {
   if (step === "login") {
     return (
       <Login
+        usuarios={credenciales}
         onLogin={(nuevoRol) => {
           setRol(nuevoRol as RolUsuario);
           setStep("dashboard");
@@ -147,6 +171,9 @@ export default function App() {
     return (
       <DashboardResultados
         soloGenerales={rol === "dueno"}
+        empresas={empresasIniciales}
+        credenciales={credenciales.filter((c) => c.rol === "dueno")}
+        onAgregarEmpresa={agregarEmpresa}
         onBack={() => setStep("inicio")}
       />
     );

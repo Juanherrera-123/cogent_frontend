@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import usuarios from "../config/credentials.json";
+type Usuario = { usuario: string; password: string; rol: string; empresa?: string };
 
 type Props = {
+  usuarios: Usuario[];
   onLogin: (rol: "psicologa" | "dueno", empresa?: string) => void;
   onCancel?: () => void;
 };
 
-export default function Login({ onLogin, onCancel }: Props) {
+export default function Login({ usuarios, onLogin, onCancel }: Props) {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
