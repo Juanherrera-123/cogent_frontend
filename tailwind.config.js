@@ -65,10 +65,10 @@ module.exports = {
   				'5': 'hsl(var(--chart-5))'
   			}
   		},
-  		fontFamily: {
-                        display: ['Inter', 'Nunito Sans', 'sans-serif'],
-                        sans: ['Roboto', 'sans-serif']
-  		},
+                fontFamily: {
+                        display: ['Montserrat', 'Inter', 'Nunito Sans', 'sans-serif'],
+                        sans: ['Montserrat', 'Roboto', 'sans-serif']
+                },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
