@@ -86,10 +86,24 @@ const nivelesEstres = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto"];
 const nivelesExtra = nivelesRiesgo;
 const nivelesForma = nivelesRiesgo;
 
+const categoriasFicha = [
+  { key: "sexo", label: "Sexo biológico" },
+  { key: "estadoCivil", label: "Estado civil" },
+  { key: "estudios", label: "Nivel de estudio" },
+  { key: "estrato", label: "Estrato" },
+  { key: "vivienda", label: "Vivienda" },
+  { key: "tipoCargo", label: "Tipo de cargo" },
+  { key: "tipoContrato", label: "Tipo de contrato" },
+  { key: "tipoSalario", label: "Tipo de salario" },
+  { key: "horasDiarias", label: "Horas diarias establecidas" },
+] as const;
+
 export default function DashboardResultados({ soloGenerales, empresaFiltro, onBack }: Props) {
   const [datos, setDatos] = useState<any[]>([]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState(empresaFiltro || "todas");
-  const [tab, setTab] = useState("formaA");
+  const [tab, setTab] = useState("general");
+  const [tabGeneral, setTabGeneral] = useState("resumen");
+  const [categoriaFicha, setCategoriaFicha] = useState(categoriasFicha[0].key);
   const [tabIntra, setTabIntra] = useState("global"); // Para sub-tabs de formaA/B
 
   const [tabExtra, setTabExtra] = useState("global");
@@ -261,11 +275,77 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     "extra"
   );
 
+  function promediosPorFicha(
+    datos: any[],
+    keyResultado: string,
+    keyFicha: string,
+    niveles: string[]
+  ) {
+    const grupos = Array.from(
+      new Set(datos.map((d) => d.ficha?.[keyFicha] ?? "Sin dato"))
+    );
+    const resultado: { nombre: string; indice: number; nivel: string }[] = [];
+    grupos.forEach((valor) => {
+      const indices = datos
+        .filter((d) => (d.ficha?.[keyFicha] ?? "Sin dato") === valor)
+        .map((d) => {
+          const r = d[keyResultado];
+          const nivelRes =
+            r?.total?.nivel ?? r?.nivelTotal ?? r?.nivelGlobal ?? r?.nivel;
+          const nivel =
+            nivelRes === "Sin riesgo" ? "Riesgo muy bajo" : nivelRes ?? "";
+          return niveles.indexOf(nivel);
+        })
+        .filter((n) => n >= 0);
+      const promedio =
+        indices.length > 0
+          ? Math.round((indices.reduce((a, b) => a + b, 0) / indices.length) * 10) /
+            10
+          : 0;
+      const nivel = niveles[Math.round(promedio)] ?? "No clasificado";
+      resultado.push({ nombre: valor, indice: promedio, nivel });
+    });
+    return resultado;
+  }
+
+  const fichaPromediosA: Record<string, any[]> = {};
+  const fichaPromediosB: Record<string, any[]> = {};
+  const fichaPromediosExtra: Record<string, any[]> = {};
+  const fichaPromediosEstres: Record<string, any[]> = {};
+
+  categoriasFicha.forEach((cat) => {
+    fichaPromediosA[cat.key] = promediosPorFicha(
+      datosA,
+      "resultadoFormaA",
+      cat.key,
+      nivelesForma
+    );
+    fichaPromediosB[cat.key] = promediosPorFicha(
+      datosB,
+      "resultadoFormaB",
+      cat.key,
+      nivelesForma
+    );
+    fichaPromediosExtra[cat.key] = promediosPorFicha(
+      datosExtra,
+      "resultadoExtralaboral",
+      cat.key,
+      nivelesExtra
+    );
+    fichaPromediosEstres[cat.key] = promediosPorFicha(
+      datosEstres,
+      "resultadoEstres",
+      cat.key,
+      nivelesEstres
+    );
+  });
+
 
   // ---- Exportar a Excel ----
   const handleExportar = () => {
     let datosExportar: any[] = [];
-    if (tab === "formaA") datosExportar = datosA;
+    if (tab === "general") datosExportar = datosMostrados;
+    else if (tab === "formaA") datosExportar = datosA;
     else if (tab === "formaB") datosExportar = datosB;
     else if (tab === "extralaboral") datosExportar = datosExtra;
     else if (tab === "globalExtra") datosExportar =
@@ -607,13 +687,67 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
 
       {/* Tabs/Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="w-full">
-        <TabsList className="mb-6 w-full flex flex-wrap gap-2">
-          <TabsTrigger value="formaA">Forma A (Intralaboral)</TabsTrigger>
+      <TabsList className="mb-6 w-full flex flex-wrap gap-2">
+        <TabsTrigger value="general">General</TabsTrigger>
+        <TabsTrigger value="formaA">Forma A (Intralaboral)</TabsTrigger>
           <TabsTrigger value="formaB">Forma B (Intralaboral)</TabsTrigger>
           <TabsTrigger value="extralaboral">Extralaboral</TabsTrigger>
           <TabsTrigger value="globalExtra">Global Extra</TabsTrigger>
           <TabsTrigger value="estres">Estrés</TabsTrigger>
         </TabsList>
+
+        {/* ---- GENERAL ---- */}
+        <TabsContent value="general">
+          <Tabs value={tabGeneral} onValueChange={setTabGeneral} className="w-full">
+            <TabsList className="mb-4 w-full flex gap-2">
+              <TabsTrigger value="resumen">Resultados</TabsTrigger>
+              <TabsTrigger value="ficha">Ficha técnica</TabsTrigger>
+            </TabsList>
+            <TabsContent value="resumen">
+              <div className="grid md:grid-cols-2 gap-4">
+                {datosA.length > 0 && (
+                  <GraficaBarraSimple resumen={resumenA} titulo="Niveles de Forma A" chartType={chartType} />
+                )}
+                {datosB.length > 0 && (
+                  <GraficaBarraSimple resumen={resumenB} titulo="Niveles de Forma B" chartType={chartType} />
+                )}
+                {datosExtra.length > 0 && (
+                  <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" chartType={chartType} />
+                )}
+                {datosEstres.length > 0 && (
+                  <GraficaBarraSimple resumen={resumenEstres} titulo="Niveles de Estrés" chartType={chartType} />
+                )}
+              </div>
+            </TabsContent>
+            <TabsContent value="ficha">
+              <Tabs value={categoriaFicha} onValueChange={setCategoriaFicha} className="w-full">
+                <TabsList className="mb-4 w-full flex gap-2 overflow-x-auto">
+                  {categoriasFicha.map((c) => (
+                    <TabsTrigger key={c.key} value={c.key}>{c.label}</TabsTrigger>
+                  ))}
+                </TabsList>
+                {categoriasFicha.map((c) => (
+                  <TabsContent key={c.key} value={c.key}>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {datosA.length > 0 && (
+                        <GraficaBarra resumen={fichaPromediosA[c.key]} titulo={`Forma A - ${c.label}`} chartType={chartType} />
+                      )}
+                      {datosB.length > 0 && (
+                        <GraficaBarra resumen={fichaPromediosB[c.key]} titulo={`Forma B - ${c.label}`} chartType={chartType} />
+                      )}
+                      {datosExtra.length > 0 && (
+                        <GraficaBarra resumen={fichaPromediosExtra[c.key]} titulo={`Extralaboral - ${c.label}`} chartType={chartType} />
+                      )}
+                      {datosEstres.length > 0 && (
+                        <GraficaBarra resumen={fichaPromediosEstres[c.key]} titulo={`Estrés - ${c.label}`} chartType={chartType} />
+                      )}
+                    </div>
+                  </TabsContent>
+                ))}
+              </Tabs>
+            </TabsContent>
+          </Tabs>
+        </TabsContent>
 
         {/* ---- FORMA A ---- */}
         <TabsContent value="formaA">
