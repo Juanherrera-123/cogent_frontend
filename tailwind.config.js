@@ -7,12 +7,17 @@ module.exports = {
   ],
   theme: {
   	extend: {
-  		colors: {
-  			'cogent-sky': '#90CAF9',
-  			'cogent-blue': '#277DA1',
-  			'cogent-deep': '#1B264F',
-  			'cogent-navy': '#1B264F',
-  			'cogent-black': '#1B264F',
+                colors: {
+                        'primary-light': '#90CAF9',
+                        'primary-main': '#277DA1',
+                        'primary-dark': '#1B264F',
+                        'primary-gradient-from': '#90CAF9',
+                        'primary-gradient-to': '#277DA1',
+                        'text-main': '#1B264F',
+                        'background-main': '#F5F7FA',
+                        'cogent-deep': '#1B264F',
+                        'cogent-navy': '#1B264F',
+                        'cogent-black': '#1B264F',
                         'cogent-gray-light': '#F5F7FA',
                         'cogent-gray': '#ADB5BD',
                         success: '#22C55E',
