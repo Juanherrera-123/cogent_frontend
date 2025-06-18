@@ -6,13 +6,17 @@ export default function FormSelector({ onSelect }: { onSelect: (form: "A" | "B")
       <h2 className="font-display text-2xl text-text-main mb-6">Selecciona el tipo de formulario</h2>
       <div className="flex flex-col gap-4">
         <button
-          className="bg-primary-main hover:bg-primary-dark text-white font-bold py-3 rounded-xl"
+
+          className="btn-primary"
+
           onClick={() => onSelect("A")}
         >
           Forma A (Jefes/profesionales/tecnicos)
         </button>
         <button
-          className="bg-primary-main hover:bg-primary-dark text-white font-bold py-3 rounded-xl"
+
+          className="btn-primary"
+
           onClick={() => onSelect("B")}
         >
           Forma B (Auxiliares/Operarios)
