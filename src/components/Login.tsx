@@ -26,10 +26,12 @@ export default function Login({ usuarios, onLogin, onCancel }: Props) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--background-main)]">
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-xl flex flex-col gap-4 min-w-[300px]">
         <img src={logoTexto} alt="COGENT" className="w-48 mx-auto" />
+
         <h2 className="text-2xl font-bold text-primary-main mb-2 text-center">Acceso a resultados</h2>
+
         <input
           className="input"
           placeholder="Usuario"
@@ -44,19 +46,21 @@ export default function Login({ usuarios, onLogin, onCancel }: Props) {
           onChange={(e) => setPassword(e.target.value)}
         />
         {error && <div className="text-red-600 text-sm">{error}</div>}
+
         <button className="bg-primary-main text-white px-4 py-2 rounded-lg font-bold shadow" type="submit">
+
           Ingresar
         </button>
         {onCancel && (
           <button
             type="button"
-            className="text-gray-500 text-sm hover:underline"
+            className="text-[var(--gray-medium)] text-sm hover:underline"
             onClick={onCancel}
           >
             Volver al inicio
           </button>
         )}
-        <div className="text-xs mt-2 text-gray-400">
+        <div className="text-xs mt-2 text-[var(--gray-medium)]">
           {usuarios.map((u) => (
             <div key={u.usuario}>
               <b>{u.rol === "psicologa" ? "Psicóloga" : u.empresa}</b>: {u.usuario}

@@ -1,7 +1,13 @@
 import React from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-const colores = ["#538DD4", "#91CF50", "#FFFF00", "#FFA400", "#FF0000"];
+const colores = [
+  "#48C774", // success
+  "#2563EB",
+  "#3B82F6",
+  "#60A5FA",
+  "#FF3B30", // error
+];
 
 export default function GraficaBarraSimple({
   resumen,
