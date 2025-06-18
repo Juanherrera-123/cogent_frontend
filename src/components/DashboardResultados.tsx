@@ -491,10 +491,6 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
       <div className="flex-1 min-h-[450px]">
         <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
         <ResponsiveContainer width="100%" height={450}>
-=======
-      <div className="flex-1 min-h-[350px]">
-        <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
-        <ResponsiveContainer width="100%" height={350}>
 
           {chartType === "pie" ? (
             <PieChart>
