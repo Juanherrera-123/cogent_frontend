@@ -1,13 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LabelList } from "recharts";
 import * as XLSX from "xlsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { gatherFlatResults } from "@/utils/gatherResults";
 import { exportElementToPDF } from "@/utils/pdfExport";
 import { dimensionesExtralaboral } from "@/data/esquemaExtralaboral";
+import { baremosFormaA } from "@/data/baremosFormaA";
+import { baremosFormaB } from "@/data/baremosFormaB";
 
-// Personaliza tus colores de barras
-const colores = ["#2a57d3", "#1db2f5", "#ffbc1c", "#f2600e", "#d7263d", "#9b59b6", "#45a049", "#0e668b", "#e67e22"];
+// Colores por nivel de riesgo
+const colorPorNivel = {
+  "Riesgo muy bajo": "#538DD4",
+  "Riesgo bajo": "#91CF50",
+  "Riesgo medio": "#FFFF00",
+  "Riesgo alto": "#FFA400",
+  "Riesgo muy alto": "#FF0000",
+} as const;
+// Array de colores para los gráficos simples
+const colores = Object.values(colorPorNivel);
+const nivelesRiesgo = Object.keys(colorPorNivel);
 
 type Props = {
   soloGenerales?: boolean;
@@ -72,8 +83,8 @@ const dimensionesB = [
 const dimensionesExtra = dimensionesExtralaboral.map((d) => d.nombre);
 
 const nivelesEstres = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto"];
-const nivelesExtra = ["Sin riesgo", "Riesgo bajo", "Riesgo medio", "Riesgo alto", "Riesgo muy alto"];
-const nivelesForma = ["Sin riesgo", "Riesgo bajo", "Riesgo medio", "Riesgo alto", "Riesgo muy alto"];
+const nivelesExtra = nivelesRiesgo;
+const nivelesForma = nivelesRiesgo;
 
 export default function DashboardResultados({ soloGenerales, empresaFiltro, onBack }: Props) {
   const [datos, setDatos] = useState<any[]>([]);
@@ -125,7 +136,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
         const r = d[key];
         const nivelRes =
           r?.total?.nivel ?? r?.nivelTotal ?? r?.nivelGlobal ?? r?.nivel;
-        return nivelRes === nivel;
+        return nivelRes === nivel || (nivelRes === "Sin riesgo" && nivel === "Riesgo muy bajo");
       }).length,
     }));
 
@@ -137,15 +148,51 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   const resumenGlobalBE = resumenNivel(datosGlobalBE, "resultadoGlobalBExtralaboral", nivelesForma);
 
   // ---- Promedios por dominio/dimensión ----
+
+  function nivelPromedio(
+    nombre: string,
+    valor: number,
+    origen: "formaA" | "formaB" | "extra",
+    tipo: "dimensiones" | "dominios"
+  ) {
+    let baremo: { nivel: string; min: number; max: number }[] = [];
+    if (origen === "formaA") {
+      if (tipo === "dimensiones") {
+        baremo = (baremosFormaA.dimensiones as any)[nombre] || [];
+      } else {
+        baremo = (baremosFormaA.dominios as any)[nombre] || [];
+      }
+    } else if (origen === "formaB") {
+      if (tipo === "dimensiones") {
+        baremo = (baremosFormaB.dimension as any)[nombre] || [];
+      } else {
+        baremo = (baremosFormaB.dominio as any)[nombre] || [];
+      }
+    } else if (origen === "extra") {
+      const dim = dimensionesExtralaboral.find((d) => d.nombre === nombre);
+      baremo = dim?.baremosA || [];
+    }
+    const nivel =
+      baremo.find((b) => valor >= b.min && valor <= b.max)?.nivel ||
+      "No clasificado";
+    return nivel === "Sin riesgo" ? "Riesgo muy bajo" : nivel;
+  }
+
   function calcularPromedios(
     datos: any[],
     key: string,
     campos: string[],
-    subkey: "dominios" | "dimensiones"
+    subkey: "dominios" | "dimensiones",
+    origen: "formaA" | "formaB" | "extra"
   ) {
     // datos: array de usuarios, cada uno con resultadoFormaA/B.dimensiones/dominios[dim]
     // = { transformado | puntajeTransformado | valor }
-    const resultado: { nombre: string; promedio: number }[] = [];
+    const resultado: {
+      nombre: string;
+      promedio: number;
+      nivel: string;
+      indice: number;
+    }[] = [];
     campos.forEach((nombre) => {
       const valores = datos
         .map((d) => {
@@ -170,20 +217,48 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
       const promedio = valores.length
         ? valores.reduce((a, b) => a + b, 0) / valores.length
         : 0;
-      resultado.push({ nombre, promedio: Math.round(promedio * 10) / 10 });
+      const promedioRedondeado = Math.round(promedio * 10) / 10;
+      const nivel = nivelPromedio(nombre, promedioRedondeado, origen, subkey);
+      const indice = nivelesRiesgo.indexOf(nivel);
+      resultado.push({ nombre, promedio: promedioRedondeado, nivel, indice });
     });
     return resultado;
   }
-  const promediosDominiosA = calcularPromedios(datosA, "resultadoFormaA", dominiosA, "dominios");
-  const promediosDimensionesA = calcularPromedios(datosA, "resultadoFormaA", dimensionesA, "dimensiones");
-  const promediosDominiosB = calcularPromedios(datosB, "resultadoFormaB", dominiosB, "dominios");
-  const promediosDimensionesB = calcularPromedios(datosB, "resultadoFormaB", dimensionesB, "dimensiones");
+  const promediosDominiosA = calcularPromedios(
+    datosA,
+    "resultadoFormaA",
+    dominiosA,
+    "dominios",
+    "formaA"
+  );
+  const promediosDimensionesA = calcularPromedios(
+    datosA,
+    "resultadoFormaA",
+    dimensionesA,
+    "dimensiones",
+    "formaA"
+  );
+  const promediosDominiosB = calcularPromedios(
+    datosB,
+    "resultadoFormaB",
+    dominiosB,
+    "dominios",
+    "formaB"
+  );
+  const promediosDimensionesB = calcularPromedios(
+    datosB,
+    "resultadoFormaB",
+    dimensionesB,
+    "dimensiones",
+    "formaB"
+  );
 
   const promediosDimensionesExtra = calcularPromedios(
     datosExtra,
     "resultadoExtralaboral",
     dimensionesExtra,
-    "dimensiones"
+    "dimensiones",
+    "extra"
   );
 
 
@@ -405,12 +480,10 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   function GraficaBarra({
     resumen,
     titulo,
-    keyData = "cantidad",
     chartType,
   }: {
     resumen: any[];
     titulo: string;
-    keyData?: string;
     chartType: "bar" | "histogram" | "pie";
   }) {
     return (
@@ -419,9 +492,9 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
         <ResponsiveContainer width="100%" height={350}>
           {chartType === "pie" ? (
             <PieChart>
-              <Pie data={resumen} dataKey={keyData} nameKey="nombre" label>
-                {resumen.map((_, i) => (
-                  <Cell key={i} fill={colores[i % colores.length]} />
+              <Pie data={resumen} dataKey="indice" nameKey="nombre" label>
+                {resumen.map((d, i) => (
+                  <Cell key={i} fill={colorPorNivel[d.nivel as keyof typeof colorPorNivel]} />
                 ))}
               </Pie>
               <Tooltip />
@@ -430,12 +503,18 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
           ) : (
             <BarChart data={resumen} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
               <XAxis dataKey="nombre" interval={0} angle={-18} textAnchor="end" height={70} />
-              <YAxis allowDecimals={false} />
+              <YAxis
+                type="number"
+                domain={[0, 4]}
+                ticks={[0, 1, 2, 3, 4]}
+                tickFormatter={(v) => nivelesRiesgo[v]}
+              />
               <Tooltip />
               <Legend />
-              <Bar dataKey={keyData} name={keyData === "promedio" ? "Promedio" : keyData}>
-                {resumen.map((_, i) => (
-                  <Cell key={i} fill={colores[i % colores.length]} />
+              <Bar dataKey="indice" name="Nivel">
+                <LabelList dataKey="nivel" position="top" />
+                {resumen.map((d, i) => (
+                  <Cell key={i} fill={colorPorNivel[d.nivel as keyof typeof colorPorNivel]} />
                 ))}
               </Bar>
             </BarChart>
@@ -554,7 +633,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
             <TabsContent value="dominios">
               {datosA.length === 0
                 ? <div className="text-gray-500 py-4">No hay datos para dominios.</div>
-                : <GraficaBarra resumen={promediosDominiosA} titulo="Promedio de Puntaje Transformado por Dominio" keyData="promedio" chartType={chartType} />
+                : <GraficaBarra resumen={promediosDominiosA} titulo="Promedio de Puntaje Transformado por Dominio" chartType={chartType} />
               }
             </TabsContent>
             <TabsContent value="dimensiones">
@@ -565,7 +644,6 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
                     <GraficaBarra
                       resumen={promediosDimensionesA}
                       titulo="Promedio de Puntaje Transformado por Dimensión"
-                      keyData="promedio"
                       chartType={chartType}
                     />
                     {!soloGenerales && (
@@ -604,7 +682,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
             <TabsContent value="dominios">
               {datosB.length === 0
                 ? <div className="text-gray-500 py-4">No hay datos para dominios.</div>
-                : <GraficaBarra resumen={promediosDominiosB} titulo="Promedio de Puntaje Transformado por Dominio" keyData="promedio" chartType={chartType} />
+                : <GraficaBarra resumen={promediosDominiosB} titulo="Promedio de Puntaje Transformado por Dominio" chartType={chartType} />
               }
             </TabsContent>
             <TabsContent value="dimensiones">
@@ -615,7 +693,6 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
                     <GraficaBarra
                       resumen={promediosDimensionesB}
                       titulo="Promedio de Puntaje Transformado por Dimensión"
-                      keyData="promedio"
                       chartType={chartType}
                     />
                     {!soloGenerales && (
@@ -658,7 +735,6 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
                     <GraficaBarra
                       resumen={promediosDimensionesExtra}
                       titulo="Promedio de Puntaje Transformado por Dimensión"
-                      keyData="promedio"
                       chartType={chartType}
                     />
                     {!soloGenerales && (
