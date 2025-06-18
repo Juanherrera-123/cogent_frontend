@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LabelList } from "recharts";
 import * as XLSX from "xlsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -308,6 +308,13 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     fichaConteosGlobal[cat.key] = conteosPorFicha(datosMostrados, cat.key);
   });
 
+  const datosInforme = useMemo(() => {
+    const todos = gatherFlatResults();
+    return todos.filter(
+      (f) => empresaSeleccionada === "todas" || f.Empresa === empresaSeleccionada
+    );
+  }, [empresaSeleccionada, datos]);
+
 
   // ---- Exportar a Excel ----
   const handleExportar = () => {
@@ -319,50 +326,55 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     else if (tab === "globalExtra") datosExportar =
       tabGlobalExtra === "A" ? datosGlobalAE : datosGlobalBE;
     else if (tab === "estres") datosExportar = datosEstres;
+    else if (tab === "informe") datosExportar = datosInforme;
 
-    const filas = datosExportar.map((d, i) => ({
-      Nro: i + 1,
-      Empresa: d.ficha?.empresa || "",
-      Nombre: d.ficha?.nombre || "",
-      Sexo: d.ficha?.sexo || "",
-      Cargo: d.ficha?.cargo || "",
-      ...(tab === "formaA" && {
-        "Puntaje Forma A": d.resultadoFormaA?.total?.transformado ?? "",
-        "Nivel Forma A": d.resultadoFormaA?.total?.nivel ?? "",
-      }),
-      ...(tab === "formaB" && {
-        "Puntaje Forma B":
-          d.resultadoFormaB?.total?.transformado ??
-          d.resultadoFormaB?.puntajeTransformadoTotal ??
-          d.resultadoFormaB?.puntajeTransformado ??
-          d.resultadoFormaB?.puntajeTotalTransformado ??
-          "",
-        "Nivel Forma B":
-          d.resultadoFormaB?.total?.nivel ??
-          d.resultadoFormaB?.nivelTotal ??
-          d.resultadoFormaB?.nivel ??
-          "",
-      }),
-      ...(tab === "extralaboral" && {
-        "Puntaje Extralaboral": d.resultadoExtralaboral?.puntajeTransformadoTotal ?? "",
-        "Nivel Extralaboral": d.resultadoExtralaboral?.nivelGlobal ?? "",
-      }),
-      ...(tab === "globalExtra" && {
-        "Puntaje Global A+Extra":
-          d.resultadoGlobalAExtralaboral?.puntajeGlobal ??
-          d.resultadoGlobalBExtralaboral?.puntajeGlobal ??
-          "",
-        "Nivel Global":
-          d.resultadoGlobalAExtralaboral?.nivelGlobal ??
-          d.resultadoGlobalBExtralaboral?.nivelGlobal ??
-          "",
-      }),
-      ...(tab === "estres" && {
-        "Puntaje Estrés": d.resultadoEstres?.puntajeTransformado ?? "",
-        "Nivel Estrés": d.resultadoEstres?.nivel ?? "",
-      }),
-      Fecha: d.fecha ? new Date(d.fecha).toLocaleString() : "",
-    }));
+    const filas =
+      tab === "informe"
+        ? datosInforme
+        : datosExportar.map((d, i) => ({
+            Nro: i + 1,
+            Empresa: d.ficha?.empresa || "",
+            Nombre: d.ficha?.nombre || "",
+            Sexo: d.ficha?.sexo || "",
+            Cargo: d.ficha?.cargo || "",
+            ...(tab === "formaA" && {
+              "Puntaje Forma A": d.resultadoFormaA?.total?.transformado ?? "",
+              "Nivel Forma A": d.resultadoFormaA?.total?.nivel ?? "",
+            }),
+            ...(tab === "formaB" && {
+              "Puntaje Forma B":
+                d.resultadoFormaB?.total?.transformado ??
+                d.resultadoFormaB?.puntajeTransformadoTotal ??
+                d.resultadoFormaB?.puntajeTransformado ??
+                d.resultadoFormaB?.puntajeTotalTransformado ??
+                "",
+              "Nivel Forma B":
+                d.resultadoFormaB?.total?.nivel ??
+                d.resultadoFormaB?.nivelTotal ??
+                d.resultadoFormaB?.nivel ??
+                "",
+            }),
+            ...(tab === "extralaboral" && {
+              "Puntaje Extralaboral":
+                d.resultadoExtralaboral?.puntajeTransformadoTotal ?? "",
+              "Nivel Extralaboral": d.resultadoExtralaboral?.nivelGlobal ?? "",
+            }),
+            ...(tab === "globalExtra" && {
+              "Puntaje Global A+Extra":
+                d.resultadoGlobalAExtralaboral?.puntajeGlobal ??
+                d.resultadoGlobalBExtralaboral?.puntajeGlobal ??
+                "",
+              "Nivel Global":
+                d.resultadoGlobalAExtralaboral?.nivelGlobal ??
+                d.resultadoGlobalBExtralaboral?.nivelGlobal ??
+                "",
+            }),
+            ...(tab === "estres" && {
+              "Puntaje Estrés": d.resultadoEstres?.puntajeTransformado ?? "",
+              "Nivel Estrés": d.resultadoEstres?.nivel ?? "",
+            }),
+            Fecha: d.fecha ? new Date(d.fecha).toLocaleString() : "",
+          }));
 
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(filas);
@@ -372,7 +384,9 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
 
   // ---- Exportar a PDF ----
   const handleExportPDF = async () => {
-    const filas = gatherFlatResults();
+    const filas = gatherFlatResults().filter(
+      (f) => empresaSeleccionada === "todas" || f.Empresa === empresaSeleccionada
+    );
     if (filas.length === 0) return;
     const headers = Object.keys(filas[0]);
     const table = document.createElement("table");
@@ -745,6 +759,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
           <TabsTrigger value="extralaboral">Extralaboral</TabsTrigger>
           <TabsTrigger value="globalExtra">Global Extra</TabsTrigger>
           <TabsTrigger value="estres">Estrés</TabsTrigger>
+          <TabsTrigger value="informe">Informe completo</TabsTrigger>
         </TabsList>
 
         {/* ---- GENERAL ---- */}
@@ -1003,6 +1018,37 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
               </>
             )
           }
+        </TabsContent>
+        {/* ---- INFORME COMPLETO ---- */}
+        <TabsContent value="informe">
+          {datosInforme.length === 0 ? (
+            <div className="text-gray-500 py-4">No hay datos para mostrar.</div>
+          ) : (
+            <div className="overflow-auto max-h-96">
+              <table className="w-full text-xs border mt-2">
+                <thead className="bg-cogent-blue text-white">
+                  <tr>
+                    {Object.keys(datosInforme[0]).map((h, idx) => (
+                      <th key={idx} className="px-2 py-1">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {datosInforme.map((fila, i) => (
+                    <tr key={i} className="border-b">
+                      {Object.keys(datosInforme[0]).map((h, idx) => (
+                        <td key={idx} className="px-2 py-1">
+                          {fila[h] ?? ""}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
 
