@@ -8,11 +8,17 @@ module.exports = {
   theme: {
   	extend: {
   		colors: {
-  			'cogent-sky': '#00B8FF',
-  			'cogent-blue': '#007BFF',
-  			'cogent-deep': '#003CFF',
-  			'cogent-navy': '#081C3A',
-  			'cogent-black': '#0B0B0B',
+  			'cogent-sky': '#90CAF9',
+  			'cogent-blue': '#277DA1',
+  			'cogent-deep': '#1B264F',
+  			'cogent-navy': '#1B264F',
+  			'cogent-black': '#1B264F',
+                        'cogent-gray-light': '#F5F7FA',
+                        'cogent-gray': '#ADB5BD',
+                        success: '#22C55E',
+                        warning: '#EAB308',
+                        orange: '#FB923C',
+                        danger: '#EF4444',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -55,15 +61,8 @@ module.exports = {
   			}
   		},
   		fontFamily: {
-  			display: [
-  				'Montserrat',
-  				'sans-serif'
-  			],
-  			sans: [
-  				'Open Sans',
-  				'Roboto',
-  				'sans-serif'
-  			]
+                        display: ['Inter', 'Nunito Sans', 'sans-serif'],
+                        sans: ['Roboto', 'sans-serif']
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
