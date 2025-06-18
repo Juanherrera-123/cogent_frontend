@@ -6,6 +6,7 @@ import BloquesDePreguntas from "./components/BloquesDePreguntas";
 import DashboardResultados from "./components/DashboardResultados";
 import Login from "./components/Login";
 import credencialesBase from "./config/credentials.json";
+import logoTexto from "./logo_texto.png";
 import {
   bloquesFormaA,
   bloquesFormaB,
@@ -135,7 +136,7 @@ export default function App() {
   if (step === "inicio") {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4 bg-gray-50">
-        <h1 className="text-3xl font-bold mb-4 text-cogent-blue">COGENT - Evaluación Psicosocial</h1>
+        <img src={logoTexto} alt="COGENT" className="w-60 mb-2" />
         <button
           className="bg-cogent-blue text-white font-bold px-6 py-3 rounded-xl shadow hover:bg-cogent-sky mb-2"
           onClick={() => setStep("consent")}

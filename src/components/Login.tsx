@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import logoTexto from "../logo_texto.png";
 type Usuario = { usuario: string; password: string; rol: string; empresa?: string };
 
 type Props = {
@@ -27,7 +28,8 @@ export default function Login({ usuarios, onLogin, onCancel }: Props) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-xl flex flex-col gap-4 min-w-[300px]">
-        <h2 className="text-2xl font-bold text-cogent-blue mb-2">Acceso a resultados</h2>
+        <img src={logoTexto} alt="COGENT" className="w-48 mx-auto" />
+        <h2 className="text-2xl font-bold text-cogent-blue mb-2 text-center">Acceso a resultados</h2>
         <input
           className="input"
           placeholder="Usuario"
