@@ -487,9 +487,15 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     chartType: "bar" | "histogram" | "pie";
   }) {
     return (
+
+      <div className="flex-1 min-h-[450px]">
+        <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
+        <ResponsiveContainer width="100%" height={450}>
+=======
       <div className="flex-1 min-h-[350px]">
         <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
         <ResponsiveContainer width="100%" height={350}>
+
           {chartType === "pie" ? (
             <PieChart>
               <Pie data={resumen} dataKey="indice" nameKey="nombre" label>
@@ -534,9 +540,11 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     chartType: "bar" | "histogram" | "pie";
   }) {
     return (
-      <div className="flex-1 min-h-[350px]">
+
+      <div className="flex-1 min-h-[450px]">
         <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
-        <ResponsiveContainer width="100%" height={350}>
+        <ResponsiveContainer width="100%" height={450}>
+
           {chartType === "pie" ? (
             <PieChart>
               <Pie data={resumen} dataKey="cantidad" nameKey="nivel" label>
