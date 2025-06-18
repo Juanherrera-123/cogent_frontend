@@ -135,7 +135,7 @@ export default function App() {
   // Vista Home
   if (step === "inicio") {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4 bg-gray-50">
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4 bg-[var(--background-main)]">
         <img src={logoTexto} alt="COGENT" className="w-60 mb-2" />
         <button
           className="bg-primary-main text-white font-bold px-6 py-3 rounded-xl shadow hover:bg-primary-light mb-2"
@@ -182,7 +182,7 @@ export default function App() {
 
   // Flujo de encuesta
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--background-main)]">
       {step === "consent" && (
         <Consentimiento onAceptar={() => setStep("selector")} />
       )}
@@ -264,7 +264,9 @@ export default function App() {
         />
       )}
       {step === "final" && (
-        <div className="p-8 bg-white rounded-xl shadow-md text-text-main font-bold text-2xl flex flex-col items-center gap-4">
+
+        <div className="p-8 bg-white rounded-xl shadow-md text-[var(--text-main)] font-bold text-2xl flex flex-col items-center gap-4">
+
           <div>
             ¡Encuesta completada!<br />
             Gracias por tu participación.

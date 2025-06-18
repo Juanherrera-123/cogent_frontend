@@ -32,6 +32,9 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --background-main: #F8F9FA;
+    --text-main: #1B264F;
+    --gray-medium: #6B7280;
     --radius: 0.5rem
     --primary-gradient-from: 207 90% 77%;
     --primary-gradient-to: 198 61% 39%;
@@ -70,11 +73,13 @@
     --chart-4: 280 65% 60%;
 
     --chart-5: 340 75% 55%
+
     --primary-gradient-from: 207 90% 77%;
     --primary-gradient-to: 198 61% 39%;
     --primary-dark: 227 49% 21%;
     --text-main: 0 0% 98%;
     --background-main: 0 0% 3.9%;
+
   }
 }
 
