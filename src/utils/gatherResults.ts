@@ -28,11 +28,13 @@ export function gatherFlatResults(): FlatResult[] {
       Object.keys(domA).forEach((k) => {
         const v = domA[k];
         fila[`A ${k}`] = v.transformado ?? v.puntajeTransformado ?? "";
+        fila[`Nivel A ${k}`] = v.nivel ?? "";
       });
       const dimA = d.resultadoFormaA.dimensiones || {};
       Object.keys(dimA).forEach((k) => {
         const v = dimA[k];
         fila[`A ${k}`] = v.transformado ?? v.puntajeTransformado ?? "";
+        fila[`Nivel A ${k}`] = v.nivel ?? "";
       });
     }
 
@@ -52,11 +54,13 @@ export function gatherFlatResults(): FlatResult[] {
       Object.keys(domB).forEach((k) => {
         const v = domB[k];
         fila[`B ${k}`] = v.transformado ?? v.puntajeTransformado ?? "";
+        fila[`Nivel B ${k}`] = v.nivel ?? "";
       });
       const dimB = d.resultadoFormaB.dimensiones || {};
       Object.keys(dimB).forEach((k) => {
         const v = dimB[k];
         fila[`B ${k}`] = v.transformado ?? v.puntajeTransformado ?? "";
+        fila[`Nivel B ${k}`] = v.nivel ?? "";
       });
     }
 
@@ -67,6 +71,7 @@ export function gatherFlatResults(): FlatResult[] {
       const dims = d.resultadoExtralaboral.dimensiones || [];
       dims.forEach((dim: any) => {
         fila[`Extra ${dim.nombre}`] = dim.puntajeTransformado ?? "";
+        fila[`Nivel Extra ${dim.nombre}`] = dim.nivel ?? "";
       });
     }
 
