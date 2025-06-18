@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LabelList } from "recharts";
+
 import * as XLSX from "xlsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { gatherFlatResults } from "@/utils/gatherResults";
@@ -7,18 +7,20 @@ import { exportElementToPDF } from "@/utils/pdfExport";
 import { dimensionesExtralaboral } from "@/data/esquemaExtralaboral";
 import { baremosFormaA } from "@/data/baremosFormaA";
 import { baremosFormaB } from "@/data/baremosFormaB";
+import TablaIndividual from "@/components/TablaIndividual";
+import TablaDominios from "@/components/TablaDominios";
+import TablaDimensiones from "@/components/TablaDimensiones";
+import GraficaBarra from "@/components/GraficaBarra";
+import GraficaBarraSimple from "@/components/GraficaBarraSimple";
+import GraficaBarraCategorias from "@/components/GraficaBarraCategorias";
 
-// Colores por nivel de riesgo
-const colorPorNivel = {
-  "Riesgo muy bajo": "#538DD4",
-  "Riesgo bajo": "#91CF50",
-  "Riesgo medio": "#FFFF00",
-  "Riesgo alto": "#FFA400",
-  "Riesgo muy alto": "#FF0000",
-} as const;
-// Array de colores para los gráficos simples
-const colores = Object.values(colorPorNivel);
-const nivelesRiesgo = Object.keys(colorPorNivel);
+const nivelesRiesgo = [
+  "Riesgo muy bajo",
+  "Riesgo bajo",
+  "Riesgo medio",
+  "Riesgo alto",
+  "Riesgo muy alto",
+];
 
 type Props = {
   soloGenerales?: boolean;
@@ -98,14 +100,6 @@ const categoriasFicha = [
   { key: "horasDiarias", label: "Horas diarias establecidas" },
 ] as const;
 
-const coloresAzulFicha = [
-  "#1e3a8a",
-  "#2563eb",
-  "#3b82f6",
-  "#60a5fa",
-  "#93c5fd",
-  "#bfdbfe",
-];
 
 export default function DashboardResultados({ soloGenerales, empresaFiltro, onBack }: Props) {
   const [datos, setDatos] = useState<any[]>([]);
@@ -412,308 +406,6 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   };
 
   // ---- Render tablas individuales (solo para psicóloga) ----
-  function TablaIndividual({ datos, tipo }: { datos: any[], tipo: string }) {
-    if (datos.length === 0) return <div className="py-6 text-gray-400">No hay resultados individuales para mostrar.</div>;
-    return (
-      <div className="overflow-x-auto">
-        <table className="w-full text-xs border mt-2">
-          <thead className="bg-cogent-blue text-white">
-            <tr>
-              <th>#</th>
-              <th>Empresa</th>
-              <th>Nombre</th>
-              <th>Sexo</th>
-              <th>Cargo</th>
-              {tipo === "formaA" && (<><th>Puntaje Forma A</th><th>Nivel Forma A</th></>)}
-              {tipo === "formaB" && (<><th>Puntaje Forma B</th><th>Nivel Forma B</th></>)}
-              {tipo === "extralaboral" && (<><th>Puntaje Extralaboral</th><th>Nivel Extra</th></>)}
-              {tipo === "globalExtra" && (<><th>Puntaje Global A+Extra</th><th>Nivel Global</th></>)}
-              {tipo === "estres" && (<><th>Puntaje Estrés</th><th>Nivel Estrés</th></>)}
-              <th>Fecha</th>
-            </tr>
-          </thead>
-          <tbody>
-            {datos.map((d, i) => (
-              <tr key={i} className="border-b">
-                <td>{i + 1}</td>
-                <td>{d.ficha?.empresa}</td>
-                <td>{d.ficha?.nombre}</td>
-                <td>{d.ficha?.sexo}</td>
-                <td>{d.ficha?.cargo}</td>
-                {tipo === "formaA" && (
-                  <>
-                    <td>{d.resultadoFormaA?.total?.transformado ?? ""}</td>
-                    <td>{d.resultadoFormaA?.total?.nivel ?? ""}</td>
-                  </>
-                )}
-                {tipo === "formaB" && (
-                  <>
-                    <td>
-                      {d.resultadoFormaB?.total?.transformado ??
-                        d.resultadoFormaB?.puntajeTransformadoTotal ??
-                        d.resultadoFormaB?.puntajeTransformado ??
-                        d.resultadoFormaB?.puntajeTotalTransformado ??
-                        ""}
-                    </td>
-                    <td>
-                      {d.resultadoFormaB?.total?.nivel ??
-                        d.resultadoFormaB?.nivelTotal ??
-                        d.resultadoFormaB?.nivel ??
-                        ""}
-                    </td>
-                  </>
-                )}
-                {tipo === "extralaboral" && (
-                  <>
-                    <td>{d.resultadoExtralaboral?.puntajeTransformadoTotal ?? ""}</td>
-                    <td>{d.resultadoExtralaboral?.nivelGlobal ?? ""}</td>
-                  </>
-                )}
-                {tipo === "globalExtra" && (
-                  <>
-                    <td>
-                      {d.resultadoGlobalAExtralaboral?.puntajeGlobal ??
-                        d.resultadoGlobalBExtralaboral?.puntajeGlobal ?? ""}
-                    </td>
-                    <td>
-                      {d.resultadoGlobalAExtralaboral?.nivelGlobal ??
-                        d.resultadoGlobalBExtralaboral?.nivelGlobal ?? ""}
-                    </td>
-                  </>
-                )}
-                {tipo === "estres" && (
-                  <>
-                    <td>{d.resultadoEstres?.puntajeTransformado ?? ""}</td>
-                    <td>{d.resultadoEstres?.nivel ?? ""}</td>
-                  </>
-                )}
-                <td>{d.fecha ? new Date(d.fecha).toLocaleString() : ""}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-
-  function TablaDimensiones({ datos, dimensiones, keyResultado }: { datos: any[]; dimensiones: string[]; keyResultado: string }) {
-    if (datos.length === 0)
-      return <div className="py-6 text-gray-400">No hay resultados de dimensiones para mostrar.</div>;
-
-    return (
-      <div className="overflow-x-auto">
-        <table className="w-full text-xs border mt-2">
-          <thead className="bg-cogent-blue text-white">
-            <tr>
-              <th>#</th>
-              <th>Empresa</th>
-              <th>Nombre</th>
-              {dimensiones.map((dim, idx) => (
-                <th key={idx}>{dim}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {datos.map((d, i) => (
-              <tr key={i} className="border-b">
-                <td>{i + 1}</td>
-                <td>{d.ficha?.empresa}</td>
-                <td>{d.ficha?.nombre}</td>
-                {dimensiones.map((dim, idx) => {
-                  let seccion = d[keyResultado]?.dimensiones?.[dim];
-                  if (Array.isArray(d[keyResultado]?.dimensiones)) {
-                    const item = d[keyResultado].dimensiones.find((x: any) => x.nombre === dim);
-                    seccion = item;
-                  }
-                  const valor = typeof seccion === "object"
-                    ? seccion.transformado ?? seccion.puntajeTransformado
-                    : d[keyResultado]?.puntajesDimension?.[dim];
-                  return <td key={idx}>{valor ?? ""}</td>;
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-
-  function TablaDominios({ datos, dominios, keyResultado }: { datos: any[]; dominios: string[]; keyResultado: string }) {
-    if (datos.length === 0)
-      return <div className="py-6 text-gray-400">No hay resultados de dominios para mostrar.</div>;
-
-    return (
-      <div className="overflow-x-auto">
-        <table className="w-full text-xs border mt-2">
-          <thead className="bg-cogent-blue text-white">
-            <tr>
-              <th>#</th>
-              <th>Empresa</th>
-              <th>Nombre</th>
-              {dominios.map((dom, idx) => (
-                <th key={idx}>{dom}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {datos.map((d, i) => (
-              <tr key={i} className="border-b">
-                <td>{i + 1}</td>
-                <td>{d.ficha?.empresa}</td>
-                <td>{d.ficha?.nombre}</td>
-                {dominios.map((dom, idx) => {
-                  let seccion = d[keyResultado]?.dominios?.[dom];
-                  if (Array.isArray(d[keyResultado]?.dominios)) {
-                    const item = d[keyResultado].dominios.find((x: any) => x.nombre === dom);
-                    seccion = item;
-                  }
-                  const valor = typeof seccion === "object"
-                    ? seccion.transformado ?? seccion.puntajeTransformado
-                    : d[keyResultado]?.puntajesDominio?.[dom];
-                  return <td key={idx}>{valor ?? ""}</td>;
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-
-  // ---- Render gráficos ----
-  function GraficaBarra({
-    resumen,
-    titulo,
-    chartType,
-  }: {
-    resumen: any[];
-    titulo: string;
-    chartType: "bar" | "histogram" | "pie";
-  }) {
-    return (
-
-      <div className="flex-1 min-h-[450px]">
-        <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
-        <ResponsiveContainer width="100%" height={450}>
-
-          {chartType === "pie" ? (
-            <PieChart>
-              <Pie data={resumen} dataKey="indice" nameKey="nombre" label>
-                {resumen.map((d, i) => (
-                  <Cell key={i} fill={colorPorNivel[d.nivel as keyof typeof colorPorNivel]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          ) : (
-            <BarChart data={resumen} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
-              <XAxis dataKey="nombre" interval={0} angle={-18} textAnchor="end" height={70} />
-              <YAxis
-                type="number"
-                domain={[0, 4]}
-                ticks={[0, 1, 2, 3, 4]}
-                tickFormatter={(v) => nivelesRiesgo[v]}
-              />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="indice" name="Nivel">
-                <LabelList dataKey="nivel" position="top" />
-                {resumen.map((d, i) => (
-                  <Cell key={i} fill={colorPorNivel[d.nivel as keyof typeof colorPorNivel]} />
-                ))}
-              </Bar>
-            </BarChart>
-          )}
-        </ResponsiveContainer>
-      </div>
-    );
-  }
-
-  function GraficaBarraSimple({
-    resumen,
-    titulo,
-    chartType,
-  }: {
-    resumen: any[];
-    titulo: string;
-    chartType: "bar" | "histogram" | "pie";
-  }) {
-    return (
-
-      <div className="flex-1 min-h-[450px]">
-        <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
-        <ResponsiveContainer width="100%" height={450}>
-
-          {chartType === "pie" ? (
-            <PieChart>
-              <Pie data={resumen} dataKey="cantidad" nameKey="nivel" label>
-                {resumen.map((_, i) => (
-                  <Cell key={i} fill={colores[i % colores.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          ) : (
-            <BarChart data={resumen} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
-              <XAxis dataKey="nivel" />
-              <YAxis allowDecimals={false} />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="cantidad" name="Cantidad">
-                {resumen.map((_, i) => (
-                  <Cell key={i} fill={colores[i % colores.length]} />
-                ))}
-              </Bar>
-            </BarChart>
-          )}
-        </ResponsiveContainer>
-      </div>
-    );
-  }
-
-  function GraficaBarraCategorias({
-    datos,
-    titulo,
-    chartType,
-  }: {
-    datos: any[];
-    titulo: string;
-    chartType: "bar" | "histogram" | "pie";
-  }) {
-    return (
-      <div className="flex-1 min-h-[450px]">
-        <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
-        <ResponsiveContainer width="100%" height={450}>
-          {chartType === "pie" ? (
-            <PieChart>
-              <Pie data={datos} dataKey="cantidad" nameKey="nombre" label>
-                {datos.map((_, i) => (
-                  <Cell key={i} fill={coloresAzulFicha[i % coloresAzulFicha.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          ) : (
-            <BarChart data={datos} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
-              <XAxis dataKey="nombre" interval={0} angle={-18} textAnchor="end" height={70} />
-              <YAxis allowDecimals={false} />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="cantidad" name="Cantidad">
-                {datos.map((_, i) => (
-                  <Cell key={i} fill={coloresAzulFicha[i % coloresAzulFicha.length]} />
-                ))}
-              </Bar>
-            </BarChart>
-          )}
-        </ResponsiveContainer>
-      </div>
-    );
-  }
-
   // ---- Pestañas ----
   return (
     <div className="max-w-6xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-xl mt-8 flex flex-col gap-8">
