@@ -21,7 +21,7 @@ export default function GraficaBarra({
 }) {
   return (
     <div className="flex-1 min-h-[450px]">
-      <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
+      <h4 className="font-bold mb-2 text-primary-main">{titulo}</h4>
       <ResponsiveContainer width="100%" height={450}>
         {chartType === "pie" ? (
           <PieChart>

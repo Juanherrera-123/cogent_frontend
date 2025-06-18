@@ -17,7 +17,7 @@ export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ em
     <div className="flex flex-col gap-4">
       <div className="overflow-x-auto">
         <table className="w-full text-xs border mt-2">
-          <thead className="bg-cogent-blue text-white">
+          <thead className="bg-primary-main text-white">
             <tr>
               <th>#</th>
               <th>Empresa</th>
@@ -39,7 +39,7 @@ export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ em
         <input className="input flex-1" placeholder="Nombre empresa" value={nombre} onChange={(e)=>setNombre(e.target.value)} />
         <input className="input flex-1" placeholder="Usuario" value={usuario} onChange={(e)=>setUsuario(e.target.value)} />
         <input className="input flex-1" type="password" placeholder="Contraseña" value={password} onChange={(e)=>setPassword(e.target.value)} />
-        <button type="button" className="bg-cogent-blue text-white px-4 py-1 rounded-lg shadow" onClick={handleAgregar}>
+        <button type="button" className="bg-primary-main text-white px-4 py-1 rounded-lg shadow" onClick={handleAgregar}>
           Agregar
         </button>
       </div>
