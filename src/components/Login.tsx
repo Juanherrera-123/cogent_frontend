@@ -44,7 +44,7 @@ export default function Login({ usuarios, onLogin, onCancel }: Props) {
           onChange={(e) => setPassword(e.target.value)}
         />
         {error && <div className="text-red-600 text-sm">{error}</div>}
-        <button className="bg-cogent-blue text-white px-4 py-2 rounded-lg font-bold shadow" type="submit">
+        <button className="btn-primary" type="submit">
           Ingresar
         </button>
         {onCancel && (
