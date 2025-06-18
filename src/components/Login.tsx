@@ -29,7 +29,9 @@ export default function Login({ usuarios, onLogin, onCancel }: Props) {
     <div className="min-h-screen flex items-center justify-center bg-[var(--background-main)]">
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-xl flex flex-col gap-4 min-w-[300px]">
         <img src={logoTexto} alt="COGENT" className="w-48 mx-auto" />
+
         <h2 className="text-2xl font-bold text-[var(--text-main)] mb-2 text-center">Acceso a resultados</h2>
+
         <input
           className="input"
           placeholder="Usuario"
@@ -44,7 +46,9 @@ export default function Login({ usuarios, onLogin, onCancel }: Props) {
           onChange={(e) => setPassword(e.target.value)}
         />
         {error && <div className="text-red-600 text-sm">{error}</div>}
-        <button className="bg-cogent-blue text-white px-4 py-2 rounded-lg font-bold shadow" type="submit">
+
+        <button className="btn-primary" type="submit">
+
           Ingresar
         </button>
         {onCancel && (

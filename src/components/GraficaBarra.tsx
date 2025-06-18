@@ -2,11 +2,11 @@ import React from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LabelList } from "recharts";
 
 const colorPorNivel = {
-  "Riesgo muy bajo": "#538DD4",
-  "Riesgo bajo": "#91CF50",
-  "Riesgo medio": "#FFFF00",
-  "Riesgo alto": "#FFA400",
-  "Riesgo muy alto": "#FF0000",
+  "Riesgo muy bajo": "#48C774",
+  "Riesgo bajo": "#2563EB",
+  "Riesgo medio": "#3B82F6",
+  "Riesgo alto": "#60A5FA",
+  "Riesgo muy alto": "#FF3B30",
 } as const;
 const nivelesRiesgo = Object.keys(colorPorNivel);
 
@@ -21,7 +21,7 @@ export default function GraficaBarra({
 }) {
   return (
     <div className="flex-1 min-h-[450px]">
-      <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
+      <h4 className="font-bold mb-2 text-primary-main">{titulo}</h4>
       <ResponsiveContainer width="100%" height={450}>
         {chartType === "pie" ? (
           <PieChart>

@@ -138,13 +138,13 @@ export default function App() {
       <div className="flex flex-col items-center justify-center min-h-screen gap-4 bg-[var(--background-main)]">
         <img src={logoTexto} alt="COGENT" className="w-60 mb-2" />
         <button
-          className="bg-cogent-blue text-white font-bold px-6 py-3 rounded-xl shadow hover:bg-cogent-sky mb-2"
+          className="bg-primary-main text-white font-bold px-6 py-3 rounded-xl shadow hover:bg-primary-light mb-2"
           onClick={() => setStep("consent")}
         >
           Iniciar nueva encuesta
         </button>
         <button
-          className="bg-cogent-gray text-cogent-blue font-bold px-6 py-3 rounded-xl shadow hover:bg-cogent-blue/10"
+          className="bg-cogent-gray text-primary-main font-bold px-6 py-3 rounded-xl shadow hover:bg-primary-main/10"
           onClick={() => setStep("login")}
         >
           Ver resultados
@@ -264,13 +264,15 @@ export default function App() {
         />
       )}
       {step === "final" && (
+
         <div className="p-8 bg-white rounded-xl shadow-md text-[var(--text-main)] font-bold text-2xl flex flex-col items-center gap-4">
+
           <div>
             ¡Encuesta completada!<br />
             Gracias por tu participación.
           </div>
           <button
-            className="bg-cogent-blue text-white px-6 py-2 rounded-lg shadow hover:bg-cogent-sky text-base"
+            className="bg-primary-main text-white px-6 py-2 rounded-lg shadow hover:bg-primary-light text-base"
             onClick={() => setStep("inicio")}
           >
             Volver al inicio

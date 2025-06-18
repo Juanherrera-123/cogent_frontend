@@ -1,7 +1,13 @@
 import React from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-const colores = ["#538DD4", "#91CF50", "#FFFF00", "#FFA400", "#FF0000"];
+const colores = [
+  "#48C774", // success
+  "#2563EB",
+  "#3B82F6",
+  "#60A5FA",
+  "#FF3B30", // error
+];
 
 export default function GraficaBarraSimple({
   resumen,
@@ -14,7 +20,7 @@ export default function GraficaBarraSimple({
 }) {
   return (
     <div className="flex-1 min-h-[450px]">
-      <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
+      <h4 className="font-bold mb-2 text-primary-main">{titulo}</h4>
       <ResponsiveContainer width="100%" height={450}>
         {chartType === "pie" ? (
           <PieChart>

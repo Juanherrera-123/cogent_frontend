@@ -106,10 +106,10 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
       className="max-w-2xl bg-white rounded-2xl shadow-xl p-8 flex flex-col gap-4"
       onSubmit={handleSubmit}
     >
-      <h2 className="text-2xl font-display text-cogent-blue mb-2">Ficha de Datos Generales</h2>
+      <h2 className="text-2xl font-display text-primary-main mb-2">Ficha de Datos Generales</h2>
       {/* Empresa */}
       <div>
-        <label className="block mb-1 font-semibold text-cogent-navy">Empresa*</label>
+        <label className="block mb-1 font-semibold text-text-main">Empresa*</label>
         <select
           className="input mb-2"
           value={empresa}
@@ -392,7 +392,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
       )}
       <button
         type="submit"
-        className="bg-cogent-blue text-white px-8 py-2 rounded-lg mt-4 font-bold shadow hover:bg-cogent-sky"
+        className="bg-primary-main text-white px-8 py-2 rounded-lg mt-4 font-bold shadow hover:bg-primary-light"
       >
         Continuar
       </button>
