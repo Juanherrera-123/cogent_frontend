@@ -114,6 +114,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
 
 
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
+  const [seleccionados, setSeleccionados] = useState<number[]>([]);
   
   useEffect(() => {
     const arr = JSON.parse(localStorage.getItem("resultadosCogent") || "[]");
@@ -438,6 +439,20 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     table.remove();
   };
 
+  const toggleSeleccion = (index: number) => {
+    setSeleccionados((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
+
+  const eliminarSeleccionados = () => {
+    if (seleccionados.length === 0) return;
+    const restantes = datos.filter((_, i) => !seleccionados.includes(i));
+    setDatos(restantes);
+    localStorage.setItem("resultadosCogent", JSON.stringify(restantes));
+    setSeleccionados([]);
+  };
+
   // ---- Render tablas individuales (solo para psicóloga) ----
   // ---- Pestañas ----
   return (
@@ -484,8 +499,11 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
           <TabsTrigger value="extralaboral">Extralaboral</TabsTrigger>
           <TabsTrigger value="globalExtra">Global Extra</TabsTrigger>
           <TabsTrigger value="estres">Estrés</TabsTrigger>
-          <TabsTrigger value="informe">Informe completo</TabsTrigger>
-        </TabsList>
+        <TabsTrigger value="informe">Informe completo</TabsTrigger>
+        {!soloGenerales && (
+          <TabsTrigger value="admin">Eliminar encuestas</TabsTrigger>
+        )}
+      </TabsList>
 
         {/* ---- GENERAL ---- */}
         <TabsContent value="general">
@@ -775,6 +793,55 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
             </div>
           )}
         </TabsContent>
+        {!soloGenerales && (
+          <TabsContent value="admin">
+            {datos.length === 0 ? (
+              <div className="text-gray-500 py-4">No hay encuestas almacenadas.</div>
+            ) : (
+              <>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs border mt-2">
+                    <thead className="bg-cogent-blue text-white">
+                      <tr>
+                        <th></th>
+                        <th>#</th>
+                        <th>Empresa</th>
+                        <th>Nombre</th>
+                        <th>Fecha</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {datos.map((d, i) => (
+                        <tr key={i} className="border-b">
+                          <td className="px-2 py-1 text-center">
+                            <input
+                              type="checkbox"
+                              checked={seleccionados.includes(i)}
+                              onChange={() => toggleSeleccion(i)}
+                            />
+                          </td>
+                          <td className="px-2 py-1">{i + 1}</td>
+                          <td className="px-2 py-1">{d.ficha?.empresa}</td>
+                          <td className="px-2 py-1">{d.ficha?.nombre}</td>
+                          <td className="px-2 py-1">
+                            {d.fecha ? new Date(d.fecha).toLocaleString() : ""}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <button
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-red-700 mt-4 disabled:opacity-50"
+                  disabled={seleccionados.length === 0}
+                  onClick={eliminarSeleccionados}
+                >
+                  Eliminar seleccionados
+                </button>
+              </>
+            )}
+          </TabsContent>
+        )}
       </Tabs>
 
       {/* Botones de acciones */}
