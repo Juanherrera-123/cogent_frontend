@@ -13,6 +13,7 @@ import TablaDimensiones from "@/components/TablaDimensiones";
 import GraficaBarra from "@/components/GraficaBarra";
 import GraficaBarraSimple from "@/components/GraficaBarraSimple";
 import GraficaBarraCategorias from "@/components/GraficaBarraCategorias";
+import AdminEmpresas from "@/components/AdminEmpresas";
 
 const nivelesRiesgo = [
   "Riesgo muy bajo",
@@ -25,6 +26,9 @@ const nivelesRiesgo = [
 type Props = {
   soloGenerales?: boolean;
   empresaFiltro?: string;
+  empresas?: string[];
+  credenciales?: { usuario: string; password: string; empresa: string }[];
+  onAgregarEmpresa?: (nombre: string, usuario: string, password: string) => void;
   onBack?: () => void;
 };
 
@@ -101,7 +105,7 @@ const categoriasFicha = [
 ] as const;
 
 
-export default function DashboardResultados({ soloGenerales, empresaFiltro, onBack }: Props) {
+export default function DashboardResultados({ soloGenerales, empresaFiltro, empresas: empresasConfig = [], credenciales = [], onAgregarEmpresa, onBack }: Props) {
   const [datos, setDatos] = useState<any[]>([]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState(empresaFiltro || "todas");
   const [tab, setTab] = useState("general");
@@ -122,7 +126,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
   }, []);
 
   // Empresas únicas (para filtro manual, psicóloga)
-  const empresas = Array.from(new Set(datos.map((d) => d.ficha?.empresa || "Sin empresa")));
+  const empresasResultados = Array.from(new Set(datos.map((d) => d.ficha?.empresa || "Sin empresa")));
 
   // Aplica el filtro según el rol
   const datosMostrados = datos.filter(
@@ -469,7 +473,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
             className="input"
           >
             <option value="todas">Todas</option>
-            {empresas.map((e, idx) => (
+            {empresasResultados.map((e, idx) => (
               <option key={idx} value={e}>{e}</option>
             ))}
           </select>
@@ -502,6 +506,9 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
         <TabsTrigger value="informe">Informe completo</TabsTrigger>
         {!soloGenerales && (
           <TabsTrigger value="admin">Eliminar encuestas</TabsTrigger>
+        )}
+        {!soloGenerales && (
+          <TabsTrigger value="empresas">Empresas</TabsTrigger>
         )}
       </TabsList>
 
@@ -840,6 +847,11 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
                 </button>
               </>
             )}
+          </TabsContent>
+        )}
+        {!soloGenerales && (
+          <TabsContent value="empresas">
+            <AdminEmpresas empresas={empresasConfig} credenciales={credenciales} onAgregar={onAgregarEmpresa || (()=>{})} />
           </TabsContent>
         )}
       </Tabs>
