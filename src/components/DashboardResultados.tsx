@@ -98,6 +98,15 @@ const categoriasFicha = [
   { key: "horasDiarias", label: "Horas diarias establecidas" },
 ] as const;
 
+const coloresAzulFicha = [
+  "#1e3a8a",
+  "#2563eb",
+  "#3b82f6",
+  "#60a5fa",
+  "#93c5fd",
+  "#bfdbfe",
+];
+
 export default function DashboardResultados({ soloGenerales, empresaFiltro, onBack }: Props) {
   const [datos, setDatos] = useState<any[]>([]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState(empresaFiltro || "todas");
@@ -275,69 +284,26 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     "extra"
   );
 
-  function promediosPorFicha(
-    datos: any[],
-    keyResultado: string,
-    keyFicha: string,
-    niveles: string[]
-  ) {
-    const grupos = Array.from(
-      new Set(datos.map((d) => d.ficha?.[keyFicha] ?? "Sin dato"))
-    );
-    const resultado: { nombre: string; indice: number; nivel: string }[] = [];
-    grupos.forEach((valor) => {
-      const indices = datos
-        .filter((d) => (d.ficha?.[keyFicha] ?? "Sin dato") === valor)
-        .map((d) => {
-          const r = d[keyResultado];
-          const nivelRes =
-            r?.total?.nivel ?? r?.nivelTotal ?? r?.nivelGlobal ?? r?.nivel;
-          const nivel =
-            nivelRes === "Sin riesgo" ? "Riesgo muy bajo" : nivelRes ?? "";
-          return niveles.indexOf(nivel);
-        })
-        .filter((n) => n >= 0);
-      const promedio =
-        indices.length > 0
-          ? Math.round((indices.reduce((a, b) => a + b, 0) / indices.length) * 10) /
-            10
-          : 0;
-      const nivel = niveles[Math.round(promedio)] ?? "No clasificado";
-      resultado.push({ nombre: valor, indice: promedio, nivel });
-    });
-    return resultado;
+
+
+  function conteosPorFicha(datos: any[], keyFicha: string) {
+    const grupos = Array.from(new Set(datos.map((d) => d.ficha?.[keyFicha] ?? "Sin dato")));
+    return grupos.map((valor) => ({
+      nombre: valor,
+      cantidad: datos.filter((d) => (d.ficha?.[keyFicha] ?? "Sin dato") === valor).length,
+    }));
   }
 
-  const fichaPromediosA: Record<string, any[]> = {};
-  const fichaPromediosB: Record<string, any[]> = {};
-  const fichaPromediosExtra: Record<string, any[]> = {};
-  const fichaPromediosEstres: Record<string, any[]> = {};
+  const fichaConteosA: Record<string, any[]> = {};
+  const fichaConteosB: Record<string, any[]> = {};
+  const fichaConteosExtra: Record<string, any[]> = {};
+  const fichaConteosEstres: Record<string, any[]> = {};
 
   categoriasFicha.forEach((cat) => {
-    fichaPromediosA[cat.key] = promediosPorFicha(
-      datosA,
-      "resultadoFormaA",
-      cat.key,
-      nivelesForma
-    );
-    fichaPromediosB[cat.key] = promediosPorFicha(
-      datosB,
-      "resultadoFormaB",
-      cat.key,
-      nivelesForma
-    );
-    fichaPromediosExtra[cat.key] = promediosPorFicha(
-      datosExtra,
-      "resultadoExtralaboral",
-      cat.key,
-      nivelesExtra
-    );
-    fichaPromediosEstres[cat.key] = promediosPorFicha(
-      datosEstres,
-      "resultadoEstres",
-      cat.key,
-      nivelesEstres
-    );
+    fichaConteosA[cat.key] = conteosPorFicha(datosA, cat.key);
+    fichaConteosB[cat.key] = conteosPorFicha(datosB, cat.key);
+    fichaConteosExtra[cat.key] = conteosPorFicha(datosExtra, cat.key);
+    fichaConteosEstres[cat.key] = conteosPorFicha(datosEstres, cat.key);
   });
 
 
@@ -649,6 +615,47 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     );
   }
 
+  function GraficaBarraCategorias({
+    datos,
+    titulo,
+    chartType,
+  }: {
+    datos: any[];
+    titulo: string;
+    chartType: "bar" | "histogram" | "pie";
+  }) {
+    return (
+      <div className="flex-1 min-h-[450px]">
+        <h4 className="font-bold mb-2 text-cogent-blue">{titulo}</h4>
+        <ResponsiveContainer width="100%" height={450}>
+          {chartType === "pie" ? (
+            <PieChart>
+              <Pie data={datos} dataKey="cantidad" nameKey="nombre" label>
+                {datos.map((_, i) => (
+                  <Cell key={i} fill={coloresAzulFicha[i % coloresAzulFicha.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          ) : (
+            <BarChart data={datos} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
+              <XAxis dataKey="nombre" interval={0} angle={-18} textAnchor="end" height={70} />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="cantidad" name="Cantidad">
+                {datos.map((_, i) => (
+                  <Cell key={i} fill={coloresAzulFicha[i % coloresAzulFicha.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          )}
+        </ResponsiveContainer>
+      </div>
+    );
+  }
+
   // ---- Pestañas ----
   return (
     <div className="max-w-6xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-xl mt-8 flex flex-col gap-8">
@@ -730,16 +737,16 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
                   <TabsContent key={c.key} value={c.key}>
                     <div className="grid md:grid-cols-2 gap-4">
                       {datosA.length > 0 && (
-                        <GraficaBarra resumen={fichaPromediosA[c.key]} titulo={`Forma A - ${c.label}`} chartType={chartType} />
+                        <GraficaBarraCategorias datos={fichaConteosA[c.key]} titulo={`Forma A - ${c.label}`} chartType={chartType} />
                       )}
                       {datosB.length > 0 && (
-                        <GraficaBarra resumen={fichaPromediosB[c.key]} titulo={`Forma B - ${c.label}`} chartType={chartType} />
+                        <GraficaBarraCategorias datos={fichaConteosB[c.key]} titulo={`Forma B - ${c.label}`} chartType={chartType} />
                       )}
                       {datosExtra.length > 0 && (
-                        <GraficaBarra resumen={fichaPromediosExtra[c.key]} titulo={`Extralaboral - ${c.label}`} chartType={chartType} />
+                        <GraficaBarraCategorias datos={fichaConteosExtra[c.key]} titulo={`Extralaboral - ${c.label}`} chartType={chartType} />
                       )}
                       {datosEstres.length > 0 && (
-                        <GraficaBarra resumen={fichaPromediosEstres[c.key]} titulo={`Estrés - ${c.label}`} chartType={chartType} />
+                        <GraficaBarraCategorias datos={fichaConteosEstres[c.key]} titulo={`Estrés - ${c.label}`} chartType={chartType} />
                       )}
                     </div>
                   </TabsContent>
