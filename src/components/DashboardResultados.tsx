@@ -309,6 +309,14 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
     );
   }, [empresaSeleccionada, datos]);
 
+  const allHeaders = useMemo(
+    () =>
+      Array.from(
+        new Set(datosInforme.flatMap((fila) => Object.keys(fila)))
+      ),
+    [datosInforme]
+  );
+
 
   // ---- Exportar a Excel ----
   const handleExportar = () => {
@@ -371,7 +379,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
           }));
 
     const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(filas);
+    const ws = XLSX.utils.json_to_sheet(filas, { header: allHeaders });
     XLSX.utils.book_append_sheet(wb, ws, "Resultados");
     XLSX.writeFile(wb, "resultados.xlsx");
   };
@@ -382,7 +390,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
       (f) => empresaSeleccionada === "todas" || f.Empresa === empresaSeleccionada
     );
     if (filas.length === 0) return;
-    const headers = Object.keys(filas[0]);
+    const headers = allHeaders;
     const table = document.createElement("table");
     table.style.visibility = "hidden";
     const thead = table.createTHead();
@@ -720,7 +728,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
               <table className="w-full text-xs border mt-2">
                 <thead className="bg-cogent-blue text-white">
                   <tr>
-                    {Object.keys(datosInforme[0]).map((h, idx) => (
+                    {allHeaders.map((h, idx) => (
                       <th key={idx} className="px-2 py-1">
                         {h}
                       </th>
@@ -730,7 +738,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, onBa
                 <tbody>
                   {datosInforme.map((fila, i) => (
                     <tr key={i} className="border-b">
-                      {Object.keys(datosInforme[0]).map((h, idx) => (
+                      {allHeaders.map((h, idx) => (
                         <td key={idx} className="px-2 py-1">
                           {fila[h] ?? ""}
                         </td>
