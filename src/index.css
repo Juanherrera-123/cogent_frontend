@@ -76,3 +76,20 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .input {
+    background-color: white;
+    border-radius: 10px;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border-main);
+  }
+
+  .input:focus {
+    border-color: var(--primary-gradient-to);
+  }
+
+  .input::placeholder {
+    color: var(--gray-light);
+  }
+}
