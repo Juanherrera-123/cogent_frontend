@@ -460,8 +460,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
   // ---- Render tablas individuales (solo para psicóloga) ----
   // ---- Pestañas ----
   return (
-    <div className="max-w-6xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-xl mt-8 flex flex-col gap-8">
-        <h2 className="text-2xl md:text-3xl font-bold text-cogent-blue mb-2 md:mb-4">Dashboard de Resultados</h2>
+    <div className="max-w-6xl mx-auto bg-[var(--background-main)] p-6 md:p-8 rounded-2xl shadow-xl mt-8 flex flex-col gap-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-main)] mb-2 md:mb-4">Dashboard de Resultados</h2>
 
         {/* Filtro empresa, solo para psicóloga */}
         {!empresaFiltro && (
@@ -564,7 +564,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             </TabsList>
             <TabsContent value="global">
               {datosA.length === 0
-                ? <div className="text-gray-500 py-4">No hay resultados de Forma A.</div>
+                ? <div className="text-[var(--gray-medium)] py-4">No hay resultados de Forma A.</div>
                 : (
                   <>
                     <GraficaBarraSimple resumen={resumenA} titulo="Niveles de Forma A" chartType={chartType} />
@@ -575,7 +575,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             </TabsContent>
             <TabsContent value="dominios">
               {datosA.length === 0
-                ? <div className="text-gray-500 py-4">No hay datos para dominios.</div>
+                ? <div className="text-[var(--gray-medium)] py-4">No hay datos para dominios.</div>
                 : (
                   <>
                     <GraficaBarra
@@ -596,7 +596,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             </TabsContent>
             <TabsContent value="dimensiones">
               {datosA.length === 0
-                ? <div className="text-gray-500 py-4">No hay datos para dimensiones.</div>
+                ? <div className="text-[var(--gray-medium)] py-4">No hay datos para dimensiones.</div>
                 : (
                   <>
                     <GraficaBarra
@@ -628,7 +628,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             </TabsList>
             <TabsContent value="global">
               {datosB.length === 0
-                ? <div className="text-gray-500 py-4">No hay resultados de Forma B.</div>
+                ? <div className="text-[var(--gray-medium)] py-4">No hay resultados de Forma B.</div>
                 : (
                   <>
                     <GraficaBarraSimple resumen={resumenB} titulo="Niveles de Forma B" chartType={chartType} />
@@ -639,7 +639,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             </TabsContent>
             <TabsContent value="dominios">
               {datosB.length === 0
-                ? <div className="text-gray-500 py-4">No hay datos para dominios.</div>
+                ? <div className="text-[var(--gray-medium)] py-4">No hay datos para dominios.</div>
                 : (
                   <>
                     <GraficaBarra
@@ -660,7 +660,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             </TabsContent>
             <TabsContent value="dimensiones">
               {datosB.length === 0
-                ? <div className="text-gray-500 py-4">No hay datos para dimensiones.</div>
+                ? <div className="text-[var(--gray-medium)] py-4">No hay datos para dimensiones.</div>
                 : (
                   <>
                     <GraficaBarra
@@ -691,7 +691,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             </TabsList>
             <TabsContent value="global">
               {datosExtra.length === 0
-                ? <div className="text-gray-500 py-4">No hay resultados Extralaborales.</div>
+                ? <div className="text-[var(--gray-medium)] py-4">No hay resultados Extralaborales.</div>
                 : (
                   <>
                     <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" chartType={chartType} />
@@ -702,7 +702,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             </TabsContent>
             <TabsContent value="dimensiones">
               {datosExtra.length === 0
-                ? <div className="text-gray-500 py-4">No hay datos para dimensiones.</div>
+                ? <div className="text-[var(--gray-medium)] py-4">No hay datos para dimensiones.</div>
                 : (
                   <>
                     <GraficaBarra
@@ -736,7 +736,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             </TabsList>
             <TabsContent value="A">
               {datosGlobalAE.length === 0 ? (
-                <div className="text-gray-500 py-4">No hay resultados Globales A.</div>
+                <div className="text-[var(--gray-medium)] py-4">No hay resultados Globales A.</div>
               ) : (
                 <>
                   <GraficaBarraSimple resumen={resumenGlobalAE} titulo="Niveles Global A + Extra" />
@@ -746,7 +746,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             </TabsContent>
             <TabsContent value="B">
               {datosGlobalBE.length === 0 ? (
-                <div className="text-gray-500 py-4">No hay resultados Globales B.</div>
+                <div className="text-[var(--gray-medium)] py-4">No hay resultados Globales B.</div>
               ) : (
                 <>
                   <GraficaBarraSimple resumen={resumenGlobalBE} titulo="Niveles Global B + Extra" />
@@ -760,7 +760,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         {/* ---- ESTRÉS ---- */}
         <TabsContent value="estres">
           {datosEstres.length === 0
-            ? <div className="text-gray-500 py-4">No hay resultados de Estrés.</div>
+            ? <div className="text-[var(--gray-medium)] py-4">No hay resultados de Estrés.</div>
             : (
               <>
                 <GraficaBarraSimple resumen={resumenEstres} titulo="Niveles de Estrés" chartType={chartType} />
@@ -772,7 +772,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         {/* ---- INFORME COMPLETO ---- */}
         <TabsContent value="informe">
           {datosInforme.length === 0 ? (
-            <div className="text-gray-500 py-4">No hay datos para mostrar.</div>
+            <div className="text-[var(--gray-medium)] py-4">No hay datos para mostrar.</div>
           ) : (
             <div className="overflow-auto max-h-96">
               <table className="w-full text-xs border mt-2">
@@ -803,7 +803,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         {!soloGenerales && (
           <TabsContent value="admin">
             {datos.length === 0 ? (
-              <div className="text-gray-500 py-4">No hay encuestas almacenadas.</div>
+              <div className="text-[var(--gray-medium)] py-4">No hay encuestas almacenadas.</div>
             ) : (
               <>
                 <div className="overflow-x-auto">
