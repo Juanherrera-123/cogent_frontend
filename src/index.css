@@ -6,7 +6,7 @@
   :root {
     --primary-gradient-from: 222 63% 49%;
     --primary-gradient-to: 196 90% 56%;
-    --primary-light: 207 89% 88%;
+    --primary-light: 0 0% 100%;
     --primary-dark: 223 45% 20%;
     --background: var(--primary-light);
     --foreground: var(--primary-dark);
