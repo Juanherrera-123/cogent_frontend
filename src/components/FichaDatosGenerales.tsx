@@ -102,11 +102,29 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
   };
 
   return (
-    <form
-      className="max-w-2xl bg-white rounded-2xl shadow-xl p-8 flex flex-col gap-4"
-      onSubmit={handleSubmit}
-    >
-      <h2 className="text-2xl font-display text-primary-main mb-2">Ficha de Datos Generales</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#F4F8FA] to-[#FFFFFF] relative overflow-hidden px-2">
+      <svg
+        className="absolute left-0 top-0 opacity-10 w-[320px] h-[320px] -z-10"
+        viewBox="0 0 320 320"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="160" cy="160" r="140" fill="url(#grad1)" />
+        <defs>
+          <linearGradient id="grad1" x1="60" y1="30" x2="260" y2="260" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#2EC4FF" />
+            <stop offset="1" stopColor="#005DFF" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <form
+        className="bg-white rounded-3xl shadow-xl p-8 md:p-12 w-full max-w-2xl mx-auto animate-fadeIn flex flex-col gap-4 max-h-[80vh] overflow-y-auto"
+        onSubmit={handleSubmit}
+      >
+        <h2 className="text-2xl md:text-3xl font-bold text-[#132045] text-center mb-2 font-montserrat">
+          Ficha de Datos Generales
+        </h2>
       {/* Empresa */}
       <div>
         <label className="block mb-1 font-semibold text-text-main">Empresa*</label>
@@ -392,10 +410,11 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
       )}
       <button
         type="submit"
-        className="bg-primary-main text-white px-8 py-2 rounded-lg mt-4 font-bold shadow hover:bg-primary-light"
+        className="w-full py-4 rounded-xl font-bold text-lg text-white bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] shadow-lg mt-4 transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#2EC4FF]"
       >
         Continuar
       </button>
     </form>
+    </div>
   );
 }
