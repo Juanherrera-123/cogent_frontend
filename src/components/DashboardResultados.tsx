@@ -33,7 +33,8 @@ type Props = {
   empresas?: string[];
   credenciales?: CredencialEmpresa[];
   onAgregarEmpresa?: (nombre: string, usuario: string, password: string) => void;
-  onEditarEmpresa?: (empresa: string, usuario: string, password: string) => void;
+  onEditarCredencial?: (index: number, usuario: string, password: string) => void;
+
   onBack?: () => void;
 };
 
@@ -110,15 +111,8 @@ const categoriasFicha = [
 ] as const;
 
 
-export default function DashboardResultados({
-  soloGenerales,
-  empresaFiltro,
-  empresas: empresasConfig = [],
-  credenciales = [],
-  onAgregarEmpresa,
-  onEditarEmpresa,
-  onBack,
-}: Props) {
+
+export default function DashboardResultados({ soloGenerales, empresaFiltro, empresas: empresasConfig = [], credenciales = [], onAgregarEmpresa, onEditarCredencial, onBack }: Props) {
   const [datos, setDatos] = useState<any[]>([]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState(empresaFiltro || "todas");
   const [tab, setTab] = useState("general");
@@ -777,7 +771,7 @@ export default function DashboardResultados({
               empresas={empresasConfig}
               credenciales={credenciales}
               onAgregar={onAgregarEmpresa || (() => {})}
-              onEditar={onEditarEmpresa || (() => {})}
+              onEditar={onEditarCredencial || (() => {})}
             />
           </TabsContent>
         )}

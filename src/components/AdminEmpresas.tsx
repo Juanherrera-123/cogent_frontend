@@ -4,10 +4,21 @@ import { CredencialEmpresa } from "@/types";
 
 export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ empresas: string[]; credenciales: CredencialEmpresa[]; onAgregar: (nombre: string, usuario: string, password: string) => void; }) {
 
+export default function AdminEmpresas({
+  empresas,
+  credenciales,
+  onAgregar,
+  onEditar,
+}:{
+  empresas: string[];
+  credenciales: { usuario: string; empresa: string }[];
+  onAgregar: (nombre: string, usuario: string, password: string) => void;
+  onEditar: (index: number, usuario: string, password: string) => void;
+}) {
   const [nombre, setNombre] = useState("");
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
-  const [editingIdx, setEditingIdx] = useState<number | null>(null);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editUsuario, setEditUsuario] = useState("");
   const [editPassword, setEditPassword] = useState("");
 
@@ -19,20 +30,19 @@ export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ em
     setPassword("");
   };
 
-  const startEditar = (idx: number) => {
-    setEditingIdx(idx);
+  const startEdit = (idx: number) => {
+    setEditIndex(idx);
     setEditUsuario(credenciales[idx].usuario);
-    setEditPassword(credenciales[idx].password);
+    setEditPassword("");
   };
 
-  const cancelarEditar = () => {
-    setEditingIdx(null);
-  };
-
-  const guardarEditar = (empresa: string) => {
-    if (editingIdx === null) return;
-    onEditar(empresa, editUsuario.trim(), editPassword.trim());
-    setEditingIdx(null);
+  const handleGuardarEdicion = () => {
+    if (editIndex === null) return;
+    if (!editUsuario.trim() || !editPassword.trim()) return;
+    onEditar(editIndex, editUsuario.trim(), editPassword.trim());
+    setEditIndex(null);
+    setEditUsuario("");
+    setEditPassword("");
   };
 
   return (
@@ -44,7 +54,6 @@ export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ em
               <th>#</th>
               <th>Empresa</th>
               <th>Usuario</th>
-              <th>Contraseña</th>
               <th></th>
             </tr>
           </thead>
@@ -53,63 +62,82 @@ export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ em
               <tr key={idx} className="border-b">
                 <td className="px-2 py-1">{idx + 1}</td>
                 <td className="px-2 py-1">{c.empresa}</td>
-                <td className="px-2 py-1">
-                  {editingIdx === idx ? (
-                    <input
-                      className="input w-24 sm:w-auto"
-                      value={editUsuario}
-                      onChange={(e) => setEditUsuario(e.target.value)}
-                    />
-                  ) : (
-                    c.usuario
-                  )}
-                </td>
-                <td className="px-2 py-1">
-                  {editingIdx === idx ? (
-                    <input
-                      className="input w-24 sm:w-auto"
-                      value={editPassword}
-                      onChange={(e) => setEditPassword(e.target.value)}
-                    />
-                  ) : (
-                    c.password
-                  )}
-                </td>
+                <td className="px-2 py-1">{c.usuario}</td>
                 <td className="px-2 py-1 text-right">
-                  {editingIdx === idx ? (
-                    <>
-                      <button
-                        className="text-primary-main mr-2"
-                        onClick={() => guardarEditar(c.empresa)}
-                      >
-                        Guardar
-                      </button>
-                      <button className="text-red-600" onClick={cancelarEditar}>
-                        Cancelar
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      className="text-primary-main"
-                      onClick={() => startEditar(idx)}
-                    >
-                      Editar
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    className="text-primary-main underline"
+                    onClick={() => startEdit(idx)}
+                  >
+                    Editar
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div className="flex flex-wrap gap-2 items-center">
-        <input className="input flex-1" placeholder="Nombre empresa" value={nombre} onChange={(e)=>setNombre(e.target.value)} />
-        <input className="input flex-1" placeholder="Usuario" value={usuario} onChange={(e)=>setUsuario(e.target.value)} />
-        <input className="input flex-1" type="password" placeholder="Contraseña" value={password} onChange={(e)=>setPassword(e.target.value)} />
-        <button type="button" className="bg-primary-main text-white px-4 py-1 rounded-lg shadow" onClick={handleAgregar}>
-          Agregar
-        </button>
-      </div>
+      {editIndex === null ? (
+        <div className="flex flex-wrap gap-2 items-center">
+          <input
+            className="input flex-1"
+            placeholder="Nombre empresa"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+          />
+          <input
+            className="input flex-1"
+            placeholder="Usuario"
+            value={usuario}
+            onChange={(e) => setUsuario(e.target.value)}
+          />
+          <input
+            className="input flex-1"
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="button"
+            className="bg-primary-main text-white px-4 py-1 rounded-lg shadow"
+            onClick={handleAgregar}
+          >
+            Agregar
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-2 items-center">
+          <span className="font-semibold">{credenciales[editIndex].empresa}</span>
+          <input
+            className="input flex-1"
+            placeholder="Usuario"
+            value={editUsuario}
+            onChange={(e) => setEditUsuario(e.target.value)}
+          />
+          <input
+            className="input flex-1"
+            type="password"
+            placeholder="Contraseña"
+            value={editPassword}
+            onChange={(e) => setEditPassword(e.target.value)}
+          />
+          <button
+            type="button"
+            className="bg-primary-main text-white px-4 py-1 rounded-lg shadow"
+            onClick={handleGuardarEdicion}
+          >
+            Guardar
+          </button>
+          <button
+            type="button"
+            className="px-4 py-1 rounded-lg border"
+            onClick={() => setEditIndex(null)}
+          >
+            Cancelar
+          </button>
+        </div>
+      )}
     </div>
   );
 }

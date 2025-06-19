@@ -81,19 +81,15 @@ export default function App() {
     setCredenciales([...credencialesBase, ...extras]);
   };
 
-  const editarEmpresa = (
-    empresa: string,
+  const editarCredencial = (
+    index: number,
+
     usuario: string,
     password: string
   ) => {
     const extras = JSON.parse(localStorage.getItem("credencialesCogent") || "[]");
-    const idx = extras.findIndex((c: any) => c.empresa === empresa);
-    if (idx !== -1) {
-      extras[idx].usuario = usuario;
-      extras[idx].password = password;
-    } else {
-      extras.push({ usuario, password, rol: "dueno", empresa });
-    }
+    if (index < 0 || index >= extras.length) return;
+    extras[index] = { ...extras[index], usuario, password };
     localStorage.setItem("credencialesCogent", JSON.stringify(extras));
     setCredenciales([...credencialesBase, ...extras]);
   };
@@ -183,7 +179,8 @@ export default function App() {
         empresas={empresasIniciales}
         credenciales={credenciales.filter((c) => c.rol === "dueno")}
         onAgregarEmpresa={agregarEmpresa}
-        onEditarEmpresa={editarEmpresa}
+        onEditarCredencial={editarCredencial}
+
         onBack={() => setStep("inicio")}
       />
     );
