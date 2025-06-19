@@ -119,7 +119,9 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
       </svg>
 
       <form
+
         className="bg-white rounded-3xl shadow-xl p-8 md:p-12 w-full max-w-2xl mx-auto animate-fadeIn flex flex-col gap-4"
+
         onSubmit={handleSubmit}
       >
         <h2 className="text-2xl md:text-3xl font-bold text-[#132045] text-center mb-2 font-montserrat">
