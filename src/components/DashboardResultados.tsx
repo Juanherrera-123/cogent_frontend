@@ -124,7 +124,6 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
 
   const tabPill =
     "px-5 py-2 rounded-full font-semibold border border-[#B2E2FF] text-[#172349] shrink-0 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#38BDF8] data-[state=active]:to-[#265FF2]";
-
   
   useEffect(() => {
     const arr = JSON.parse(localStorage.getItem("resultadosCogent") || "[]");
@@ -510,7 +509,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
       {/* Tabs/Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="w-full">
 
-      <TabsList className="mt-6 mb-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+      <TabsList className="mt-8 mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
 
         <TabsTrigger className={tabPill} value="general">General</TabsTrigger>
         <TabsTrigger className={tabPill} value="formaA">Forma A (Intralaboral)</TabsTrigger>
@@ -530,7 +529,9 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         {/* ---- GENERAL ---- */}
         <TabsContent value="general">
           <Tabs value={tabGeneral} onValueChange={setTabGeneral} className="w-full">
-            <TabsList className="mb-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+
+            <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+
               <TabsTrigger className={tabPill} value="resumen">Resultados</TabsTrigger>
               <TabsTrigger className={tabPill} value="ficha">Ficha técnica</TabsTrigger>
             </TabsList>
@@ -552,7 +553,9 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             </TabsContent>
             <TabsContent value="ficha">
               <Tabs value={categoriaFicha} onValueChange={setCategoriaFicha} className="w-full">
-                <TabsList className="mb-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+
+                <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+
                   {categoriasFicha.map((c) => (
                     <TabsTrigger className={tabPill} key={c.key} value={c.key}>{c.label}</TabsTrigger>
                   ))}
@@ -573,7 +576,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         <TabsContent value="formaA">
           <Tabs value={tabIntra} onValueChange={setTabIntra} className="w-full">
 
-            <TabsList className="mb-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+            <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
 
               <TabsTrigger className={tabPill} value="global">Global</TabsTrigger>
               <TabsTrigger className={tabPill} value="dominios">Por Dominio</TabsTrigger>
@@ -639,7 +642,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         <TabsContent value="formaB">
           <Tabs value={tabIntra} onValueChange={setTabIntra} className="w-full">
 
-            <TabsList className="mb-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+            <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
 
               <TabsTrigger className={tabPill} value="global">Global</TabsTrigger>
               <TabsTrigger className={tabPill} value="dominios">Por Dominio</TabsTrigger>
@@ -705,7 +708,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         <TabsContent value="extralaboral">
           <Tabs value={tabExtra} onValueChange={setTabExtra} className="w-full">
 
-            <TabsList className="mb-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+            <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
 
               <TabsTrigger className={tabPill} value="global">Global</TabsTrigger>
               <TabsTrigger className={tabPill} value="dimensiones">Por Dimensión</TabsTrigger>
@@ -751,8 +754,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             onValueChange={setTabGlobalExtra}
             className="w-full"
           >
-
-            <TabsList className="mb-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+            <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
 
               <TabsTrigger className={tabPill} value="A">Forma A</TabsTrigger>
               <TabsTrigger className={tabPill} value="B">Forma B</TabsTrigger>
