@@ -557,7 +557,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             <TabsContent value="ficha">
               <Tabs value={categoriaFicha} onValueChange={setCategoriaFicha} className="w-full">
 
-                <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+                <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
 
                   {categoriasFicha.map((c) => (
                     <TabsTrigger className={tabPill} key={c.key} value={c.key}>{c.label}</TabsTrigger>
