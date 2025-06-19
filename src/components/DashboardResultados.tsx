@@ -532,49 +532,25 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
 
         {/* ---- GENERAL ---- */}
         <TabsContent value="general">
+          <GeneralResultsTabs
+            value={tabGeneral}
+            onChange={setTabGeneral}
+            tabClass={tabPill}
+            chartType={chartType}
+            datosA={datosA}
+            datosB={datosB}
+            datosExtra={datosExtra}
+            datosEstres={datosEstres}
+            resumenA={resumenA}
+            resumenB={resumenB}
+            resumenExtra={resumenExtra}
+            resumenEstres={resumenEstres}
+            categoriaFicha={categoriaFicha}
+            onCategoriaChange={setCategoriaFicha}
+            categoriasFicha={categoriasFicha}
+            fichaConteos={fichaConteosGlobal}
+          />
 
-          <Tabs value={tabGeneral} onValueChange={setTabGeneral} className="w-full">
-
-            <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
-
-              <TabsTrigger className={tabPill} value="resumen">Resultados</TabsTrigger>
-              <TabsTrigger className={tabPill} value="ficha">Ficha técnica</TabsTrigger>
-            </TabsList>
-            <TabsContent value="resumen">
-              <div className="grid md:grid-cols-2 gap-4">
-                {datosA.length > 0 && (
-                  <GraficaBarraSimple resumen={resumenA} titulo="Niveles de Forma A" chartType={chartType} />
-                )}
-                {datosB.length > 0 && (
-                  <GraficaBarraSimple resumen={resumenB} titulo="Niveles de Forma B" chartType={chartType} />
-                )}
-                {datosExtra.length > 0 && (
-                  <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" chartType={chartType} />
-                )}
-                {datosEstres.length > 0 && (
-                  <GraficaBarraSimple resumen={resumenEstres} titulo="Niveles de Estrés" chartType={chartType} />
-                )}
-              </div>
-            </TabsContent>
-            <TabsContent value="ficha">
-              <Tabs value={categoriaFicha} onValueChange={setCategoriaFicha} className="w-full">
-
-                <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
-
-                  {categoriasFicha.map((c) => (
-                    <TabsTrigger className={tabPill} key={c.key} value={c.key}>{c.label}</TabsTrigger>
-                  ))}
-                </TabsList>
-                {categoriasFicha.map((c) => (
-                  <TabsContent key={c.key} value={c.key}>
-                    <div className="grid gap-4">
-                      <GraficaBarraCategorias datos={fichaConteosGlobal[c.key]} titulo={c.label} chartType={chartType} />
-                    </div>
-                  </TabsContent>
-                ))}
-              </Tabs>
-            </TabsContent>
-          </Tabs>
         </TabsContent>
 
         {/* ---- FORMA A ---- */}
