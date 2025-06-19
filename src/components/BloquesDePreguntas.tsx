@@ -187,8 +187,7 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
           </button>
         )}
         <button
-
-          className="btn-primary"
+          className="px-6 py-3 rounded-[16px] font-bold text-white bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] shadow transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#2EC4FF]"
           onClick={handleSiguiente}
         >
           {bloqueActual === bloques.length - 1 ? "Finalizar" : "Siguiente"}
