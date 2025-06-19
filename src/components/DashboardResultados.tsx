@@ -12,8 +12,9 @@ import TablaDominios from "@/components/TablaDominios";
 import TablaDimensiones from "@/components/TablaDimensiones";
 import GraficaBarra from "@/components/GraficaBarra";
 import GraficaBarraSimple from "@/components/GraficaBarraSimple";
-import GraficaBarraCategorias from "@/components/GraficaBarraCategorias";
 import AdminEmpresas from "@/components/AdminEmpresas";
+import GeneralResultsTabs from "@/components/dashboard/GeneralResultsTabs";
+import FormaTabs from "@/components/dashboard/FormaTabs";
 import LogoCogent from "/logo_forma.png";
 import { FileDown, FileText, Home as HomeIcon } from "lucide-react";
 
@@ -510,6 +511,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
       <Tabs value={tab} onValueChange={setTab} className="w-full">
 
       <TabsList className="mt-8 mb-2 py-2 px-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+
         <TabsTrigger className={tabPill} value="informe">Informe completo</TabsTrigger>
         {!soloGenerales && (
           <TabsTrigger className={tabPill} value="admin">Eliminar encuestas</TabsTrigger>
@@ -518,6 +520,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
           <TabsTrigger className={tabPill} value="empresas">Empresas</TabsTrigger>
         )}
       </TabsList>
+
       <TabsList className="mb-6 py-2 px-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
         <TabsTrigger className={tabPill} value="general">General</TabsTrigger>
         <TabsTrigger className={tabPill} value="formaA">Forma A (Intralaboral)</TabsTrigger>
@@ -529,6 +532,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
 
         {/* ---- GENERAL ---- */}
         <TabsContent value="general">
+
           <Tabs value={tabGeneral} onValueChange={setTabGeneral} className="w-full">
 
             <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -575,141 +579,47 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
 
         {/* ---- FORMA A ---- */}
         <TabsContent value="formaA">
-          <Tabs value={tabIntra} onValueChange={setTabIntra} className="w-full">
-
-            <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
-
-              <TabsTrigger className={tabPill} value="global">Global</TabsTrigger>
-              <TabsTrigger className={tabPill} value="dominios">Por Dominio</TabsTrigger>
-              <TabsTrigger className={tabPill} value="dimensiones">Por Dimensión</TabsTrigger>
-            </TabsList>
-            <TabsContent value="global">
-              {datosA.length === 0
-                ? <div className="text-[var(--gray-medium)] py-4">No hay resultados de Forma A.</div>
-                : (
-                  <>
-                    <GraficaBarraSimple resumen={resumenA} titulo="Niveles de Forma A" chartType={chartType} />
-                    {!soloGenerales && <TablaIndividual datos={datosA} tipo="formaA" />}
-                  </>
-                )
-              }
-            </TabsContent>
-            <TabsContent value="dominios">
-              {datosA.length === 0
-                ? <div className="text-[var(--gray-medium)] py-4">No hay datos para dominios.</div>
-                : (
-                  <>
-                    <GraficaBarra
-                      resumen={promediosDominiosA}
-                      titulo="Promedio de Puntaje Transformado por Dominio"
-                      chartType={chartType}
-                    />
-                    {!soloGenerales && (
-                      <TablaDominios
-                        datos={datosA}
-                        dominios={dominiosA}
-                        keyResultado="resultadoFormaA"
-                      />
-                    )}
-                  </>
-                )
-              }
-            </TabsContent>
-            <TabsContent value="dimensiones">
-              {datosA.length === 0
-                ? <div className="text-[var(--gray-medium)] py-4">No hay datos para dimensiones.</div>
-                : (
-                  <>
-                    <GraficaBarra
-                      resumen={promediosDimensionesA}
-                      titulo="Promedio de Puntaje Transformado por Dimensión"
-                      chartType={chartType}
-                    />
-                    {!soloGenerales && (
-                      <TablaDimensiones
-                        datos={datosA}
-                        dimensiones={dimensionesA}
-                        keyResultado="resultadoFormaA"
-                      />
-                    )}
-                  </>
-                )
-              }
-            </TabsContent>
-          </Tabs>
+          <FormaTabs
+            value={tabIntra}
+            onChange={setTabIntra}
+            datos={datosA}
+            resumen={resumenA}
+            promediosDominios={promediosDominiosA}
+            promediosDimensiones={promediosDimensionesA}
+            dominios={dominiosA}
+            dimensiones={dimensionesA}
+            chartType={chartType}
+            tabClass={tabPill}
+            soloGenerales={soloGenerales}
+            tipo="formaA"
+            keyResultado="resultadoFormaA"
+          />
         </TabsContent>
 
         {/* ---- FORMA B ---- */}
         <TabsContent value="formaB">
-          <Tabs value={tabIntra} onValueChange={setTabIntra} className="w-full">
-
-            <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
-
-              <TabsTrigger className={tabPill} value="global">Global</TabsTrigger>
-              <TabsTrigger className={tabPill} value="dominios">Por Dominio</TabsTrigger>
-              <TabsTrigger className={tabPill} value="dimensiones">Por Dimensión</TabsTrigger>
-            </TabsList>
-            <TabsContent value="global">
-              {datosB.length === 0
-                ? <div className="text-[var(--gray-medium)] py-4">No hay resultados de Forma B.</div>
-                : (
-                  <>
-                    <GraficaBarraSimple resumen={resumenB} titulo="Niveles de Forma B" chartType={chartType} />
-                    {!soloGenerales && <TablaIndividual datos={datosB} tipo="formaB" />}
-                  </>
-                )
-              }
-            </TabsContent>
-            <TabsContent value="dominios">
-              {datosB.length === 0
-                ? <div className="text-[var(--gray-medium)] py-4">No hay datos para dominios.</div>
-                : (
-                  <>
-                    <GraficaBarra
-                      resumen={promediosDominiosB}
-                      titulo="Promedio de Puntaje Transformado por Dominio"
-                      chartType={chartType}
-                    />
-                    {!soloGenerales && (
-                      <TablaDominios
-                        datos={datosB}
-                        dominios={dominiosB}
-                        keyResultado="resultadoFormaB"
-                      />
-                    )}
-                  </>
-                )
-              }
-            </TabsContent>
-            <TabsContent value="dimensiones">
-              {datosB.length === 0
-                ? <div className="text-[var(--gray-medium)] py-4">No hay datos para dimensiones.</div>
-                : (
-                  <>
-                    <GraficaBarra
-                      resumen={promediosDimensionesB}
-                      titulo="Promedio de Puntaje Transformado por Dimensión"
-                      chartType={chartType}
-                    />
-                    {!soloGenerales && (
-                      <TablaDimensiones
-                        datos={datosB}
-                        dimensiones={dimensionesB}
-                        keyResultado="resultadoFormaB"
-                      />
-                    )}
-                  </>
-                )
-              }
-            </TabsContent>
-          </Tabs>
+          <FormaTabs
+            value={tabIntra}
+            onChange={setTabIntra}
+            datos={datosB}
+            resumen={resumenB}
+            promediosDominios={promediosDominiosB}
+            promediosDimensiones={promediosDimensionesB}
+            dominios={dominiosB}
+            dimensiones={dimensionesB}
+            chartType={chartType}
+            tabClass={tabPill}
+            soloGenerales={soloGenerales}
+            tipo="formaB"
+            keyResultado="resultadoFormaB"
+          />
         </TabsContent>
 
         {/* ---- EXTRALABORAL ---- */}
         <TabsContent value="extralaboral">
           <Tabs value={tabExtra} onValueChange={setTabExtra} className="w-full">
 
-            <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+            <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
 
               <TabsTrigger className={tabPill} value="global">Global</TabsTrigger>
               <TabsTrigger className={tabPill} value="dimensiones">Por Dimensión</TabsTrigger>
@@ -755,7 +665,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             onValueChange={setTabGlobalExtra}
             className="w-full"
           >
-            <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+            <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
 
               <TabsTrigger className={tabPill} value="A">Forma A</TabsTrigger>
               <TabsTrigger className={tabPill} value="B">Forma B</TabsTrigger>
