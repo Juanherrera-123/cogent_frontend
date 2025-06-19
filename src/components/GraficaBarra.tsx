@@ -2,17 +2,25 @@ import React from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LabelList } from "recharts";
 
 const gradientes = {
-  "Riesgo muy bajo": { id: "riesgo-muy-bajo", from: "#a3e3b9", to: "#48C774" },
-  "Riesgo bajo": { id: "riesgo-bajo", from: "#92b0f4", to: "#2563EB" },
-  "Riesgo medio": { id: "riesgo-medio", from: "#9dc0fa", to: "#3B82F6" },
-  "Riesgo alto": { id: "riesgo-alto", from: "#afd2fc", to: "#60A5FA" },
-  "Riesgo muy alto": { id: "riesgo-muy-alto", from: "#ff9d97", to: "#FF3B30" },
+  "Riesgo muy bajo": { id: "riesgo-muy-bajo", from: "#bfdbfe", to: "#3b82f6" },
+  "Riesgo bajo": { id: "riesgo-bajo", from: "#bbf7d0", to: "#22c55e" },
+  "Riesgo medio": { id: "riesgo-medio", from: "#fef9c3", to: "#facc15" },
+  "Riesgo alto": { id: "riesgo-alto", from: "#fed7aa", to: "#f97316" },
+  "Riesgo muy alto": { id: "riesgo-muy-alto", from: "#fecaca", to: "#ef4444" },
 } as const;
 
-const colorPorNivel = Object.fromEntries(
+const baseColores = Object.fromEntries(
   Object.entries(gradientes).map(([nivel, g]) => [nivel, `url(#${g.id})`])
 ) as Record<keyof typeof gradientes, string>;
-const nivelesRiesgo = Object.keys(colorPorNivel);
+const colorPorNivel: Record<string, string> = {
+  ...baseColores,
+  "Muy bajo": baseColores["Riesgo muy bajo"],
+  Bajo: baseColores["Riesgo bajo"],
+  Medio: baseColores["Riesgo medio"],
+  Alto: baseColores["Riesgo alto"],
+  "Muy alto": baseColores["Riesgo muy alto"],
+};
+const nivelesRiesgo = Object.keys(gradientes);
 
 export default function GraficaBarra({
   resumen,
@@ -55,23 +63,10 @@ export default function GraficaBarra({
                 </linearGradient>
               ))}
             </defs>
-            <XAxis
-              dataKey="nombre"
-              interval={0}
-              angle={-18}
-              textAnchor="end"
-              height={70}
-              tick={{ fill: "var(--text-main)", fontSize: 12 }}
-            />
-            <YAxis
-              type="number"
-              domain={[0, 4]}
-              ticks={[0, 1, 2, 3, 4]}
-              tickFormatter={(v) => nivelesRiesgo[v]}
-              tick={{ fill: "var(--text-main)", fontSize: 12 }}
-            />
-            <Tooltip labelStyle={{ color: "var(--text-main)" }} itemStyle={{ color: "var(--text-main)" }} />
-            <Legend wrapperStyle={{ color: "var(--text-main)" }} />
+            <XAxis dataKey="nombre" interval={0} angle={-18} textAnchor="end" height={70} />
+            <YAxis type="number" domain={[0, 4]} ticks={[0, 1, 2, 3, 4]} tickFormatter={(v) => nivelesRiesgo[v]} />
+            <Tooltip />
+            <Legend />
             <Bar dataKey="indice" name="Nivel">
               <LabelList dataKey="nivel" position="top" />
               {resumen.map((d, i) => (
