@@ -1,6 +1,6 @@
 import React from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import GraficaBarraCategorias from "@/components/GraficaBarraCategorias";
+import GraficaBarraCategorias from "../GraficaBarraCategorias";
 
 export type CategoriaFicha = { key: string; label: string };
 
