@@ -1,13 +1,17 @@
 import React from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-const colores = [
-  "#48C774", // success
-  "#2563EB",
-  "#3B82F6",
-  "#60A5FA",
-  "#FF3B30", // error
-];
+const gradientes = {
+  "Riesgo muy bajo": { id: "riesgo-muy-bajo", from: "#a3e3b9", to: "#48C774" },
+  "Riesgo bajo": { id: "riesgo-bajo", from: "#92b0f4", to: "#2563EB" },
+  "Riesgo medio": { id: "riesgo-medio", from: "#9dc0fa", to: "#3B82F6" },
+  "Riesgo alto": { id: "riesgo-alto", from: "#afd2fc", to: "#60A5FA" },
+  "Riesgo muy alto": { id: "riesgo-muy-alto", from: "#ff9d97", to: "#FF3B30" },
+} as const;
+
+const colores = Object.fromEntries(
+  Object.entries(gradientes).map(([k, v]) => [k, `url(#${v.id})`])
+) as Record<keyof typeof gradientes, string>;
 
 export default function GraficaBarraSimple({
   resumen,
@@ -24,9 +28,17 @@ export default function GraficaBarraSimple({
       <ResponsiveContainer width="100%" height={450}>
         {chartType === "pie" ? (
           <PieChart>
+            <defs>
+              {Object.values(gradientes).map((g) => (
+                <linearGradient id={g.id} key={g.id} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={g.from} />
+                  <stop offset="100%" stopColor={g.to} />
+                </linearGradient>
+              ))}
+            </defs>
             <Pie data={resumen} dataKey="cantidad" nameKey="nivel" label>
-              {resumen.map((_, i) => (
-                <Cell key={i} fill={colores[i % colores.length]} />
+              {resumen.map((d, i) => (
+                <Cell key={i} fill={colores[d.nivel as keyof typeof colores]} />
               ))}
             </Pie>
             <Tooltip />
@@ -34,13 +46,21 @@ export default function GraficaBarraSimple({
           </PieChart>
         ) : (
           <BarChart data={resumen} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
+            <defs>
+              {Object.values(gradientes).map((g) => (
+                <linearGradient id={g.id} key={g.id} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={g.from} />
+                  <stop offset="100%" stopColor={g.to} />
+                </linearGradient>
+              ))}
+            </defs>
             <XAxis dataKey="nivel" />
             <YAxis allowDecimals={false} />
             <Tooltip />
             <Legend />
             <Bar dataKey="cantidad" name="Cantidad">
-              {resumen.map((_, i) => (
-                <Cell key={i} fill={colores[i % colores.length]} />
+              {resumen.map((d, i) => (
+                <Cell key={i} fill={colores[d.nivel as keyof typeof colores]} />
               ))}
             </Bar>
           </BarChart>
