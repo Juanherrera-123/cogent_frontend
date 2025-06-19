@@ -509,14 +509,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
       {/* Tabs/Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="w-full">
 
-      <TabsList className="mt-8 mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
-
-        <TabsTrigger className={tabPill} value="general">General</TabsTrigger>
-        <TabsTrigger className={tabPill} value="formaA">Forma A (Intralaboral)</TabsTrigger>
-        <TabsTrigger className={tabPill} value="formaB">Forma B (Intralaboral)</TabsTrigger>
-        <TabsTrigger className={tabPill} value="extralaboral">Extralaboral</TabsTrigger>
-        <TabsTrigger className={tabPill} value="globalExtra">Global Extra</TabsTrigger>
-        <TabsTrigger className={tabPill} value="estres">Estrés</TabsTrigger>
+      <TabsList className="mt-8 mb-2 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
         <TabsTrigger className={tabPill} value="informe">Informe completo</TabsTrigger>
         {!soloGenerales && (
           <TabsTrigger className={tabPill} value="admin">Eliminar encuestas</TabsTrigger>
@@ -524,6 +517,14 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         {!soloGenerales && (
           <TabsTrigger className={tabPill} value="empresas">Empresas</TabsTrigger>
         )}
+      </TabsList>
+      <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+        <TabsTrigger className={tabPill} value="general">General</TabsTrigger>
+        <TabsTrigger className={tabPill} value="formaA">Forma A (Intralaboral)</TabsTrigger>
+        <TabsTrigger className={tabPill} value="formaB">Forma B (Intralaboral)</TabsTrigger>
+        <TabsTrigger className={tabPill} value="extralaboral">Extralaboral</TabsTrigger>
+        <TabsTrigger className={tabPill} value="globalExtra">Global Extra</TabsTrigger>
+        <TabsTrigger className={tabPill} value="estres">Estrés</TabsTrigger>
       </TabsList>
 
         {/* ---- GENERAL ---- */}
