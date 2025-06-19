@@ -68,3 +68,9 @@ You can adjust or add accounts by editing this file:
 - **Sonria**: `sonria` / `sonria123`
 - **Aeropuerto**: `aeropuerto` / `eldorado123`
 
+In the dashboard's **Empresas** tab you can review all stored credentials,
+including their passwords. Each entry provides **Editar** and **Eliminar**
+actions. **Eliminar** removes a custom credential from `localStorage` and the
+table instantly, while **Editar** lets you update the company name, username or
+password.
+
