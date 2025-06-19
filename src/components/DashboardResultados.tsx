@@ -687,8 +687,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             <div className="text-[var(--gray-medium)] py-4">No hay datos para mostrar.</div>
           ) : (
             <div className="overflow-auto max-h-96">
-              <table className="w-full text-xs border mt-2">
-                <thead className="bg-primary-main text-white">
+              <table className="w-full text-xs border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]">
+                <thead className="bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] text-white font-semibold">
                   <tr>
                     {allHeaders.map((h, idx) => (
                       <th key={idx} className="px-2 py-1">
@@ -719,8 +719,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             ) : (
               <>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-xs border mt-2">
-                    <thead className="bg-primary-main text-white">
+                  <table className="w-full text-xs border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]">
+                    <thead className="bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] text-white font-semibold">
                       <tr>
                         <th></th>
                         <th>#</th>
