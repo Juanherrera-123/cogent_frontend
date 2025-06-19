@@ -5,6 +5,7 @@ import FichaDatosGenerales from "./components/FichaDatosGenerales";
 import BloquesDePreguntas from "./components/BloquesDePreguntas";
 import DashboardResultados from "./components/DashboardResultados";
 import Login from "./components/Login";
+import HomePage from "./components/HomePage";
 import credencialesBase from "./config/credentials.json";
 import logoTexto from "./logo_texto.png";
 import {
@@ -135,21 +136,10 @@ export default function App() {
   // Vista Home
   if (step === "inicio") {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4 bg-[var(--background-main)]">
-        <img src={logoTexto} alt="COGENT" className="w-60 mb-2" />
-        <button
-          className="bg-primary-main text-white font-bold px-6 py-3 rounded-xl shadow hover:bg-primary-light mb-2"
-          onClick={() => setStep("consent")}
-        >
-          Iniciar nueva encuesta
-        </button>
-        <button
-          className="bg-cogent-gray text-primary-main font-bold px-6 py-3 rounded-xl shadow hover:bg-primary-main/10"
-          onClick={() => setStep("login")}
-        >
-          Ver resultados
-        </button>
-      </div>
+      <HomePage
+        onStartSurvey={() => setStep("consent")}
+        onViewResults={() => setStep("login")}
+      />
     );
   }
 
