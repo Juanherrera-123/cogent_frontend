@@ -32,10 +32,10 @@ export default function HomePage({ onStartSurvey, onViewResults }: Props) {
       />
 
       <h1 className="text-4xl md:text-5xl font-bold text-[#132045] text-center mb-2 font-montserrat animate-fadeIn">
-        Welcome to Cogent
+        Bienvenido a Cogent
       </h1>
       <p className="text-xl text-[#313B4A] mb-12 text-center max-w-md font-montserrat animate-fadeIn delay-150">
-        Professional risk assessment made simple and secure.
+        responde tu encuesta de riesgos de manera fácil, segura y completamente confidencial.
       </p>
 
       <div className="flex flex-col gap-6 w-full max-w-xs animate-fadeIn delay-300">
@@ -49,7 +49,7 @@ export default function HomePage({ onStartSurvey, onViewResults }: Props) {
               <path d="M11 7v8M7 11h8" />
             </svg>
           </span>
-          Start New Survey
+          Empezar Nueva Encuesta
         </button>
 
         <button
@@ -63,7 +63,7 @@ export default function HomePage({ onStartSurvey, onViewResults }: Props) {
               <rect x="15" y="13" width="3" height="3" rx="1" />
             </svg>
           </span>
-          View Results
+          Explorar Resultados
         </button>
       </div>
     </div>
