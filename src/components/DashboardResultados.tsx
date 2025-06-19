@@ -13,6 +13,12 @@ import TablaDimensiones from "@/components/TablaDimensiones";
 import GraficaBarra from "@/components/GraficaBarra";
 import GraficaBarraSimple from "@/components/GraficaBarraSimple";
 import AdminEmpresas from "@/components/AdminEmpresas";
+  onEditarEmpresa?: (
+    originalUsuario: string,
+    nombre: string,
+    usuario: string,
+    password: string
+  ) => void;
 import { CredencialEmpresa } from "@/types";
 import GeneralResultsTabs from "@/components/dashboard/GeneralResultsTabs";
 import FormaTabs from "@/components/dashboard/FormaTabs";
@@ -91,6 +97,7 @@ const dimensionesB = [
   "Demandas de la jornada de trabajo",
   "Recompensas derivadas de la pertenencia a la organización y del trabajo que se realiza",
   "Reconocimiento y compensación",
+  onEditarEmpresa,
 ];
 const dimensionesExtra = dimensionesExtralaboral.map((d) => d.nombre);
 
@@ -752,6 +759,7 @@ export default function DashboardResultados({
                           </td>
                           <td className="px-2 py-1">{i + 1}</td>
                           <td className="px-2 py-1">{d.ficha?.empresa}</td>
+              onEditar={onEditarEmpresa || (() => {})}
                           <td className="px-2 py-1">{d.ficha?.nombre}</td>
                           <td className="px-2 py-1">
                             {d.fecha ? new Date(d.fecha).toLocaleString() : ""}
