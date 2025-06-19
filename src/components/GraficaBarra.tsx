@@ -50,8 +50,8 @@ export default function GraficaBarra({
                 <Cell key={i} fill={colorPorNivel[d.nivel as keyof typeof colorPorNivel]} />
               ))}
             </Pie>
-            <Tooltip />
-            <Legend />
+            <Tooltip labelStyle={{ color: "var(--text-main)" }} itemStyle={{ color: "var(--text-main)" }} />
+            <Legend wrapperStyle={{ color: "var(--text-main)" }} />
           </PieChart>
         ) : (
           <BarChart data={resumen} barCategoryGap={chartType === "histogram" ? 0 : undefined}>

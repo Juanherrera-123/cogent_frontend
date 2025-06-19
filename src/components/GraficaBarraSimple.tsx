@@ -2,6 +2,7 @@ import React from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const gradientes = {
+
   "Riesgo muy bajo": { id: "riesgo-muy-bajo", from: "#bfdbfe", to: "#3b82f6" },
   "Riesgo bajo": { id: "riesgo-bajo", from: "#bbf7d0", to: "#22c55e" },
   "Riesgo medio": { id: "riesgo-medio", from: "#fef9c3", to: "#facc15" },
@@ -49,8 +50,8 @@ export default function GraficaBarraSimple({
                 <Cell key={i} fill={colores[d.nivel as keyof typeof colores]} />
               ))}
             </Pie>
-            <Tooltip />
-            <Legend />
+            <Tooltip labelStyle={{ color: "var(--text-main)" }} itemStyle={{ color: "var(--text-main)" }} />
+            <Legend wrapperStyle={{ color: "var(--text-main)" }} />
           </PieChart>
         ) : (
           <BarChart data={resumen} barCategoryGap={chartType === "histogram" ? 0 : undefined}>

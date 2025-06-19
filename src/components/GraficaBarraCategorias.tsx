@@ -1,13 +1,14 @@
 import React from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
+// Blue palette used for chart segments
 const coloresAzulFicha = [
-  "#48C774",
-  "#2563EB",
-  "#3B82F6",
-  "#60A5FA",
-  "#93C5FD",
-  "#FF3B30",
+  "#BBDEFB", // light blue
+  "#90CAF9",
+  "#64B5F6",
+  "#42A5F5",
+  "#2196F3",
+  "#1976D2", // dark blue
 ];
 
 export default function GraficaBarraCategorias({
@@ -30,15 +31,22 @@ export default function GraficaBarraCategorias({
                 <Cell key={i} fill={coloresAzulFicha[i % coloresAzulFicha.length]} />
               ))}
             </Pie>
-            <Tooltip />
-            <Legend />
+            <Tooltip labelStyle={{ color: "var(--text-main)" }} itemStyle={{ color: "var(--text-main)" }} />
+            <Legend wrapperStyle={{ color: "var(--text-main)" }} />
           </PieChart>
         ) : (
           <BarChart data={datos} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
-            <XAxis dataKey="nombre" interval={0} angle={-18} textAnchor="end" height={70} />
-            <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Legend />
+            <XAxis
+              dataKey="nombre"
+              interval={0}
+              angle={-18}
+              textAnchor="end"
+              height={70}
+              tick={{ fill: "var(--text-main)", fontSize: 12 }}
+            />
+            <YAxis allowDecimals={false} tick={{ fill: "var(--text-main)", fontSize: 12 }} />
+            <Tooltip labelStyle={{ color: "var(--text-main)" }} itemStyle={{ color: "var(--text-main)" }} />
+            <Legend wrapperStyle={{ color: "var(--text-main)" }} />
             <Bar dataKey="cantidad" name="Cantidad">
               {datos.map((_, i) => (
                 <Cell key={i} fill={coloresAzulFicha[i % coloresAzulFicha.length]} />
