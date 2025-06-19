@@ -5,19 +5,25 @@ export default function AdminEmpresas({
   empresas,
   credenciales,
   onAgregar,
-
-  onEliminar
+  onEliminar,
+  onEditar
 }: {
   empresas: string[];
-  credenciales: { usuario: string; empresa: string }[];
+  credenciales: { usuario: string; password: string; empresa: string }[];
   onAgregar: (nombre: string, usuario: string, password: string) => void;
   onEliminar: (usuario: string) => void;
-
+  onEditar: (
+    originalUsuario: string,
+    nombre: string,
+    usuario: string,
+    password: string
+  ) => void;
 }) {
   const [nombre, setNombre] = useState("");
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
-  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [editIdx, setEditIdx] = useState<number | null>(null);
+  const [editNombre, setEditNombre] = useState("");
   const [editUsuario, setEditUsuario] = useState("");
   const [editPassword, setEditPassword] = useState("");
 
@@ -53,31 +59,92 @@ export default function AdminEmpresas({
               <th>#</th>
               <th>Empresa</th>
               <th>Usuario</th>
-              <th className="w-28">Acciones</th>
+              <th>Contraseña</th>
+              <th className="w-32">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {credenciales.map((c, idx) => (
               <tr key={idx} className="border-b">
                 <td className="px-2 py-1">{idx + 1}</td>
-                <td className="px-2 py-1">{c.empresa}</td>
-                <td className="px-2 py-1">{c.usuario}</td>
                 <td className="px-2 py-1">
-                  <div className="flex gap-1">
-                    <button
-                      type="button"
-                      className="px-2 py-0.5 text-xs bg-yellow-400 rounded"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      type="button"
-                      className="px-2 py-0.5 text-xs bg-red-600 text-white rounded"
-                      onClick={() => onEliminar(c.usuario)}
-                    >
-                      Eliminar
-                    </button>
-                  </div>
+                  {editIdx === idx ? (
+                    <input
+                      className="input"
+                      value={editNombre}
+                      onChange={(e) => setEditNombre(e.target.value)}
+                    />
+                  ) : (
+                    c.empresa
+                  )}
+                </td>
+                <td className="px-2 py-1">
+                  {editIdx === idx ? (
+                    <input
+                      className="input"
+                      value={editUsuario}
+                      onChange={(e) => setEditUsuario(e.target.value)}
+                    />
+                  ) : (
+                    c.usuario
+                  )}
+                </td>
+                <td className="px-2 py-1">
+                  {editIdx === idx ? (
+                    <input
+                      className="input"
+                      type="text"
+                      value={editPassword}
+                      onChange={(e) => setEditPassword(e.target.value)}
+                    />
+                  ) : (
+                    c.password
+                  )}
+                </td>
+                <td className="px-2 py-1">
+                  {editIdx === idx ? (
+                    <div className="flex gap-1">
+                      <button
+                        type="button"
+                        className="px-2 py-0.5 text-xs bg-green-500 text-white rounded"
+                        onClick={() => {
+                          onEditar(c.usuario, editNombre, editUsuario, editPassword);
+                          setEditIdx(null);
+                        }}
+                      >
+                        Guardar
+                      </button>
+                      <button
+                        type="button"
+                        className="px-2 py-0.5 text-xs bg-gray-300 rounded"
+                        onClick={() => setEditIdx(null)}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-1">
+                      <button
+                        type="button"
+                        className="px-2 py-0.5 text-xs bg-yellow-400 rounded"
+                        onClick={() => {
+                          setEditIdx(idx);
+                          setEditNombre(c.empresa);
+                          setEditUsuario(c.usuario);
+                          setEditPassword(c.password);
+                        }}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        type="button"
+                        className="px-2 py-0.5 text-xs bg-red-600 text-white rounded"
+                        onClick={() => onEliminar(c.usuario)}
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}

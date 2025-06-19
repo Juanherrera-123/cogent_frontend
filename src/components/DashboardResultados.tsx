@@ -33,8 +33,13 @@ type Props = {
   empresas?: string[];
   credenciales?: CredencialEmpresa[];
   onAgregarEmpresa?: (nombre: string, usuario: string, password: string) => void;
-
   onEliminarEmpresa?: (usuario: string) => void;
+  onEditarEmpresa?: (
+    originalUsuario: string,
+    nombre: string,
+    usuario: string,
+    password: string
+  ) => void;
   onBack?: () => void;
 };
 
@@ -118,6 +123,7 @@ export default function DashboardResultados({
   credenciales = [],
   onAgregarEmpresa,
   onEliminarEmpresa,
+  onEditarEmpresa,
   onBack
 }: Props) {
   const [datos, setDatos] = useState<any[]>([]);
@@ -779,6 +785,7 @@ export default function DashboardResultados({
               credenciales={credenciales}
               onAgregar={onAgregarEmpresa || (() => {})}
               onEliminar={onEliminarEmpresa || (() => {})}
+              onEditar={onEditarEmpresa || (() => {})}
             />
           </TabsContent>
         )}
