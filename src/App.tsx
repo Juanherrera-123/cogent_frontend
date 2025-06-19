@@ -80,6 +80,13 @@ export default function App() {
     setCredenciales([...credencialesBase, ...extras]);
   };
 
+  const eliminarEmpresa = (usuario: string) => {
+    const extras = JSON.parse(localStorage.getItem("credencialesCogent") || "[]");
+    const filtradas = extras.filter((c: any) => c.usuario !== usuario);
+    localStorage.setItem("credencialesCogent", JSON.stringify(filtradas));
+    setCredenciales([...credencialesBase, ...filtradas]);
+  };
+
   // Cuando finaliza la encuesta (luego del bloque de estrés)
   useEffect(() => {
     if (step === "final") {
@@ -165,6 +172,7 @@ export default function App() {
         empresas={empresasIniciales}
         credenciales={credenciales.filter((c) => c.rol === "dueno")}
         onAgregarEmpresa={agregarEmpresa}
+        onEliminarEmpresa={eliminarEmpresa}
         onBack={() => setStep("inicio")}
       />
     );

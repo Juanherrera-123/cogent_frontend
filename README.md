@@ -68,3 +68,7 @@ You can adjust or add accounts by editing this file:
 - **Sonria**: `sonria` / `sonria123`
 - **Aeropuerto**: `aeropuerto` / `eldorado123`
 
+From the dashboard, each credential now shows **Editar** and **Eliminar** buttons.
+Use **Eliminar** to remove a custom credential; this deletes it from `localStorage`
+and from the table instantly.
+

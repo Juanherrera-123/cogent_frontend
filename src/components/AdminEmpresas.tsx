@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 
-export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ empresas: string[]; credenciales: { usuario: string; empresa: string }[]; onAgregar: (nombre: string, usuario: string, password: string) => void; }) {
+export default function AdminEmpresas({
+  empresas,
+  credenciales,
+  onAgregar,
+  onEliminar
+}: {
+  empresas: string[];
+  credenciales: { usuario: string; empresa: string }[];
+  onAgregar: (nombre: string, usuario: string, password: string) => void;
+  onEliminar: (usuario: string) => void;
+}) {
   const [nombre, setNombre] = useState("");
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
@@ -22,6 +32,7 @@ export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ em
               <th>#</th>
               <th>Empresa</th>
               <th>Usuario</th>
+              <th className="w-28">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -30,6 +41,23 @@ export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ em
                 <td className="px-2 py-1">{idx + 1}</td>
                 <td className="px-2 py-1">{c.empresa}</td>
                 <td className="px-2 py-1">{c.usuario}</td>
+                <td className="px-2 py-1">
+                  <div className="flex gap-1">
+                    <button
+                      type="button"
+                      className="px-2 py-0.5 text-xs bg-yellow-400 rounded"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      type="button"
+                      className="px-2 py-0.5 text-xs bg-red-600 text-white rounded"
+                      onClick={() => onEliminar(c.usuario)}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
