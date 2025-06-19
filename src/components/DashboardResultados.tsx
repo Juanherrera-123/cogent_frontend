@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 
 import * as XLSX from "xlsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -128,6 +128,7 @@ export default function DashboardResultados({
 }: Props) {
   const [datos, setDatos] = useState<any[]>([]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState(empresaFiltro || "todas");
+  const [empresaEliminar, setEmpresaEliminar] = useState("todas");
   const [tab, setTab] = useState("general");
   const [tabGeneral, setTabGeneral] = useState("resumen");
   const [categoriaFicha, setCategoriaFicha] = useState(categoriasFicha[0].key);
@@ -139,6 +140,7 @@ export default function DashboardResultados({
 
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
   const [seleccionados, setSeleccionados] = useState<number[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const tabPill =
     "px-5 py-2 rounded-full font-semibold border border-[#B2E2FF] text-[#172349] shrink-0 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#38BDF8] data-[state=active]:to-[#265FF2]";
@@ -155,6 +157,14 @@ export default function DashboardResultados({
   const datosMostrados = datos.filter(
     (d) =>
       (empresaSeleccionada === "todas" || d.ficha?.empresa === empresaSeleccionada)
+  );
+
+  const datosEliminar = useMemo(
+    () =>
+      datos.filter(
+        (d) => empresaEliminar === "todas" || d.ficha?.empresa === empresaEliminar
+      ),
+    [datos, empresaEliminar]
   );
 
   // ---- Agrupación por tipo de resultado ----
@@ -439,31 +449,11 @@ export default function DashboardResultados({
 
   // ---- Exportar a PDF ----
   const handleExportPDF = async () => {
-    const filas = gatherFlatResults().filter(
-      (f) => empresaSeleccionada === "todas" || f.Empresa === empresaSeleccionada
-    );
-    if (filas.length === 0) return;
-    const headers = allHeaders;
-    const table = document.createElement("table");
-    table.style.visibility = "hidden";
-    const thead = table.createTHead();
-    const headRow = thead.insertRow();
-    headers.forEach((h) => {
-      const th = document.createElement("th");
-      th.textContent = h;
-      headRow.appendChild(th);
-    });
-    const tbody = table.createTBody();
-    filas.forEach((fila) => {
-      const tr = tbody.insertRow();
-      headers.forEach((h) => {
-        const td = tr.insertCell();
-        td.textContent = fila[h] ?? "";
-      });
-    });
-    document.body.appendChild(table);
-    await exportElementToPDF(table, "resultados.pdf");
-    table.remove();
+    if (!containerRef.current) return;
+    const active = containerRef.current.querySelector('[data-state="active"]');
+    if (active) {
+      await exportElementToPDF(active as HTMLElement, "resultados.pdf");
+    }
   };
 
   const toggleSeleccion = (index: number) => {
@@ -480,12 +470,25 @@ export default function DashboardResultados({
     setSeleccionados([]);
   };
 
+  const eliminarPorEmpresa = () => {
+    const restantes =
+      empresaEliminar === "todas"
+        ? []
+        : datos.filter((d) => d.ficha?.empresa !== empresaEliminar);
+    setDatos(restantes);
+    localStorage.setItem("resultadosCogent", JSON.stringify(restantes));
+    setSeleccionados([]);
+  };
+
   // ---- Render tablas individuales (solo para psicóloga) ----
   // ---- Pestañas ----
   return (
 
     <div className="min-h-screen bg-gradient-to-b from-[#F7FAFF] to-[#EAF3FF] flex flex-col items-center py-10">
-      <div className="w-full max-w-7xl bg-white rounded-2xl shadow-xl p-8 md:p-10 flex flex-col gap-8">
+      <div
+        ref={containerRef}
+        className="w-full max-w-7xl bg-white rounded-2xl shadow-xl p-8 md:p-10 flex flex-col gap-8"
+      >
         <div className="flex items-center mb-4">
           <img src={LogoCogent} alt="COGENT logo" className="w-10 h-10 mr-3" />
           <h2 className="text-2xl md:text-3xl font-bold text-[#172349] font-montserrat">Dashboard de Resultados</h2>
@@ -735,6 +738,25 @@ export default function DashboardResultados({
               <div className="text-[var(--gray-medium)] py-4">No hay encuestas almacenadas.</div>
             ) : (
               <>
+                <div className="flex items-center gap-2 mb-2">
+                  <label className="font-semibold mr-2">Empresa:</label>
+                  <select
+                    value={empresaEliminar}
+                    onChange={(e) => setEmpresaEliminar(e.target.value)}
+                    className="rounded-xl border border-[#B2E2FF] p-2 text-[#265FF2] font-semibold"
+                  >
+                    <option value="todas">Todas</option>
+                    {empresasResultados.map((e, idx) => (
+                      <option key={idx} value={e}>{e}</option>
+                    ))}
+                  </select>
+                  <button
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-red-700"
+                    onClick={eliminarPorEmpresa}
+                  >
+                    Eliminar todo(s)
+                  </button>
+                </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]">
                     <thead className="bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] text-white font-semibold">
@@ -747,23 +769,26 @@ export default function DashboardResultados({
                       </tr>
                     </thead>
                     <tbody>
-                      {datos.map((d, i) => (
-                        <tr key={i} className="border-b">
-                          <td className="px-2 py-1 text-center">
-                            <input
-                              type="checkbox"
-                              checked={seleccionados.includes(i)}
-                              onChange={() => toggleSeleccion(i)}
-                            />
-                          </td>
-                          <td className="px-2 py-1">{i + 1}</td>
-                          <td className="px-2 py-1">{d.ficha?.empresa}</td>
-                          <td className="px-2 py-1">{d.ficha?.nombre}</td>
-                          <td className="px-2 py-1">
-                            {d.fecha ? new Date(d.fecha).toLocaleString() : ""}
-                          </td>
-                        </tr>
-                      ))}
+                      {datosEliminar.map((d, i) => {
+                        const idxOriginal = datos.indexOf(d);
+                        return (
+                          <tr key={idxOriginal} className="border-b">
+                            <td className="px-2 py-1 text-center">
+                              <input
+                                type="checkbox"
+                                checked={seleccionados.includes(idxOriginal)}
+                                onChange={() => toggleSeleccion(idxOriginal)}
+                              />
+                            </td>
+                            <td className="px-2 py-1">{i + 1}</td>
+                            <td className="px-2 py-1">{d.ficha?.empresa}</td>
+                            <td className="px-2 py-1">{d.ficha?.nombre}</td>
+                            <td className="px-2 py-1">
+                              {d.fecha ? new Date(d.fecha).toLocaleString() : ""}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
