@@ -1,6 +1,69 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 export default function TablaIndividual({ datos, tipo }: { datos: any[]; tipo: string }) {
+  const promedios = useMemo(() => {
+    const nivelesRiesgo = [
+      "Riesgo muy bajo",
+      "Riesgo bajo",
+      "Riesgo medio",
+      "Riesgo alto",
+      "Riesgo muy alto",
+    ];
+    const nivelesEstres = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto"];
+    const usarEstres = tipo === "estres";
+    const listaNiveles = usarEstres ? nivelesEstres : nivelesRiesgo;
+    let suma = 0;
+    let cuenta = 0;
+    const indices: number[] = [];
+    datos.forEach((d) => {
+      let puntaje: number | undefined;
+      let nivel: string | undefined;
+      if (tipo === "formaA") {
+        puntaje = d.resultadoFormaA?.total?.transformado;
+        nivel = d.resultadoFormaA?.total?.nivel;
+      } else if (tipo === "formaB") {
+        puntaje =
+          d.resultadoFormaB?.total?.transformado ??
+          d.resultadoFormaB?.puntajeTransformadoTotal ??
+          d.resultadoFormaB?.puntajeTransformado ??
+          d.resultadoFormaB?.puntajeTotalTransformado;
+        nivel =
+          d.resultadoFormaB?.total?.nivel ??
+          d.resultadoFormaB?.nivelTotal ??
+          d.resultadoFormaB?.nivel;
+      } else if (tipo === "extralaboral") {
+        puntaje = d.resultadoExtralaboral?.puntajeTransformadoTotal;
+        nivel = d.resultadoExtralaboral?.nivelGlobal;
+      } else if (tipo === "globalExtra") {
+        puntaje =
+          d.resultadoGlobalAExtralaboral?.puntajeGlobal ??
+          d.resultadoGlobalBExtralaboral?.puntajeGlobal;
+        nivel =
+          d.resultadoGlobalAExtralaboral?.nivelGlobal ??
+          d.resultadoGlobalBExtralaboral?.nivelGlobal;
+      } else if (tipo === "estres") {
+        puntaje = d.resultadoEstres?.puntajeTransformado;
+        nivel = d.resultadoEstres?.nivel;
+      }
+      if (typeof puntaje === "number") {
+        suma += puntaje;
+        cuenta += 1;
+      }
+      if (nivel) {
+        const n = nivel === "Sin riesgo" ? "Riesgo muy bajo" : nivel;
+        const idx = listaNiveles.indexOf(n);
+        if (idx >= 0) indices.push(idx);
+      }
+    });
+    const promPuntaje = cuenta ? Math.round((suma / cuenta) * 10) / 10 : "";
+    const promNivel =
+      indices.length > 0
+        ? listaNiveles[
+            Math.round(indices.reduce((a, b) => a + b, 0) / indices.length)
+          ]
+        : "";
+    return { puntaje: promPuntaje, nivel: promNivel };
+  }, [datos, tipo]);
   if (datos.length === 0) {
     return <div className="py-6 text-gray-400">No hay resultados individuales para mostrar.</div>;
   }
@@ -105,6 +168,44 @@ export default function TablaIndividual({ datos, tipo }: { datos: any[]; tipo: s
               <td>{d.fecha ? new Date(d.fecha).toLocaleString() : ""}</td>
             </tr>
           ))}
+          <tr className="font-semibold bg-gray-100">
+            <td></td>
+            <td>Promedio</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            {tipo === "formaA" && (
+              <>
+                <td>{promedios.puntaje}</td>
+                <td>{promedios.nivel}</td>
+              </>
+            )}
+            {tipo === "formaB" && (
+              <>
+                <td>{promedios.puntaje}</td>
+                <td>{promedios.nivel}</td>
+              </>
+            )}
+            {tipo === "extralaboral" && (
+              <>
+                <td>{promedios.puntaje}</td>
+                <td>{promedios.nivel}</td>
+              </>
+            )}
+            {tipo === "globalExtra" && (
+              <>
+                <td>{promedios.puntaje}</td>
+                <td>{promedios.nivel}</td>
+              </>
+            )}
+            {tipo === "estres" && (
+              <>
+                <td>{promedios.puntaje}</td>
+                <td>{promedios.nivel}</td>
+              </>
+            )}
+            <td></td>
+          </tr>
         </tbody>
       </table>
     </div>
