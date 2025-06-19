@@ -81,6 +81,23 @@ export default function App() {
     setCredenciales([...credencialesBase, ...extras]);
   };
 
+  const editarEmpresa = (
+    empresa: string,
+    usuario: string,
+    password: string
+  ) => {
+    const extras = JSON.parse(localStorage.getItem("credencialesCogent") || "[]");
+    const idx = extras.findIndex((c: any) => c.empresa === empresa);
+    if (idx !== -1) {
+      extras[idx].usuario = usuario;
+      extras[idx].password = password;
+    } else {
+      extras.push({ usuario, password, rol: "dueno", empresa });
+    }
+    localStorage.setItem("credencialesCogent", JSON.stringify(extras));
+    setCredenciales([...credencialesBase, ...extras]);
+  };
+
   // Cuando finaliza la encuesta (luego del bloque de estrés)
   useEffect(() => {
     if (step === "final") {
@@ -166,6 +183,7 @@ export default function App() {
         empresas={empresasIniciales}
         credenciales={credenciales.filter((c) => c.rol === "dueno")}
         onAgregarEmpresa={agregarEmpresa}
+        onEditarEmpresa={editarEmpresa}
         onBack={() => setStep("inicio")}
       />
     );
