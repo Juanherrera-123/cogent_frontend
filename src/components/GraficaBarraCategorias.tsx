@@ -1,13 +1,14 @@
 import React from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
+// Blue palette used for chart segments
 const coloresAzulFicha = [
-  "#48C774",
-  "#2563EB",
-  "#3B82F6",
-  "#60A5FA",
-  "#93C5FD",
-  "#FF3B30",
+  "#BBDEFB", // light blue
+  "#90CAF9",
+  "#64B5F6",
+  "#42A5F5",
+  "#2196F3",
+  "#1976D2", // dark blue
 ];
 
 export default function GraficaBarraCategorias({
