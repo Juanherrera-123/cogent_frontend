@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+import { CredencialEmpresa } from "@/types";
+
+
+export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ empresas: string[]; credenciales: CredencialEmpresa[]; onAgregar: (nombre: string, usuario: string, password: string) => void; }) {
 
 export default function AdminEmpresas({
   empresas,
@@ -44,7 +48,7 @@ export default function AdminEmpresas({
   return (
     <div className="flex flex-col gap-4">
       <div className="overflow-x-auto">
-        <table className="w-full text-xs border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]">
+        <table className="w-full text-xs sm:text-sm border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]">
           <thead className="bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] text-white font-semibold">
             <tr>
               <th>#</th>
