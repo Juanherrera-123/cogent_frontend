@@ -80,6 +80,37 @@ export default function App() {
     setCredenciales([...credencialesBase, ...extras]);
   };
 
+  const eliminarEmpresa = (usuario: string) => {
+    const extras = JSON.parse(localStorage.getItem("credencialesCogent") || "[]");
+    const filtradas = extras.filter((c: any) => c.usuario !== usuario);
+    localStorage.setItem("credencialesCogent", JSON.stringify(filtradas));
+    setCredenciales([...credencialesBase, ...filtradas]);
+  };
+
+  const editarEmpresa = (
+    originalUsuario: string,
+    nombre: string,
+    usuario: string,
+    password: string
+  ) => {
+    const extras = JSON.parse(localStorage.getItem("credencialesCogent") || "[]");
+    const nuevas = extras.map((c: any) =>
+      c.usuario === originalUsuario
+        ? { usuario, password, rol: "dueno", empresa: nombre }
+        : c
+    );
+    localStorage.setItem("credencialesCogent", JSON.stringify(nuevas));
+    setCredenciales([...credencialesBase, ...nuevas]);
+    const empresasGuardadas = JSON.parse(localStorage.getItem("empresasCogent") || "[]");
+    const anterior = extras.find((c: any) => c.usuario === originalUsuario)?.empresa;
+    let nuevasEmp = empresasGuardadas.filter((e: string) => e !== anterior);
+    if (!nuevasEmp.includes(nombre)) {
+      nuevasEmp.push(nombre);
+    }
+    setEmpresasIniciales(nuevasEmp);
+    localStorage.setItem("empresasCogent", JSON.stringify(nuevasEmp));
+  };
+
   // Cuando finaliza la encuesta (luego del bloque de estrés)
   useEffect(() => {
     if (step === "final") {
@@ -165,6 +196,8 @@ export default function App() {
         empresas={empresasIniciales}
         credenciales={credenciales.filter((c) => c.rol === "dueno")}
         onAgregarEmpresa={agregarEmpresa}
+        onEliminarEmpresa={eliminarEmpresa}
+        onEditarEmpresa={editarEmpresa}
         onBack={() => setStep("inicio")}
       />
     );
