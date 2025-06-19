@@ -1,13 +1,25 @@
 import React from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-const colores = [
-  "#48C774", // success
-  "#2563EB",
-  "#3B82F6",
-  "#60A5FA",
-  "#FF3B30", // error
-];
+const gradientes = {
+  "Riesgo muy bajo": { id: "riesgo-muy-bajo", from: "#bfdbfe", to: "#3b82f6" },
+  "Riesgo bajo": { id: "riesgo-bajo", from: "#bbf7d0", to: "#22c55e" },
+  "Riesgo medio": { id: "riesgo-medio", from: "#fef9c3", to: "#facc15" },
+  "Riesgo alto": { id: "riesgo-alto", from: "#fed7aa", to: "#f97316" },
+  "Riesgo muy alto": { id: "riesgo-muy-alto", from: "#fecaca", to: "#ef4444" },
+} as const;
+
+const coloresBase = Object.fromEntries(
+  Object.entries(gradientes).map(([k, v]) => [k, `url(#${v.id})`])
+) as Record<keyof typeof gradientes, string>;
+const colores: Record<string, string> = {
+  ...coloresBase,
+  "Muy bajo": coloresBase["Riesgo muy bajo"],
+  Bajo: coloresBase["Riesgo bajo"],
+  Medio: coloresBase["Riesgo medio"],
+  Alto: coloresBase["Riesgo alto"],
+  "Muy alto": coloresBase["Riesgo muy alto"],
+};
 
 export default function GraficaBarraSimple({
   resumen,
@@ -24,9 +36,17 @@ export default function GraficaBarraSimple({
       <ResponsiveContainer width="100%" height={450}>
         {chartType === "pie" ? (
           <PieChart>
+            <defs>
+              {Object.values(gradientes).map((g) => (
+                <linearGradient id={g.id} key={g.id} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={g.from} />
+                  <stop offset="100%" stopColor={g.to} />
+                </linearGradient>
+              ))}
+            </defs>
             <Pie data={resumen} dataKey="cantidad" nameKey="nivel" label>
-              {resumen.map((_, i) => (
-                <Cell key={i} fill={colores[i % colores.length]} />
+              {resumen.map((d, i) => (
+                <Cell key={i} fill={colores[d.nivel as keyof typeof colores]} />
               ))}
             </Pie>
             <Tooltip />
@@ -34,13 +54,21 @@ export default function GraficaBarraSimple({
           </PieChart>
         ) : (
           <BarChart data={resumen} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
+            <defs>
+              {Object.values(gradientes).map((g) => (
+                <linearGradient id={g.id} key={g.id} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={g.from} />
+                  <stop offset="100%" stopColor={g.to} />
+                </linearGradient>
+              ))}
+            </defs>
             <XAxis dataKey="nivel" />
             <YAxis allowDecimals={false} />
             <Tooltip />
             <Legend />
             <Bar dataKey="cantidad" name="Cantidad">
-              {resumen.map((_, i) => (
-                <Cell key={i} fill={colores[i % colores.length]} />
+              {resumen.map((d, i) => (
+                <Cell key={i} fill={colores[d.nivel as keyof typeof colores]} />
               ))}
             </Bar>
           </BarChart>
