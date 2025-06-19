@@ -103,13 +103,6 @@ export default function Login({ usuarios, onLogin, onCancel }: Props) {
           </button>
         )}
 
-        <div className="text-xs mt-2 text-[var(--gray-medium)]">
-          {usuarios.map((u) => (
-            <div key={u.usuario}>
-              <b>{u.rol === 'psicologa' ? 'Psicóloga' : u.empresa}</b>: {u.usuario} / {u.password}
-            </div>
-          ))}
-        </div>
       </form>
     </div>
   );
