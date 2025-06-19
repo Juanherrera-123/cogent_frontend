@@ -96,15 +96,15 @@ const nivelesExtra = nivelesRiesgo;
 const nivelesForma = nivelesRiesgo;
 
 const categoriasFicha = [
-  { key: "sexo", label: "Sexo biológico" },
+  { key: "sexo", label: "Género" },
   { key: "estadoCivil", label: "Estado civil" },
-  { key: "estudios", label: "Nivel de estudio" },
+  { key: "estudios", label: "Estudio" },
   { key: "estrato", label: "Estrato" },
   { key: "vivienda", label: "Vivienda" },
-  { key: "tipoCargo", label: "Tipo de cargo" },
-  { key: "tipoContrato", label: "Tipo de contrato" },
+  { key: "tipoCargo", label: "Cargo" },
+  { key: "tipoContrato", label: "Contrato" },
   { key: "tipoSalario", label: "Tipo de salario" },
-  { key: "horasDiarias", label: "Horas diarias establecidas" },
+  { key: "horasDiarias", label: "Horas diarias" },
 ] as const;
 
 
@@ -510,7 +510,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
       {/* Tabs/Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="w-full">
 
-      <TabsList className="mt-8 mb-2 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+      <TabsList className="mt-8 mb-2 py-2 px-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
 
         <TabsTrigger className={tabPill} value="informe">Informe completo</TabsTrigger>
         {!soloGenerales && (
@@ -520,8 +520,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
           <TabsTrigger className={tabPill} value="empresas">Empresas</TabsTrigger>
         )}
       </TabsList>
-      <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
 
+      <TabsList className="mb-6 py-2 px-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
         <TabsTrigger className={tabPill} value="general">General</TabsTrigger>
         <TabsTrigger className={tabPill} value="formaA">Forma A (Intralaboral)</TabsTrigger>
         <TabsTrigger className={tabPill} value="formaB">Forma B (Intralaboral)</TabsTrigger>
@@ -550,6 +550,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             categoriasFicha={categoriasFicha}
             fichaConteos={fichaConteosGlobal}
           />
+
         </TabsContent>
 
         {/* ---- FORMA A ---- */}
