@@ -111,9 +111,10 @@ const categoriasFicha = [
   { key: "estudios", label: "Estudio" },
   { key: "estrato", label: "Estrato" },
   { key: "vivienda", label: "Vivienda" },
+  { key: "antiguedad", label: "Antiguedad" },
   { key: "tipoCargo", label: "Cargo" },
   { key: "tipoContrato", label: "Contrato" },
-  { key: "tipoSalario", label: "Tipo de salario" },
+  { key: "tipoSalario", label: "Salario" },
   { key: "horasDiarias", label: "Horas diarias" },
 ] as const;
 
@@ -351,6 +352,30 @@ export default function DashboardResultados({
 
 
   function conteosPorFicha(datos: any[], keyFicha: string) {
+    if (keyFicha === "antiguedad") {
+      const grupos = Array.from(
+        new Set(
+          datos.map((d) =>
+            d.ficha
+              ? d.ficha.menosAnioEmpresa
+                ? "Menos de un año"
+                : "Más de un año"
+              : "Sin dato"
+          )
+        )
+      );
+      return grupos.map((valor) => ({
+        nombre: valor,
+        cantidad: datos.filter((d) => {
+          const v = d.ficha
+            ? d.ficha.menosAnioEmpresa
+              ? "Menos de un año"
+              : "Más de un año"
+            : "Sin dato";
+          return v === valor;
+        }).length,
+      }));
+    }
     const grupos = Array.from(new Set(datos.map((d) => d.ficha?.[keyFicha] ?? "Sin dato")));
     return grupos.map((valor) => ({
       nombre: valor,
