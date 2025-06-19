@@ -41,8 +41,8 @@ export default function GraficaBarraSimple({
                 <Cell key={i} fill={colores[d.nivel as keyof typeof colores]} />
               ))}
             </Pie>
-            <Tooltip />
-            <Legend />
+            <Tooltip labelStyle={{ color: "var(--text-main)" }} itemStyle={{ color: "var(--text-main)" }} />
+            <Legend wrapperStyle={{ color: "var(--text-main)" }} />
           </PieChart>
         ) : (
           <BarChart data={resumen} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
@@ -54,10 +54,10 @@ export default function GraficaBarraSimple({
                 </linearGradient>
               ))}
             </defs>
-            <XAxis dataKey="nivel" />
-            <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Legend />
+            <XAxis dataKey="nivel" tick={{ fill: "var(--text-main)", fontSize: 12 }} />
+            <YAxis allowDecimals={false} tick={{ fill: "var(--text-main)", fontSize: 12 }} />
+            <Tooltip labelStyle={{ color: "var(--text-main)" }} itemStyle={{ color: "var(--text-main)" }} />
+            <Legend wrapperStyle={{ color: "var(--text-main)" }} />
             <Bar dataKey="cantidad" name="Cantidad">
               {resumen.map((d, i) => (
                 <Cell key={i} fill={colores[d.nivel as keyof typeof colores]} />
