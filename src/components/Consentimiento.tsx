@@ -3,19 +3,26 @@ import React from "react";
 export default function Consentimiento({ onAceptar }: { onAceptar: () => void }) {
   return (
     <div className="max-w-xl bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center">
-      <h1 className="text-3xl font-display text-primary-main mb-4">Consentimiento Informado</h1>
-      <div className="text-base font-sans text-gray-800 mb-6 text-justify">
+      <h1 className="text-3xl font-display text-primary-main mb-2">Aplicación Batería de Riesgos Psicosociales</h1>
+      <p className="text-base font-sans text-gray-800 mb-4">Resolución 2764 e 2022</p>
+      <div className="text-base font-sans text-gray-800 mb-6 text-justify space-y-4">
         <p>
-          Usted ha sido invitado a participar en la <b>Batería de Riesgo Psicosocial COGENT</b>.
-          Su participación es voluntaria y sus respuestas serán tratadas de manera confidencial, según la normativa legal vigente.
+          Habiéndo sido claramente informado(a) sobre los objetivos y procedimientos, acepto de manera voluntaria, participar en la aplicación de la Batería de Riesgo Psicosocial elaborada por el Ministerio de la Protección Social y la universidad Javeriana, entendiendo que los fines de la evaluación son netamente ocupacionales, y que la información recolectada sera analizada de manera confidencial para orientar acciones de mejoría para el personal de la Empresa.
         </p>
-        <ul className="list-disc ml-6 mt-4 mb-4">
-          <li>Los datos recolectados serán utilizados exclusivamente con fines diagnósticos y de intervención en seguridad y salud laboral.</li>
-          <li>En ningún caso se compartirán resultados individuales con su empleador; solo se entregarán informes grupales.</li>
-          <li>Puede retirarse en cualquier momento sin que esto afecte su relación laboral.</li>
-        </ul>
         <p>
-          Al presionar "Acepto", usted declara haber sido informado y autoriza el tratamiento de sus datos personales conforme a la ley 1581 de 2012 y la política de privacidad de PSYKHE CONSULTORES.
+          Los resultados individuales de la presente evaluación de la presente evaluación no serán revelados sin autorización por escrito del colaborador, la empresa recibirá un informe consolidado con los resultados generales para la Empresa.
+        </p>
+        <p>
+          Los datos consignados en la evaluación no serán usados para afectar las condiciones contractuales.
+        </p>
+        <p>
+          Dado el carácter confidencial de esta evaluación, esta información sera incluida en la historia clínica de cada colaborador.
+        </p>
+        <p>
+          La información de estadísticas generales y resultados de la evaluación sera presentada al interior de la empresa, garantizándooslos la confidencialidad de los datos personales.
+        </p>
+        <p>
+          Hago constar que el presente documento ha sido leído y entendido por mi en su integridad, de manera libre y espontánea.
         </p>
       </div>
       <button
