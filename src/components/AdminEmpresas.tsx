@@ -16,8 +16,8 @@ export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ em
   return (
     <div className="flex flex-col gap-4">
       <div className="overflow-x-auto">
-        <table className="w-full text-xs border mt-2">
-          <thead className="bg-primary-main text-white">
+        <table className="w-full text-xs border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]">
+          <thead className="bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] text-white font-semibold">
             <tr>
               <th>#</th>
               <th>Empresa</th>
