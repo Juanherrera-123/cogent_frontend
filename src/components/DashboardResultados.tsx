@@ -14,6 +14,8 @@ import GraficaBarra from "@/components/GraficaBarra";
 import GraficaBarraSimple from "@/components/GraficaBarraSimple";
 import GraficaBarraCategorias from "@/components/GraficaBarraCategorias";
 import AdminEmpresas from "@/components/AdminEmpresas";
+import LogoCogent from "/logo_forma.png";
+import { FileDown, FileText, Home as HomeIcon } from "lucide-react";
 
 const nivelesRiesgo = [
   "Riesgo muy bajo",
@@ -119,6 +121,9 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
 
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
   const [seleccionados, setSeleccionados] = useState<number[]>([]);
+
+  const tabPill =
+    "px-5 py-2 rounded-full font-semibold border border-[#B2E2FF] text-[#172349] data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#38BDF8] data-[state=active]:to-[#265FF2]";
   
   useEffect(() => {
     const arr = JSON.parse(localStorage.getItem("resultadosCogent") || "[]");
@@ -461,8 +466,13 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
   // ---- Pestañas ----
   return (
 
-    <div className="max-w-6xl mx-auto bg-[var(--background-main)] p-6 md:p-8 rounded-2xl shadow-xl mt-8 flex flex-col gap-8">
-        <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-main)] mb-2 md:mb-4">Dashboard de Resultados</h2>
+    <div className="min-h-screen bg-gradient-to-b from-[#F7FAFF] to-[#EAF3FF] flex flex-col items-center py-10">
+      <div className="w-full max-w-7xl bg-white rounded-2xl shadow-xl p-8 md:p-10 flex flex-col gap-8">
+        <div className="flex items-center mb-4">
+          <img src={LogoCogent} alt="COGENT logo" className="w-10 h-10 mr-3" />
+          <h2 className="text-2xl md:text-3xl font-bold text-[#172349] font-montserrat">Dashboard de Resultados</h2>
+        </div>
+        <div className="h-px bg-[#E5EAF6]" />
 
 
         {/* Filtro empresa, solo para psicóloga */}
@@ -472,7 +482,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
           <select
             value={empresaSeleccionada}
             onChange={(e) => setEmpresaSeleccionada(e.target.value)}
-            className="input"
+            className="rounded-xl border border-[#B2E2FF] p-2 text-[#265FF2] font-semibold"
           >
             <option value="todas">Todas</option>
             {empresasResultados.map((e, idx) => (
@@ -488,7 +498,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         <select
           value={chartType}
           onChange={(e) => setChartType(e.target.value as "bar" | "histogram" | "pie")}
-          className="input"
+          className="rounded-xl border border-[#B2E2FF] p-2 text-[#265FF2] font-semibold"
         >
           <option value="bar">Barras</option>
           <option value="histogram">Histograma</option>
@@ -498,19 +508,19 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
 
       {/* Tabs/Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="w-full">
-      <TabsList className="mb-6 w-full flex flex-wrap gap-2">
-        <TabsTrigger value="general">General</TabsTrigger>
-        <TabsTrigger value="formaA">Forma A (Intralaboral)</TabsTrigger>
-          <TabsTrigger value="formaB">Forma B (Intralaboral)</TabsTrigger>
-          <TabsTrigger value="extralaboral">Extralaboral</TabsTrigger>
-          <TabsTrigger value="globalExtra">Global Extra</TabsTrigger>
-          <TabsTrigger value="estres">Estrés</TabsTrigger>
-        <TabsTrigger value="informe">Informe completo</TabsTrigger>
+      <TabsList className="mb-8 w-full flex flex-wrap gap-2">
+        <TabsTrigger className={tabPill} value="general">General</TabsTrigger>
+        <TabsTrigger className={tabPill} value="formaA">Forma A (Intralaboral)</TabsTrigger>
+        <TabsTrigger className={tabPill} value="formaB">Forma B (Intralaboral)</TabsTrigger>
+        <TabsTrigger className={tabPill} value="extralaboral">Extralaboral</TabsTrigger>
+        <TabsTrigger className={tabPill} value="globalExtra">Global Extra</TabsTrigger>
+        <TabsTrigger className={tabPill} value="estres">Estrés</TabsTrigger>
+        <TabsTrigger className={tabPill} value="informe">Informe completo</TabsTrigger>
         {!soloGenerales && (
-          <TabsTrigger value="admin">Eliminar encuestas</TabsTrigger>
+          <TabsTrigger className={tabPill} value="admin">Eliminar encuestas</TabsTrigger>
         )}
         {!soloGenerales && (
-          <TabsTrigger value="empresas">Empresas</TabsTrigger>
+          <TabsTrigger className={tabPill} value="empresas">Empresas</TabsTrigger>
         )}
       </TabsList>
 
@@ -518,8 +528,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         <TabsContent value="general">
           <Tabs value={tabGeneral} onValueChange={setTabGeneral} className="w-full">
             <TabsList className="mb-4 w-full flex gap-2">
-              <TabsTrigger value="resumen">Resultados</TabsTrigger>
-              <TabsTrigger value="ficha">Ficha técnica</TabsTrigger>
+              <TabsTrigger className={tabPill} value="resumen">Resultados</TabsTrigger>
+              <TabsTrigger className={tabPill} value="ficha">Ficha técnica</TabsTrigger>
             </TabsList>
             <TabsContent value="resumen">
               <div className="grid md:grid-cols-2 gap-4">
@@ -541,7 +551,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
               <Tabs value={categoriaFicha} onValueChange={setCategoriaFicha} className="w-full">
                 <TabsList className="mb-4 w-full flex gap-2 overflow-x-auto">
                   {categoriasFicha.map((c) => (
-                    <TabsTrigger key={c.key} value={c.key}>{c.label}</TabsTrigger>
+                    <TabsTrigger className={tabPill} key={c.key} value={c.key}>{c.label}</TabsTrigger>
                   ))}
                 </TabsList>
                 {categoriasFicha.map((c) => (
@@ -560,9 +570,9 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         <TabsContent value="formaA">
           <Tabs value={tabIntra} onValueChange={setTabIntra} className="w-full">
             <TabsList className="mb-4 w-full flex gap-2">
-              <TabsTrigger value="global">Global</TabsTrigger>
-              <TabsTrigger value="dominios">Por Dominio</TabsTrigger>
-              <TabsTrigger value="dimensiones">Por Dimensión</TabsTrigger>
+              <TabsTrigger className={tabPill} value="global">Global</TabsTrigger>
+              <TabsTrigger className={tabPill} value="dominios">Por Dominio</TabsTrigger>
+              <TabsTrigger className={tabPill} value="dimensiones">Por Dimensión</TabsTrigger>
             </TabsList>
             <TabsContent value="global">
               {datosA.length === 0
@@ -624,9 +634,9 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         <TabsContent value="formaB">
           <Tabs value={tabIntra} onValueChange={setTabIntra} className="w-full">
             <TabsList className="mb-4 w-full flex gap-2">
-              <TabsTrigger value="global">Global</TabsTrigger>
-              <TabsTrigger value="dominios">Por Dominio</TabsTrigger>
-              <TabsTrigger value="dimensiones">Por Dimensión</TabsTrigger>
+              <TabsTrigger className={tabPill} value="global">Global</TabsTrigger>
+              <TabsTrigger className={tabPill} value="dominios">Por Dominio</TabsTrigger>
+              <TabsTrigger className={tabPill} value="dimensiones">Por Dimensión</TabsTrigger>
             </TabsList>
             <TabsContent value="global">
               {datosB.length === 0
@@ -688,8 +698,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
         <TabsContent value="extralaboral">
           <Tabs value={tabExtra} onValueChange={setTabExtra} className="w-full">
             <TabsList className="mb-4 w-full flex gap-2">
-              <TabsTrigger value="global">Global</TabsTrigger>
-              <TabsTrigger value="dimensiones">Por Dimensión</TabsTrigger>
+              <TabsTrigger className={tabPill} value="global">Global</TabsTrigger>
+              <TabsTrigger className={tabPill} value="dimensiones">Por Dimensión</TabsTrigger>
             </TabsList>
             <TabsContent value="global">
               {datosExtra.length === 0
@@ -733,8 +743,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
             className="w-full"
           >
             <TabsList className="mb-4 w-full flex gap-2">
-              <TabsTrigger value="A">Forma A</TabsTrigger>
-              <TabsTrigger value="B">Forma B</TabsTrigger>
+              <TabsTrigger className={tabPill} value="A">Forma A</TabsTrigger>
+              <TabsTrigger className={tabPill} value="B">Forma B</TabsTrigger>
             </TabsList>
             <TabsContent value="A">
               {datosGlobalAE.length === 0 ? (
@@ -859,31 +869,31 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
       </Tabs>
 
       {/* Botones de acciones */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-4">
         {onBack && (
           <button
             onClick={onBack}
-            className="bg-gray-300 text-text-main px-4 py-2 rounded-lg font-bold shadow hover:bg-gray-400"
+            className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-[#172349] font-bold rounded-2xl hover:bg-[#E5EAF6]"
           >
-            Volver al inicio
+            <HomeIcon size={20} /> Volver al inicio
           </button>
         )}
-      {/* Botones para exportar */}
-      <div className="flex justify-end gap-2">
-        <button
-          onClick={handleExportar}
-          className="bg-primary-main text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-primary-light"
-        >
-          Descargar Excel
-        </button>
-        <button
-          onClick={handleExportPDF}
-          className="bg-primary-main text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-primary-light"
-        >
-          Descargar PDF
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleExportar}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90"
+          >
+            <FileDown size={20} /> Descargar Excel
+          </button>
+          <button
+            onClick={handleExportPDF}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90"
+          >
+            <FileText size={20} /> Descargar PDF
+          </button>
+        </div>
       </div>
       </div>
-      </div>
+    </div>
     );
   }
