@@ -1,4 +1,6 @@
 import React from "react";
+import BriefcaseIcon from "@/components/icons/BriefcaseIcon";
+import WrenchIcon from "@/components/icons/WrenchIcon";
 
 export default function FormSelector({
   onSelect,
@@ -41,7 +43,7 @@ export default function FormSelector({
           onClick={() => onSelect("A")}
           className="w-full flex items-center justify-center gap-3 py-4 mb-5 rounded-xl font-bold text-lg text-white bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] shadow-lg transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#2EC4FF]"
         >
-          <span className="text-2xl">👔</span>
+          <BriefcaseIcon />
           Forma A (Jefes/profesionales/técnicos)
         </button>
 
@@ -49,7 +51,7 @@ export default function FormSelector({
           onClick={() => onSelect("B")}
           className="w-full flex items-center justify-center gap-3 py-4 rounded-xl font-bold text-lg text-white bg-gradient-to-r from-[#005DFF] to-[#0053B3] shadow-lg transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#2EC4FF]"
         >
-          <span className="text-2xl">🔧</span>
+          <WrenchIcon />
           Forma B (Auxiliares/Operarios)
         </button>
       </div>
