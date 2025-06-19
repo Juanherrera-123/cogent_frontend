@@ -13,6 +13,7 @@ import TablaDimensiones from "@/components/TablaDimensiones";
 import GraficaBarra from "@/components/GraficaBarra";
 import GraficaBarraSimple from "@/components/GraficaBarraSimple";
 import AdminEmpresas from "@/components/AdminEmpresas";
+import { CredencialEmpresa } from "@/types";
 import GeneralResultsTabs from "@/components/dashboard/GeneralResultsTabs";
 import FormaTabs from "@/components/dashboard/FormaTabs";
 import LogoCogent from "/logo_forma.png";
@@ -30,7 +31,7 @@ type Props = {
   soloGenerales?: boolean;
   empresaFiltro?: string;
   empresas?: string[];
-  credenciales?: { usuario: string; password: string; empresa: string }[];
+  credenciales?: CredencialEmpresa[];
   onAgregarEmpresa?: (nombre: string, usuario: string, password: string) => void;
   onBack?: () => void;
 };

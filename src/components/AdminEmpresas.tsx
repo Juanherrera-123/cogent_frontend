@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { CredencialEmpresa } from "@/types";
 
-export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ empresas: string[]; credenciales: { usuario: string; empresa: string }[]; onAgregar: (nombre: string, usuario: string, password: string) => void; }) {
+export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ empresas: string[]; credenciales: CredencialEmpresa[]; onAgregar: (nombre: string, usuario: string, password: string) => void; }) {
   const [nombre, setNombre] = useState("");
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
