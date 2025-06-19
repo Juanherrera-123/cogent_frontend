@@ -96,15 +96,15 @@ const nivelesExtra = nivelesRiesgo;
 const nivelesForma = nivelesRiesgo;
 
 const categoriasFicha = [
-  { key: "sexo", label: "Sexo biológico" },
+  { key: "sexo", label: "Género" },
   { key: "estadoCivil", label: "Estado civil" },
-  { key: "estudios", label: "Nivel de estudio" },
+  { key: "estudios", label: "Estudio" },
   { key: "estrato", label: "Estrato" },
   { key: "vivienda", label: "Vivienda" },
-  { key: "tipoCargo", label: "Tipo de cargo" },
-  { key: "tipoContrato", label: "Tipo de contrato" },
+  { key: "tipoCargo", label: "Cargo" },
+  { key: "tipoContrato", label: "Contrato" },
   { key: "tipoSalario", label: "Tipo de salario" },
-  { key: "horasDiarias", label: "Horas diarias establecidas" },
+  { key: "horasDiarias", label: "Horas diarias" },
 ] as const;
 
 
@@ -510,7 +510,7 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
       {/* Tabs/Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="w-full">
 
-      <TabsList className="mt-8 mb-2 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+      <TabsList className="mt-8 mb-2 py-2 px-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
 
         <TabsTrigger className={tabPill} value="informe">Informe completo</TabsTrigger>
         {!soloGenerales && (
@@ -520,8 +520,8 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
           <TabsTrigger className={tabPill} value="empresas">Empresas</TabsTrigger>
         )}
       </TabsList>
-      <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
 
+      <TabsList className="mb-6 py-2 px-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
         <TabsTrigger className={tabPill} value="general">General</TabsTrigger>
         <TabsTrigger className={tabPill} value="formaA">Forma A (Intralaboral)</TabsTrigger>
         <TabsTrigger className={tabPill} value="formaB">Forma B (Intralaboral)</TabsTrigger>
@@ -532,24 +532,49 @@ export default function DashboardResultados({ soloGenerales, empresaFiltro, empr
 
         {/* ---- GENERAL ---- */}
         <TabsContent value="general">
-          <GeneralResultsTabs
-            value={tabGeneral}
-            onChange={setTabGeneral}
-            tabClass={tabPill}
-            chartType={chartType}
-            datosA={datosA}
-            datosB={datosB}
-            datosExtra={datosExtra}
-            datosEstres={datosEstres}
-            resumenA={resumenA}
-            resumenB={resumenB}
-            resumenExtra={resumenExtra}
-            resumenEstres={resumenEstres}
-            categoriaFicha={categoriaFicha}
-            onCategoriaChange={setCategoriaFicha}
-            categoriasFicha={categoriasFicha}
-            fichaConteos={fichaConteosGlobal}
-          />
+
+          <Tabs value={tabGeneral} onValueChange={setTabGeneral} className="w-full">
+
+            <TabsList className="mb-6 py-2 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+
+              <TabsTrigger className={tabPill} value="resumen">Resultados</TabsTrigger>
+              <TabsTrigger className={tabPill} value="ficha">Ficha técnica</TabsTrigger>
+            </TabsList>
+            <TabsContent value="resumen">
+              <div className="grid md:grid-cols-2 gap-4">
+                {datosA.length > 0 && (
+                  <GraficaBarraSimple resumen={resumenA} titulo="Niveles de Forma A" chartType={chartType} />
+                )}
+                {datosB.length > 0 && (
+                  <GraficaBarraSimple resumen={resumenB} titulo="Niveles de Forma B" chartType={chartType} />
+                )}
+                {datosExtra.length > 0 && (
+                  <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" chartType={chartType} />
+                )}
+                {datosEstres.length > 0 && (
+                  <GraficaBarraSimple resumen={resumenEstres} titulo="Niveles de Estrés" chartType={chartType} />
+                )}
+              </div>
+            </TabsContent>
+            <TabsContent value="ficha">
+              <Tabs value={categoriaFicha} onValueChange={setCategoriaFicha} className="w-full">
+
+                <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
+
+                  {categoriasFicha.map((c) => (
+                    <TabsTrigger className={tabPill} key={c.key} value={c.key}>{c.label}</TabsTrigger>
+                  ))}
+                </TabsList>
+                {categoriasFicha.map((c) => (
+                  <TabsContent key={c.key} value={c.key}>
+                    <div className="grid gap-4">
+                      <GraficaBarraCategorias datos={fichaConteosGlobal[c.key]} titulo={c.label} chartType={chartType} />
+                    </div>
+                  </TabsContent>
+                ))}
+              </Tabs>
+            </TabsContent>
+          </Tabs>
         </TabsContent>
 
         {/* ---- FORMA A ---- */}
