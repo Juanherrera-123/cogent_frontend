@@ -891,20 +891,22 @@ export default function DashboardResultados({
             <HomeIcon size={20} /> Volver al inicio
           </button>
         )}
-        <div className="flex gap-2">
-          <button
-            onClick={handleExportar}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90"
-          >
-            <FileDown size={20} /> Descargar Excel
-          </button>
-          <button
-            onClick={handleExportPDF}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90"
-          >
-            <FileText size={20} /> Descargar PDF
-          </button>
-        </div>
+        {tab === "informe" && (
+          <div className="flex gap-2">
+            <button
+              onClick={handleExportar}
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90"
+            >
+              <FileDown size={20} /> Descargar Excel
+            </button>
+            <button
+              onClick={handleExportPDF}
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90"
+            >
+              <FileText size={20} /> Descargar PDF
+            </button>
+          </div>
+        )}
       </div>
       </div>
     </div>
