@@ -65,6 +65,7 @@ export default function App() {
 
   // Manejo de login (muy básico)
   const [rol, setRol] = useState<RolUsuario>("ninguno");
+  const [empresaActual, setEmpresaActual] = useState<string | null>(null);
 
   const agregarEmpresa = (
     nombre: string,
@@ -180,8 +181,9 @@ export default function App() {
     return (
       <Login
         usuarios={credenciales}
-        onLogin={(nuevoRol) => {
+        onLogin={(nuevoRol, empresa) => {
           setRol(nuevoRol as RolUsuario);
+          setEmpresaActual(empresa || null);
           setStep("dashboard");
         }}
         onCancel={() => setStep("inicio")}
@@ -193,6 +195,8 @@ export default function App() {
   if (step === "dashboard") {
     return (
       <DashboardResultados
+        rol={rol as "psicologa" | "dueno"}
+        empresaNombre={empresaActual || undefined}
         soloGenerales={rol === "dueno"}
         empresas={empresasIniciales}
         credenciales={credenciales.filter((c) => c.rol === "dueno")}

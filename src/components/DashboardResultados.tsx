@@ -28,6 +28,8 @@ const nivelesRiesgo = [
 ];
 
 type Props = {
+  rol: "psicologa" | "dueno";
+  empresaNombre?: string;
   soloGenerales?: boolean;
   empresaFiltro?: string;
   empresas?: string[];
@@ -117,6 +119,8 @@ const categoriasFicha = [
 
 
 export default function DashboardResultados({
+  rol,
+  empresaNombre,
   soloGenerales,
   empresaFiltro,
   empresas: empresasConfig = [],
@@ -141,6 +145,9 @@ export default function DashboardResultados({
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
   const [seleccionados, setSeleccionados] = useState<number[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const saludo = rol === "psicologa" ? "Hola Lilian Navas" : empresaNombre || "";
+  const cargo = rol === "psicologa" ? "Psicologist" : "Empresa";
 
   const tabPill =
     "px-5 py-2 rounded-full font-semibold border border-[#B2E2FF] text-[#172349] shrink-0 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#38BDF8] data-[state=active]:to-[#265FF2]";
@@ -489,9 +496,15 @@ export default function DashboardResultados({
         ref={containerRef}
         className="w-full max-w-7xl bg-white rounded-2xl shadow-xl p-8 md:p-10 flex flex-col gap-8"
       >
-        <div className="flex items-center mb-4">
-          <img src={LogoCogent} alt="COGENT logo" className="w-10 h-10 mr-3" />
-          <h2 className="text-2xl md:text-3xl font-bold text-[#172349] font-montserrat">Dashboard de Resultados</h2>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center">
+            <img src={LogoCogent} alt="COGENT logo" className="w-10 h-10 mr-3" />
+            <h2 className="text-2xl md:text-3xl font-bold text-[#172349] font-montserrat">Dashboard de Resultados</h2>
+          </div>
+          <div className="text-right">
+            <div className="font-bold text-[#172349] font-montserrat">{saludo}</div>
+            <div className="text-sm text-[#6C7A89] font-montserrat">{cargo}</div>
+          </div>
         </div>
         <div className="h-px bg-[#E5EAF6]" />
 
