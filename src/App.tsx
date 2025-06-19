@@ -81,17 +81,11 @@ export default function App() {
     setCredenciales([...credencialesBase, ...extras]);
   };
 
-  const editarCredencial = (
-    index: number,
-
-    usuario: string,
-    password: string
-  ) => {
+  const eliminarEmpresa = (usuario: string) => {
     const extras = JSON.parse(localStorage.getItem("credencialesCogent") || "[]");
-    if (index < 0 || index >= extras.length) return;
-    extras[index] = { ...extras[index], usuario, password };
-    localStorage.setItem("credencialesCogent", JSON.stringify(extras));
-    setCredenciales([...credencialesBase, ...extras]);
+    const filtradas = extras.filter((c: any) => c.usuario !== usuario);
+    localStorage.setItem("credencialesCogent", JSON.stringify(filtradas));
+    setCredenciales([...credencialesBase, ...filtradas]);
   };
 
   // Cuando finaliza la encuesta (luego del bloque de estrés)
@@ -179,8 +173,7 @@ export default function App() {
         empresas={empresasIniciales}
         credenciales={credenciales.filter((c) => c.rol === "dueno")}
         onAgregarEmpresa={agregarEmpresa}
-        onEditarCredencial={editarCredencial}
-
+        onEliminarEmpresa={eliminarEmpresa}
         onBack={() => setStep("inicio")}
       />
     );

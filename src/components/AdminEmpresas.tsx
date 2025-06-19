@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { CredencialEmpresa } from "@/types";
 
-
-export default function AdminEmpresas({ empresas, credenciales, onAgregar }:{ empresas: string[]; credenciales: CredencialEmpresa[]; onAgregar: (nombre: string, usuario: string, password: string) => void; }) {
-
 export default function AdminEmpresas({
   empresas,
   credenciales,
   onAgregar,
-  onEditar,
-}:{
+
+  onEliminar
+}: {
   empresas: string[];
   credenciales: { usuario: string; empresa: string }[];
   onAgregar: (nombre: string, usuario: string, password: string) => void;
-  onEditar: (index: number, usuario: string, password: string) => void;
+  onEliminar: (usuario: string) => void;
+
 }) {
   const [nombre, setNombre] = useState("");
   const [usuario, setUsuario] = useState("");
@@ -54,7 +53,7 @@ export default function AdminEmpresas({
               <th>#</th>
               <th>Empresa</th>
               <th>Usuario</th>
-              <th></th>
+              <th className="w-28">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -63,14 +62,22 @@ export default function AdminEmpresas({
                 <td className="px-2 py-1">{idx + 1}</td>
                 <td className="px-2 py-1">{c.empresa}</td>
                 <td className="px-2 py-1">{c.usuario}</td>
-                <td className="px-2 py-1 text-right">
-                  <button
-                    type="button"
-                    className="text-primary-main underline"
-                    onClick={() => startEdit(idx)}
-                  >
-                    Editar
-                  </button>
+                <td className="px-2 py-1">
+                  <div className="flex gap-1">
+                    <button
+                      type="button"
+                      className="px-2 py-0.5 text-xs bg-yellow-400 rounded"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      type="button"
+                      className="px-2 py-0.5 text-xs bg-red-600 text-white rounded"
+                      onClick={() => onEliminar(c.usuario)}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
