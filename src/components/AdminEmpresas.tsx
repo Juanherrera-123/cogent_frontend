@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { CredencialEmpresa } from "@/types";
 
 export default function AdminEmpresas({
   empresas,
@@ -34,10 +35,25 @@ export default function AdminEmpresas({
     setPassword("");
   };
 
+  const startEdit = (idx: number) => {
+    setEditIndex(idx);
+    setEditUsuario(credenciales[idx].usuario);
+    setEditPassword("");
+  };
+
+  const handleGuardarEdicion = () => {
+    if (editIndex === null) return;
+    if (!editUsuario.trim() || !editPassword.trim()) return;
+    onEditar(editIndex, editUsuario.trim(), editPassword.trim());
+    setEditIndex(null);
+    setEditUsuario("");
+    setEditPassword("");
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="overflow-x-auto">
-        <table className="w-full text-xs border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]">
+        <table className="w-full text-xs sm:text-sm border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]">
           <thead className="bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] text-white font-semibold">
             <tr>
               <th>#</th>
@@ -135,14 +151,67 @@ export default function AdminEmpresas({
           </tbody>
         </table>
       </div>
-      <div className="flex flex-wrap gap-2 items-center">
-        <input className="input flex-1" placeholder="Nombre empresa" value={nombre} onChange={(e)=>setNombre(e.target.value)} />
-        <input className="input flex-1" placeholder="Usuario" value={usuario} onChange={(e)=>setUsuario(e.target.value)} />
-        <input className="input flex-1" type="password" placeholder="Contraseña" value={password} onChange={(e)=>setPassword(e.target.value)} />
-        <button type="button" className="bg-primary-main text-white px-4 py-1 rounded-lg shadow" onClick={handleAgregar}>
-          Agregar
-        </button>
-      </div>
+      {editIndex === null ? (
+        <div className="flex flex-wrap gap-2 items-center">
+          <input
+            className="input flex-1"
+            placeholder="Nombre empresa"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+          />
+          <input
+            className="input flex-1"
+            placeholder="Usuario"
+            value={usuario}
+            onChange={(e) => setUsuario(e.target.value)}
+          />
+          <input
+            className="input flex-1"
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="button"
+            className="bg-primary-main text-white px-4 py-1 rounded-lg shadow"
+            onClick={handleAgregar}
+          >
+            Agregar
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-2 items-center">
+          <span className="font-semibold">{credenciales[editIndex].empresa}</span>
+          <input
+            className="input flex-1"
+            placeholder="Usuario"
+            value={editUsuario}
+            onChange={(e) => setEditUsuario(e.target.value)}
+          />
+          <input
+            className="input flex-1"
+            type="password"
+            placeholder="Contraseña"
+            value={editPassword}
+            onChange={(e) => setEditPassword(e.target.value)}
+          />
+          <button
+            type="button"
+            className="bg-primary-main text-white px-4 py-1 rounded-lg shadow"
+            onClick={handleGuardarEdicion}
+          >
+            Guardar
+          </button>
+          <button
+            type="button"
+            className="px-4 py-1 rounded-lg border"
+            onClick={() => setEditIndex(null)}
+          >
+            Cancelar
+          </button>
+        </div>
+      )}
     </div>
   );
 }

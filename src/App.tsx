@@ -7,6 +7,7 @@ import DashboardResultados from "./components/DashboardResultados";
 import Login from "./components/Login";
 import HomePage from "./components/HomePage";
 import credencialesBase from "./config/credentials.json";
+import { CredencialEmpresa } from "./types";
 import logoTexto from "./logo_texto.png";
 import {
   bloquesFormaA,
@@ -47,7 +48,7 @@ export default function App() {
     const guardadas = JSON.parse(localStorage.getItem("empresasCogent") || "[]");
     return guardadas.length ? guardadas : ["Sonria", "Aeropuerto El Dorado"];
   });
-  const [credenciales, setCredenciales] = useState<any[]>(() => {
+  const [credenciales, setCredenciales] = useState<(CredencialEmpresa & { rol: string })[]>(() => {
     const extras = JSON.parse(localStorage.getItem("credencialesCogent") || "[]");
     return [...credencialesBase, ...extras];
   });

@@ -74,3 +74,4 @@ actions. **Eliminar** removes a custom credential from `localStorage` and the
 table instantly, while **Editar** lets you update the company name, username or
 password.
 
+
