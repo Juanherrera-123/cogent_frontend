@@ -22,7 +22,7 @@ export default function AdminEmpresas({
   const [nombre, setNombre] = useState("");
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
-  const [editIdx, setEditIdx] = useState<number | null>(null);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editNombre, setEditNombre] = useState("");
   const [editUsuario, setEditUsuario] = useState("");
   const [editPassword, setEditPassword] = useState("");
@@ -68,7 +68,7 @@ export default function AdminEmpresas({
               <tr key={idx} className="border-b">
                 <td className="px-2 py-1">{idx + 1}</td>
                 <td className="px-2 py-1">
-                  {editIdx === idx ? (
+                  {editIndex === idx ? (
                     <input
                       className="input"
                       value={editNombre}
@@ -79,7 +79,8 @@ export default function AdminEmpresas({
                   )}
                 </td>
                 <td className="px-2 py-1">
-                  {editIdx === idx ? (
+                  {editIndex === idx ? (
+
                     <input
                       className="input"
                       value={editUsuario}
@@ -90,7 +91,8 @@ export default function AdminEmpresas({
                   )}
                 </td>
                 <td className="px-2 py-1">
-                  {editIdx === idx ? (
+
+                  {editIndex === idx ? (
                     <input
                       className="input"
                       type="text"
@@ -102,14 +104,15 @@ export default function AdminEmpresas({
                   )}
                 </td>
                 <td className="px-2 py-1">
-                  {editIdx === idx ? (
+                  {editIndex === idx ? (
                     <div className="flex gap-1">
                       <button
                         type="button"
                         className="px-2 py-0.5 text-xs bg-green-500 text-white rounded"
                         onClick={() => {
                           onEditar(c.usuario, editNombre, editUsuario, editPassword);
-                          setEditIdx(null);
+
+                            setEditIndex(null);
                         }}
                       >
                         Guardar
@@ -117,7 +120,8 @@ export default function AdminEmpresas({
                       <button
                         type="button"
                         className="px-2 py-0.5 text-xs bg-gray-300 rounded"
-                        onClick={() => setEditIdx(null)}
+                        onClick={() => setEditIndex(null)}
+
                       >
                         Cancelar
                       </button>
@@ -128,7 +132,7 @@ export default function AdminEmpresas({
                         type="button"
                         className="px-2 py-0.5 text-xs bg-yellow-400 rounded"
                         onClick={() => {
-                          setEditIdx(idx);
+                          setEditIndex(idx);
                           setEditNombre(c.empresa);
                           setEditUsuario(c.usuario);
                           setEditPassword(c.password);
