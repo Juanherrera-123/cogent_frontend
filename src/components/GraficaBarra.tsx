@@ -42,8 +42,8 @@ export default function GraficaBarra({
                 <Cell key={i} fill={colorPorNivel[d.nivel as keyof typeof colorPorNivel]} />
               ))}
             </Pie>
-            <Tooltip />
-            <Legend />
+            <Tooltip labelStyle={{ color: "var(--text-main)" }} itemStyle={{ color: "var(--text-main)" }} />
+            <Legend wrapperStyle={{ color: "var(--text-main)" }} />
           </PieChart>
         ) : (
           <BarChart data={resumen} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
@@ -55,10 +55,23 @@ export default function GraficaBarra({
                 </linearGradient>
               ))}
             </defs>
-            <XAxis dataKey="nombre" interval={0} angle={-18} textAnchor="end" height={70} />
-            <YAxis type="number" domain={[0, 4]} ticks={[0, 1, 2, 3, 4]} tickFormatter={(v) => nivelesRiesgo[v]} />
-            <Tooltip />
-            <Legend />
+            <XAxis
+              dataKey="nombre"
+              interval={0}
+              angle={-18}
+              textAnchor="end"
+              height={70}
+              tick={{ fill: "var(--text-main)", fontSize: 12 }}
+            />
+            <YAxis
+              type="number"
+              domain={[0, 4]}
+              ticks={[0, 1, 2, 3, 4]}
+              tickFormatter={(v) => nivelesRiesgo[v]}
+              tick={{ fill: "var(--text-main)", fontSize: 12 }}
+            />
+            <Tooltip labelStyle={{ color: "var(--text-main)" }} itemStyle={{ color: "var(--text-main)" }} />
+            <Legend wrapperStyle={{ color: "var(--text-main)" }} />
             <Bar dataKey="indice" name="Nivel">
               <LabelList dataKey="nivel" position="top" />
               {resumen.map((d, i) => (
