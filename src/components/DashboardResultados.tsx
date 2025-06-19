@@ -387,6 +387,51 @@ export default function DashboardResultados({
     [datosInforme]
   );
 
+  const promedioInforme = useMemo(() => {
+    const nivelesMap: Record<string, number> = {};
+    nivelesRiesgo.forEach((n, i) => {
+      nivelesMap[n] = i;
+    });
+    nivelesMap["Sin riesgo"] = 0;
+
+    const nivelesEstresMap: Record<string, number> = {};
+    nivelesEstres.forEach((n, i) => {
+      nivelesEstresMap[n] = i;
+    });
+
+    const row: Record<string, any> = {};
+    allHeaders.forEach((h) => {
+      const valores = datosInforme
+        .map((f) => f[h])
+        .filter((v) => v !== undefined && v !== "");
+      const nums = valores
+        .map((v) => Number(v))
+        .filter((v) => !isNaN(v));
+      if (nums.length) {
+        const avg = nums.reduce((a, b) => a + b, 0) / nums.length;
+        row[h] = Math.round(avg * 10) / 10;
+        return;
+      }
+      const mapa = h.toLowerCase().includes("estrés")
+        ? nivelesEstresMap
+        : nivelesMap;
+      const niveles = valores
+        .map((v) => mapa[v as string])
+        .filter((v) => typeof v === "number");
+      if (niveles.length) {
+        const idx = Math.round(niveles.reduce((a, b) => a + b, 0) / niveles.length);
+        const lista = h.toLowerCase().includes("estrés") ? nivelesEstres : nivelesRiesgo;
+        row[h] = lista[idx] || "";
+      } else {
+        row[h] = "";
+      }
+    });
+    if (allHeaders.length) {
+      row[allHeaders[0]] = "Promedio";
+    }
+    return row;
+  }, [datosInforme, allHeaders]);
+
 
   // ---- Exportar a Excel ----
   const handleExportar = () => {
@@ -740,6 +785,13 @@ export default function DashboardResultados({
                       ))}
                     </tr>
                   ))}
+                  <tr className="font-semibold bg-gray-100">
+                    {allHeaders.map((h, idx) => (
+                      <td key={idx} className="px-2 py-1">
+                        {promedioInforme[h] ?? ""}
+                      </td>
+                    ))}
+                  </tr>
                 </tbody>
               </table>
             </div>
