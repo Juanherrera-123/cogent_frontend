@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { CredencialEmpresa } from "@/types";
+  const [editIndex, setEditIndex] = useState<number | null>(null);
 
-export default function AdminEmpresas({
-  empresas,
-  credenciales,
-  onAgregar,
-  onEliminar,
-  onEditar
-}: {
+                  {editIndex === idx ? (
+                  {editIndex === idx ? (
+                  {editIndex === idx ? (
+                  {editIndex === idx ? (
+                            setEditIndex(null);
+                        onClick={() => setEditIndex(null)}
+                          setEditIndex(idx);
   empresas: string[];
   credenciales: { usuario: string; password: string; empresa: string }[];
   onAgregar: (nombre: string, usuario: string, password: string) => void;
