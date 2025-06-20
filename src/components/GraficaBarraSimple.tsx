@@ -1,5 +1,17 @@
 import React from "react";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  LabelList,
+} from "recharts";
 
 const gradientes = {
 
@@ -31,6 +43,15 @@ export default function GraficaBarraSimple({
   titulo: string;
   chartType: "bar" | "histogram" | "pie";
 }) {
+  const total = resumen.reduce(
+    (acc, d) => acc + (typeof d.cantidad === "number" ? d.cantidad : 0),
+    0
+  );
+  const datos = resumen.map((d) => ({
+    ...d,
+    porcentaje: total ? (d.cantidad / total) * 100 : 0,
+    label: `${d.cantidad} (${total ? ((d.cantidad / total) * 100).toFixed(0) : 0}%)`,
+  }));
   return (
     <div className="flex-1 min-h-[450px]">
       <h4 className="font-bold mb-2 text-primary-main">{titulo}</h4>
@@ -45,8 +66,15 @@ export default function GraficaBarraSimple({
                 </linearGradient>
               ))}
             </defs>
-            <Pie data={resumen} dataKey="cantidad" nameKey="nivel" label>
-              {resumen.map((d, i) => (
+            <Pie
+              data={datos}
+              dataKey="cantidad"
+              nameKey="nivel"
+              label={({ payload }) =>
+                `${payload.nivel}: ${payload.cantidad} (${payload.porcentaje.toFixed(0)}%)`
+              }
+            >
+              {datos.map((d, i) => (
                 <Cell key={i} fill={colores[d.nivel as keyof typeof colores]} />
               ))}
             </Pie>
@@ -54,7 +82,7 @@ export default function GraficaBarraSimple({
             <Legend wrapperStyle={{ color: "var(--text-main)" }} />
           </PieChart>
         ) : (
-          <BarChart data={resumen} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
+          <BarChart data={datos} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
             <defs>
               {Object.values(gradientes).map((g) => (
                 <linearGradient id={g.id} key={g.id} x1="0" y1="0" x2="0" y2="1">
@@ -68,7 +96,8 @@ export default function GraficaBarraSimple({
             <Tooltip />
             <Legend />
             <Bar dataKey="cantidad" name="Cantidad">
-              {resumen.map((d, i) => (
+              <LabelList dataKey="label" position="top" />
+              {datos.map((d, i) => (
                 <Cell key={i} fill={colores[d.nivel as keyof typeof colores]} />
               ))}
             </Bar>
