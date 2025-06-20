@@ -6,6 +6,7 @@ import BloquesDePreguntas from "./components/BloquesDePreguntas";
 import DashboardResultados from "./components/DashboardResultados";
 import Login from "./components/Login";
 import HomePage from "./components/HomePage";
+import PoliticaPrivacidad from "./components/PoliticaPrivacidad";
 import credencialesBase from "./config/credentials.json";
 import { CredencialEmpresa } from "./types";
 import logoTexto from "./logo_texto.png";
@@ -38,7 +39,8 @@ export default function App() {
     "estres" |
     "final" |
     "dashboard" |
-    "login"
+    "login" |
+    "privacy"
   >("inicio");
 
   const [formType, setFormType] = useState<"A" | "B" | null>(null);
@@ -172,8 +174,13 @@ export default function App() {
       <HomePage
         onStartSurvey={() => setStep("consent")}
         onViewResults={() => setStep("login")}
+        onPrivacy={() => setStep("privacy")}
       />
     );
+  }
+
+  if (step === "privacy") {
+    return <PoliticaPrivacidad onBack={() => setStep("inicio")} />;
   }
 
   // Vista Login
