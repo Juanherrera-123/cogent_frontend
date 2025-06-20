@@ -7,6 +7,7 @@ import DashboardResultados from "./components/DashboardResultados";
 import Login from "./components/Login";
 import HomePage from "./components/HomePage";
 import PoliticaPrivacidad from "./components/PoliticaPrivacidad";
+import TerminosCondiciones from "./components/TerminosCondiciones";
 import credencialesBase from "./config/credentials.json";
 import { CredencialEmpresa } from "./types";
 import logoTexto from "./logo_texto.png";
@@ -40,7 +41,8 @@ export default function App() {
     "final" |
     "dashboard" |
     "login" |
-    "privacy"
+    "privacy" |
+    "terms"
   >("inicio");
 
   const [formType, setFormType] = useState<"A" | "B" | null>(null);
@@ -175,12 +177,17 @@ export default function App() {
         onStartSurvey={() => setStep("consent")}
         onViewResults={() => setStep("login")}
         onPrivacy={() => setStep("privacy")}
+        onTerms={() => setStep("terms")}
       />
     );
   }
 
   if (step === "privacy") {
     return <PoliticaPrivacidad onBack={() => setStep("inicio")} />;
+  }
+
+  if (step === "terms") {
+    return <TerminosCondiciones onBack={() => setStep("inicio")} />;
   }
 
   // Vista Login
