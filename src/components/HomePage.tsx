@@ -32,7 +32,8 @@ export default function HomePage({ onStartSurvey, onViewResults, onPrivacy, onTe
         <img
           src="/Logo_Psykhe.png"
           alt="Psykhe Consultores Logo"
-          className="w-24 h-24 drop-shadow-lg"
+          className="w-28 h-28 drop-shadow-lg"
+          style={{ borderRadius: '18px' }}
         />
         <img
           src={LogoCogent}
