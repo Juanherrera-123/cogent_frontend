@@ -615,7 +615,9 @@ export default function DashboardResultados({
 
       <TabsList className="mt-8 mb-2 py-2 px-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
 
-        <TabsTrigger className={tabPill} value="informe">Informe completo</TabsTrigger>
+        {rol === "psicologa" && (
+          <TabsTrigger className={tabPill} value="informe">Informe completo</TabsTrigger>
+        )}
         {!soloGenerales && (
           <TabsTrigger className={tabPill} value="admin">Eliminar encuestas</TabsTrigger>
         )}
@@ -785,43 +787,45 @@ export default function DashboardResultados({
           }
         </TabsContent>
         {/* ---- INFORME COMPLETO ---- */}
-        <TabsContent value="informe">
-          {datosInforme.length === 0 ? (
-            <div className="text-[var(--gray-medium)] py-4">No hay datos para mostrar.</div>
-          ) : (
-            <div className="overflow-auto max-h-96">
-              <table className="w-full text-xs border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]">
-                <thead className="bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] text-white font-semibold">
-                  <tr>
-                    {allHeaders.map((h, idx) => (
-                      <th key={idx} className="px-2 py-1">
-                        {h}
-                      </th>
+        {rol === "psicologa" && (
+          <TabsContent value="informe">
+            {datosInforme.length === 0 ? (
+              <div className="text-[var(--gray-medium)] py-4">No hay datos para mostrar.</div>
+            ) : (
+              <div className="overflow-auto max-h-96">
+                <table className="w-full text-xs border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]">
+                  <thead className="bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] text-white font-semibold">
+                    <tr>
+                      {allHeaders.map((h, idx) => (
+                        <th key={idx} className="px-2 py-1">
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {datosInforme.map((fila, i) => (
+                      <tr key={i} className="border-b">
+                        {allHeaders.map((h, idx) => (
+                          <td key={idx} className="px-2 py-1">
+                            {fila[h] ?? ""}
+                          </td>
+                        ))}
+                      </tr>
                     ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {datosInforme.map((fila, i) => (
-                    <tr key={i} className="border-b">
+                    <tr className="font-semibold bg-gray-100">
                       {allHeaders.map((h, idx) => (
                         <td key={idx} className="px-2 py-1">
-                          {fila[h] ?? ""}
+                          {promedioInforme[h] ?? ""}
                         </td>
                       ))}
                     </tr>
-                  ))}
-                  <tr className="font-semibold bg-gray-100">
-                    {allHeaders.map((h, idx) => (
-                      <td key={idx} className="px-2 py-1">
-                        {promedioInforme[h] ?? ""}
-                      </td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          )}
-        </TabsContent>
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </TabsContent>
+        )}
         {!soloGenerales && (
           <TabsContent value="admin">
             {datos.length === 0 ? (
