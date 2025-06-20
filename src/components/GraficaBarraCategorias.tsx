@@ -1,5 +1,17 @@
 import React from "react";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  LabelList,
+} from "recharts";
 
 // Blue palette used for chart segments
 const coloresAzulFicha = [
@@ -20,14 +32,30 @@ export default function GraficaBarraCategorias({
   titulo: string;
   chartType: "bar" | "histogram" | "pie";
 }) {
+  const total = datos.reduce(
+    (acc, d) => acc + (typeof d.cantidad === "number" ? d.cantidad : 0),
+    0
+  );
+  const datosConPorcentaje = datos.map((d) => ({
+    ...d,
+    porcentaje: total ? (d.cantidad / total) * 100 : 0,
+    label: `${d.cantidad} (${total ? ((d.cantidad / total) * 100).toFixed(0) : 0}%)`,
+  }));
   return (
     <div className="flex-1 min-h-[450px]">
       <h4 className="font-bold mb-2 text-primary-main">{titulo}</h4>
       <ResponsiveContainer width="100%" height={450}>
         {chartType === "pie" ? (
           <PieChart>
-            <Pie data={datos} dataKey="cantidad" nameKey="nombre" label>
-              {datos.map((_, i) => (
+            <Pie
+              data={datosConPorcentaje}
+              dataKey="cantidad"
+              nameKey="nombre"
+              label={({ payload }) =>
+                `${payload.nombre}: ${payload.cantidad} (${payload.porcentaje.toFixed(0)}%)`
+              }
+            >
+              {datosConPorcentaje.map((_, i) => (
                 <Cell key={i} fill={coloresAzulFicha[i % coloresAzulFicha.length]} />
               ))}
             </Pie>
@@ -35,7 +63,7 @@ export default function GraficaBarraCategorias({
             <Legend wrapperStyle={{ color: "var(--text-main)" }} />
           </PieChart>
         ) : (
-          <BarChart data={datos} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
+          <BarChart data={datosConPorcentaje} barCategoryGap={chartType === "histogram" ? 0 : undefined}>
             <XAxis
               dataKey="nombre"
               interval={0}
@@ -48,7 +76,8 @@ export default function GraficaBarraCategorias({
             <Tooltip labelStyle={{ color: "var(--text-main)" }} itemStyle={{ color: "var(--text-main)" }} />
             <Legend wrapperStyle={{ color: "var(--text-main)" }} />
             <Bar dataKey="cantidad" name="Cantidad">
-              {datos.map((_, i) => (
+              <LabelList dataKey="label" position="top" />
+              {datosConPorcentaje.map((_, i) => (
                 <Cell key={i} fill={coloresAzulFicha[i % coloresAzulFicha.length]} />
               ))}
             </Bar>
