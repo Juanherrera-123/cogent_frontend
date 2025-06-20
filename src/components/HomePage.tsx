@@ -4,9 +4,10 @@ import LogoCogent from "../logo_texto.png";
 type Props = {
   onStartSurvey: () => void;
   onViewResults: () => void;
+  onPrivacy: () => void;
 };
 
-export default function HomePage({ onStartSurvey, onViewResults }: Props) {
+export default function HomePage({ onStartSurvey, onViewResults, onPrivacy }: Props) {
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#F4F8FA] to-[#FFFFFF] overflow-hidden">
       <svg
@@ -66,6 +67,15 @@ export default function HomePage({ onStartSurvey, onViewResults }: Props) {
           Explorar Resultados
         </button>
       </div>
+
+      <p className="mt-8 text-sm text-[#6C7A89] font-montserrat animate-fadeIn delay-500">
+        <button
+          onClick={onPrivacy}
+          className="underline hover:text-[#005DFF] focus:outline-none"
+        >
+          Política de Privacidad
+        </button>
+      </p>
     </div>
   );
 }
