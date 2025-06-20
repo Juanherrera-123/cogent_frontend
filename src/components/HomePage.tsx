@@ -7,9 +7,10 @@ type Props = {
   onStartSurvey: () => void;
   onViewResults: () => void;
   onPrivacy: () => void;
+  onTerms: () => void;
 };
 
-export default function HomePage({ onStartSurvey, onViewResults, onPrivacy }: Props) {
+export default function HomePage({ onStartSurvey, onViewResults, onPrivacy, onTerms }: Props) {
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#F4F8FA] to-[#FFFFFF] overflow-hidden">
       <svg
@@ -84,6 +85,14 @@ export default function HomePage({ onStartSurvey, onViewResults, onPrivacy }: Pr
           className="underline hover:text-[#005DFF] focus:outline-none"
         >
           Política de Privacidad
+        </button>
+      </p>
+      <p className="mt-2 text-sm text-[#6C7A89] font-montserrat animate-fadeIn delay-500">
+        <button
+          onClick={onTerms}
+          className="underline hover:text-[#005DFF] focus:outline-none"
+        >
+          Términos y Condiciones
         </button>
       </p>
     </div>
