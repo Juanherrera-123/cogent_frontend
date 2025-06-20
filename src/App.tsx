@@ -160,7 +160,7 @@ export default function App() {
         resultadoEstres,
         resultadoExtralaboral,
         tipo: formType,
-        fecha: new Date().toISOString()
+        fecha: ficha?.fecha || new Date().toISOString()
       };
       // Guarda un array con push (no sobreescribe)
       const prev = JSON.parse(localStorage.getItem("resultadosCogent") || "[]");

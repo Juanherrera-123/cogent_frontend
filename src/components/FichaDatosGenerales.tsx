@@ -39,6 +39,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
   const [empresa, setEmpresa] = useState("");
 
   const [datos, setDatos] = useState<any>({
+    fecha: "",
     nombre: "",
     cedula: "",
     sexo: "",
@@ -80,7 +81,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Validación simple: campos obligatorios principales
-    if (!empresa || !datos.nombre || !datos.cedula || !datos.sexo || !datos.nacimiento ||
+    if (!empresa || !datos.fecha || !datos.nombre || !datos.cedula || !datos.sexo || !datos.nacimiento ||
         !datos.estadoCivil || !datos.estudios || !datos.ocupacion ||
         !datos.residenciaCiudad || !datos.residenciaDepto || !datos.estrato || !datos.vivienda ||
         !datos.trabajoCiudad || !datos.trabajoDepto || !datos.cargo || !datos.tipoCargo ||
@@ -140,10 +141,21 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
           }}
         >
           <option value="">Seleccione una empresa</option>
-          {empresas.map((em, i) => (
+      {empresas.map((em, i) => (
             <option key={i} value={em}>{em}</option>
           ))}
         </select>
+      </div>
+      {/* Fecha */}
+      <div>
+        <label className="block mb-1 font-semibold text-text-main">Fecha*</label>
+        <input
+          type="date"
+          name="fecha"
+          className="input mb-2"
+          value={datos.fecha}
+          onChange={handleChange}
+        />
       </div>
       {/* Nombre y cédula */}
       <div className="flex gap-4">
