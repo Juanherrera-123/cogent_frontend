@@ -1,6 +1,8 @@
 import React from "react";
 import LogoCogent from "../logo_texto.png";
 
+// Logo of Psykhe Consultores is served from the public directory
+
 type Props = {
   onStartSurvey: () => void;
   onViewResults: () => void;
@@ -26,12 +28,19 @@ export default function HomePage({ onStartSurvey, onViewResults, onPrivacy, onTe
         </defs>
       </svg>
 
-      <img
-        src={LogoCogent}
-        alt="COGENT Logo"
-        className="w-28 h-28 mb-8 drop-shadow-lg animate-fadeIn"
-        style={{ borderRadius: '18px' }}
-      />
+      <div className="flex items-center justify-center gap-6 mb-8 animate-fadeIn">
+        <img
+          src="/Logo_Psykhe.png"
+          alt="Psykhe Consultores Logo"
+          className="w-24 h-24 drop-shadow-lg"
+        />
+        <img
+          src={LogoCogent}
+          alt="COGENT Logo"
+          className="w-28 h-28 drop-shadow-lg"
+          style={{ borderRadius: '18px' }}
+        />
+      </div>
 
       <h1 className="text-4xl md:text-5xl font-bold text-[#132045] text-center mb-2 font-montserrat animate-fadeIn">
         Bienvenido a Cogent
