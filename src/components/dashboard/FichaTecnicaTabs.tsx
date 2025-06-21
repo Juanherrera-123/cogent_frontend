@@ -1,6 +1,7 @@
 import React from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import GraficaBarraCategorias from "../GraficaBarraCategorias";
+import { CategoriaConteo } from "@/types";
 
 
 export type CategoriaFicha = { key: string; label: string };
@@ -16,7 +17,7 @@ export default function FichaTecnicaTabs({
   categorias: readonly CategoriaFicha[];
   categoria: string;
   onChange: (value: string) => void;
-  conteos: Record<string, any[]>;
+  conteos: Record<string, CategoriaConteo[]>;
   chartType: "bar" | "histogram" | "pie";
   tabClass: string;
 }) {

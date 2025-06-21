@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { FichaDatosGenerales as FichaDatos } from "@/types";
 
 type Props = {
   empresasIniciales: string[];
-  onGuardar: (datos: any) => void;
+  onGuardar: (datos: FichaDatos) => void;
 };
 
 const estadosCiviles = [
@@ -38,7 +39,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
   const empresas = empresasIniciales;
   const [empresa, setEmpresa] = useState("");
 
-  const [datos, setDatos] = useState<any>({
+  const [datos, setDatos] = useState<FichaDatos>({
     fecha: "",
     nombre: "",
     cedula: "",

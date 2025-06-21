@@ -2,7 +2,7 @@ import React from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import GraficaBarraSimple from "@/components/GraficaBarraSimple";
 import FichaTecnicaTabs, { CategoriaFicha } from "./FichaTecnicaTabs";
-import { NivelResumen } from "@/types";
+import { NivelResumen, ResultRow, CategoriaConteo, NivelResumenCantidad } from "@/types";
 
 export default function GeneralResultsTabs({
   value,
@@ -26,18 +26,18 @@ export default function GeneralResultsTabs({
   onChange: (v: string) => void;
   tabClass: string;
   chartType: "bar" | "histogram" | "pie";
-  datosA: any[];
-  datosB: any[];
-  datosExtra: any[];
-  datosEstres: any[];
-  resumenA: (NivelResumen & { cantidad: number })[];
-  resumenB: (NivelResumen & { cantidad: number })[];
-  resumenExtra: (NivelResumen & { cantidad: number })[];
-  resumenEstres: (NivelResumen & { cantidad: number })[];
+  datosA: ResultRow[];
+  datosB: ResultRow[];
+  datosExtra: ResultRow[];
+  datosEstres: ResultRow[];
+  resumenA: NivelResumenCantidad[];
+  resumenB: NivelResumenCantidad[];
+  resumenExtra: NivelResumenCantidad[];
+  resumenEstres: NivelResumenCantidad[];
   categoriaFicha: string;
   onCategoriaChange: (v: string) => void;
   categoriasFicha: readonly CategoriaFicha[];
-  fichaConteos: Record<string, any[]>;
+  fichaConteos: Record<string, CategoriaConteo[]>;
 }) {
   return (
     <Tabs value={value} onValueChange={onChange} className="w-full">

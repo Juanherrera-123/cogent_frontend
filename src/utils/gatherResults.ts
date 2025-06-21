@@ -1,3 +1,13 @@
+import { ResultRow, DimensionResultado, IntralaboralResultado } from "@/types";
+
+type IntralaboralResultadoCompat = IntralaboralResultado & {
+  puntajeTransformadoTotal?: number;
+  puntajeTransformado?: number;
+  puntajeTotalTransformado?: number;
+  nivelTotal?: string;
+  nivel?: string;
+};
+
 export type FlatResult = Record<string, string | number | undefined>;
 
 interface ResultadoExtraDimension {
@@ -11,8 +21,9 @@ interface ResultadoExtraDimension {
  * Obtiene los resultados almacenados y los convierte en un arreglo
  * de objetos planos (una fila por empleado).
  */
+
 export function gatherFlatResults(): FlatResult[] {
-  const almacenados: any[] = JSON.parse(
+  const almacenados: ResultRow[] = JSON.parse(
     localStorage.getItem("resultadosCogent") || "[]"
   );
 
@@ -31,39 +42,40 @@ export function gatherFlatResults(): FlatResult[] {
       fila["Nivel Forma A"] = d.resultadoFormaA.total?.nivel ?? "";
       const domA = d.resultadoFormaA.dominios || {};
       Object.keys(domA).forEach((k) => {
-        const v = domA[k];
+        const v = domA[k] as DimensionResultado & { puntajeTransformado?: number };
         fila[`A ${k}`] = v.transformado ?? v.puntajeTransformado ?? "";
         fila[`Nivel A ${k}`] = v.nivel ?? "";
       });
       const dimA = d.resultadoFormaA.dimensiones || {};
       Object.keys(dimA).forEach((k) => {
-        const v = dimA[k];
+        const v = dimA[k] as DimensionResultado & { puntajeTransformado?: number };
         fila[`A ${k}`] = v.transformado ?? v.puntajeTransformado ?? "";
         fila[`Nivel A ${k}`] = v.nivel ?? "";
       });
     }
 
     if (d.resultadoFormaB) {
+      const resB = d.resultadoFormaB as IntralaboralResultadoCompat;
       fila["Puntaje Forma B"] =
-        d.resultadoFormaB.total?.transformado ??
-        d.resultadoFormaB.puntajeTransformadoTotal ??
-        d.resultadoFormaB.puntajeTransformado ??
-        d.resultadoFormaB.puntajeTotalTransformado ??
+        resB.total?.transformado ??
+        resB.puntajeTransformadoTotal ??
+        resB.puntajeTransformado ??
+        resB.puntajeTotalTransformado ??
         "";
       fila["Nivel Forma B"] =
-        d.resultadoFormaB.total?.nivel ??
-        d.resultadoFormaB.nivelTotal ??
-        d.resultadoFormaB.nivel ??
+        resB.total?.nivel ??
+        resB.nivelTotal ??
+        resB.nivel ??
         "";
-      const domB = d.resultadoFormaB.dominios || {};
+      const domB = resB.dominios || {};
       Object.keys(domB).forEach((k) => {
-        const v = domB[k];
+        const v = domB[k] as DimensionResultado & { puntajeTransformado?: number };
         fila[`B ${k}`] = v.transformado ?? v.puntajeTransformado ?? "";
         fila[`Nivel B ${k}`] = v.nivel ?? "";
       });
-      const dimB = d.resultadoFormaB.dimensiones || {};
+      const dimB = resB.dimensiones || {};
       Object.keys(dimB).forEach((k) => {
-        const v = dimB[k];
+        const v = dimB[k] as DimensionResultado & { puntajeTransformado?: number };
         fila[`B ${k}`] = v.transformado ?? v.puntajeTransformado ?? "";
         fila[`Nivel B ${k}`] = v.nivel ?? "";
       });

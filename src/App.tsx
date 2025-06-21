@@ -9,7 +9,15 @@ import HomePage from "./components/HomePage";
 import PoliticaPrivacidad from "./components/PoliticaPrivacidad";
 import TerminosCondiciones from "./components/TerminosCondiciones";
 import credencialesBase from "./config/credentials.json";
-import { CredencialEmpresa } from "./types";
+import {
+  CredencialEmpresa,
+  FichaDatosGenerales as FichaDatos,
+  SurveyResponses,
+  IntralaboralResultado,
+  ExtralaboralResultado,
+  EstresResultado,
+  GlobalResultado,
+} from "./types";
 import {
   bloquesFormaA,
   bloquesFormaB,
@@ -45,26 +53,28 @@ export default function App() {
   >("inicio");
 
   const [formType, setFormType] = useState<"A" | "B" | null>(null);
-  const [ficha, setFicha] = useState<any>(null);
+  const [ficha, setFicha] = useState<FichaDatos | null>(null);
 
   const [empresasIniciales, setEmpresasIniciales] = useState<string[]>(() => {
     const guardadas = JSON.parse(localStorage.getItem("empresasCogent") || "[]");
     return guardadas.length ? guardadas : ["Sonria", "Aeropuerto El Dorado"];
   });
   const [credenciales, setCredenciales] = useState<(CredencialEmpresa & { rol: string })[]>(() => {
-    const extras = JSON.parse(localStorage.getItem("credencialesCogent") || "[]");
+    const extras: (CredencialEmpresa & { rol: string })[] = JSON.parse(
+      localStorage.getItem("credencialesCogent") || "[]"
+    );
     return [...credencialesBase, ...extras];
   });
 
   // Para guardar todas las respuestas por sección
-  const [respuestas, setRespuestas] = useState<any>({});
+  const [respuestas, setRespuestas] = useState<SurveyResponses>({});
   // Para guardar los resultados de cada test
-  const [resultadoEstres, setResultadoEstres] = useState<any>(null);
-  const [resultadoExtralaboral, setResultadoExtralaboral] = useState<any>(null);
-  const [resultadoFormaA, setResultadoFormaA] = useState<any>(null);
-  const [resultadoFormaB, setResultadoFormaB] = useState<any>(null);
-  const [resultadoGlobalAExtra, setResultadoGlobalAExtra] = useState<any>(null);
-  const [resultadoGlobalBExtra, setResultadoGlobalBExtra] = useState<any>(null);
+  const [resultadoEstres, setResultadoEstres] = useState<EstresResultado | null>(null);
+  const [resultadoExtralaboral, setResultadoExtralaboral] = useState<ExtralaboralResultado | null>(null);
+  const [resultadoFormaA, setResultadoFormaA] = useState<IntralaboralResultado | null>(null);
+  const [resultadoFormaB, setResultadoFormaB] = useState<IntralaboralResultado | null>(null);
+  const [resultadoGlobalAExtra, setResultadoGlobalAExtra] = useState<GlobalResultado | null>(null);
+  const [resultadoGlobalBExtra, setResultadoGlobalBExtra] = useState<GlobalResultado | null>(null);
 
   // Manejo de login (muy básico)
   const [rol, setRol] = useState<RolUsuario>("ninguno");
@@ -86,8 +96,10 @@ export default function App() {
   };
 
   const eliminarEmpresa = (usuario: string) => {
-    const extras = JSON.parse(localStorage.getItem("credencialesCogent") || "[]");
-    const filtradas = extras.filter((c: any) => c.usuario !== usuario);
+    const extras: (CredencialEmpresa & { rol: string })[] = JSON.parse(
+      localStorage.getItem("credencialesCogent") || "[]"
+    );
+    const filtradas = extras.filter((c) => c.usuario !== usuario);
     localStorage.setItem("credencialesCogent", JSON.stringify(filtradas));
     setCredenciales([...credencialesBase, ...filtradas]);
   };
@@ -98,8 +110,10 @@ export default function App() {
     usuario: string,
     password: string
   ) => {
-    const extras = JSON.parse(localStorage.getItem("credencialesCogent") || "[]");
-    const nuevas = extras.map((c: any) =>
+    const extras: (CredencialEmpresa & { rol: string })[] = JSON.parse(
+      localStorage.getItem("credencialesCogent") || "[]"
+    );
+    const nuevas = extras.map((c) =>
       c.usuario === originalUsuario
         ? { usuario, password, rol: "dueno", empresa: nombre }
         : c
@@ -107,7 +121,7 @@ export default function App() {
     localStorage.setItem("credencialesCogent", JSON.stringify(nuevas));
     setCredenciales([...credencialesBase, ...nuevas]);
     const empresasGuardadas = JSON.parse(localStorage.getItem("empresasCogent") || "[]");
-    const anterior = extras.find((c: any) => c.usuario === originalUsuario)?.empresa;
+    const anterior = extras.find((c) => c.usuario === originalUsuario)?.empresa;
     let nuevasEmp = empresasGuardadas.filter((e: string) => e !== anterior);
     if (!nuevasEmp.includes(nombre)) {
       nuevasEmp.push(nombre);
@@ -253,7 +267,7 @@ export default function App() {
               { length: formType === "A" ? preguntasA.length : preguntasB.length },
               (_, i) => respuestasBloques[i] ?? ""
             );
-            setRespuestas((prev: any) => ({ ...prev, bloques: ordered }));
+            setRespuestas((prev) => ({ ...prev, bloques: ordered }));
             setStep("extralaboral");
           }}
         />
@@ -272,7 +286,7 @@ export default function App() {
               formType as "A" | "B"
             );
             setResultadoExtralaboral(resultado);
-            setRespuestas((prev: any) => ({
+            setRespuestas((prev) => ({
               ...prev,
               extralaboral: ordered,
               resultadoExtralaboral: resultado
@@ -295,7 +309,7 @@ export default function App() {
               formType as "A" | "B"
             );
             setResultadoEstres(resultado);
-            setRespuestas((prev: any) => ({
+            setRespuestas((prev) => ({
               ...prev,
               estres: ordered,
               resultadoEstres: resultado
