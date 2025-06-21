@@ -213,7 +213,6 @@ export default function App() {
         empresaNombre={empresaActual || undefined}
         empresaFiltro={rol === "dueno" ? empresaActual || undefined : undefined}
         soloGenerales={rol === "dueno"}
-        empresas={empresasIniciales}
         credenciales={credenciales.filter((c) => c.rol === "dueno")}
         onAgregarEmpresa={agregarEmpresa}
         onEliminarEmpresa={eliminarEmpresa}

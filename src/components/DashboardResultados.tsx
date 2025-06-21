@@ -32,7 +32,6 @@ type Props = {
   empresaNombre?: string;
   soloGenerales?: boolean;
   empresaFiltro?: string;
-  empresas?: string[];
   credenciales?: CredencialEmpresa[];
   onAgregarEmpresa?: (nombre: string, usuario: string, password: string) => void;
   onEliminarEmpresa?: (usuario: string) => void;
@@ -124,7 +123,6 @@ export default function DashboardResultados({
   empresaNombre,
   soloGenerales,
   empresaFiltro,
-  empresas: empresasConfig = [],
   credenciales = [],
   onAgregarEmpresa,
   onEliminarEmpresa,
@@ -913,7 +911,6 @@ export default function DashboardResultados({
         {!soloGenerales && (
           <TabsContent value="empresas">
             <AdminEmpresas
-              empresas={empresasConfig}
               credenciales={credenciales}
               onAgregar={onAgregarEmpresa || (() => {})}
               onEliminar={onEliminarEmpresa || (() => {})}
