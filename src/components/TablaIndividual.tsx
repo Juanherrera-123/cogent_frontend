@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
+import { ResultRow } from "@/types";
 
-export default function TablaIndividual({ datos, tipo }: { datos: any[]; tipo: string }) {
+export default function TablaIndividual({ datos, tipo }: { datos: ResultRow[]; tipo: string }) {
   const promedios = useMemo(() => {
     const nivelesRiesgo = [
       "Riesgo muy bajo",

@@ -1,2 +1,3 @@
 export * from './CredencialEmpresa';
-export * from './NivelResumen';
+export * from './Resultados';
+

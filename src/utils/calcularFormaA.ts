@@ -70,10 +70,7 @@ export function calcularFormaA(respuestas: Respuestas) {
         dimension as keyof typeof factoresFormaA.dimensiones
       ] ?? preguntas.length;
     const transformado = Math.round(((suma * 100) / factor) * 10) / 10;
-    const baremo: Baremo[] =
-      baremosFormaA.dimensiones[
-        dimension as keyof typeof baremosFormaA.dimensiones
-      ] || [];
+    const baremo = baremosFormaA.dimensiones[dimension] || [];
     const nivel =
       baremo.find((b: Baremo) => transformado >= b.min && transformado <= b.max)?.nivel ||
       "No clasificado";
@@ -91,10 +88,7 @@ export function calcularFormaA(respuestas: Respuestas) {
         dominio as keyof typeof factoresFormaA.dominios
       ] ?? preguntas.length;
     const transformado = Math.round(((suma * 100) / factor) * 10) / 10;
-    const baremo: Baremo[] =
-      baremosFormaA.dominios[
-        dominio as keyof typeof baremosFormaA.dominios
-      ] || [];
+    const baremo = baremosFormaA.dominios[dominio] || [];
     const nivel =
       baremo.find((b: Baremo) => transformado >= b.min && transformado <= b.max)?.nivel ||
       "No clasificado";

@@ -13,7 +13,7 @@ import TablaDimensiones from "@/components/TablaDimensiones";
 import GraficaBarra from "@/components/GraficaBarra";
 import GraficaBarraSimple from "@/components/GraficaBarraSimple";
 import AdminEmpresas from "@/components/AdminEmpresas";
-import { CredencialEmpresa, NivelResumen } from "@/types";
+import { CredencialEmpresa, ResultRow } from "@/types";
 import GeneralResultsTabs from "@/components/dashboard/GeneralResultsTabs";
 import FormaTabs from "@/components/dashboard/FormaTabs";
 import LogoCogent from "/logo_forma.png";
@@ -131,7 +131,7 @@ export default function DashboardResultados({
   onEditarEmpresa,
   onBack
 }: Props) {
-  const [datos, setDatos] = useState<any[]>([]);
+  const [datos, setDatos] = useState<ResultRow[]>([]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState(empresaFiltro || "todas");
   const [empresaEliminar, setEmpresaEliminar] = useState("todas");
   const [tab, setTab] = useState("general");
@@ -194,14 +194,8 @@ export default function DashboardResultados({
   const datosGlobalBE = datosMostrados.filter((d) => d.resultadoGlobalBExtralaboral);
 
   // ---- Resúmenes para gráficos ----
-  const resumenNivel = (
-    datos: any[],
-    key: string,
-    niveles: string[]
-  ): (NivelResumen & { cantidad: number })[] =>
-    niveles.map((nivel, indice) => ({
-      nombre: nivel,
-      indice,
+  const resumenNivel = (datos: ResultRow[], key: string, niveles: string[]) =>
+    niveles.map((nivel) => ({
       nivel,
       cantidad: datos.filter((d) => {
         const r = d[key];
@@ -228,20 +222,20 @@ export default function DashboardResultados({
     valor: number,
     origen: "formaA" | "formaB" | "extra",
     tipo: "dimensiones" | "dominios",
-    datos?: any[]
+    datos?: ResultRow[]
   ) {
     let baremo: { nivel: string; min: number; max: number }[] = [];
     if (origen === "formaA") {
       if (tipo === "dimensiones") {
-        baremo = (baremosFormaA.dimensiones as any)[nombre] || [];
+        baremo = baremosFormaA.dimensiones[nombre] || [];
       } else {
-        baremo = (baremosFormaA.dominios as any)[nombre] || [];
+        baremo = baremosFormaA.dominios[nombre] || [];
       }
     } else if (origen === "formaB") {
       if (tipo === "dimensiones") {
-        baremo = (baremosFormaB.dimension as any)[nombre] || [];
+        baremo = baremosFormaB.dimension[nombre] || [];
       } else {
-        baremo = (baremosFormaB.dominio as any)[nombre] || [];
+        baremo = baremosFormaB.dominio[nombre] || [];
       }
     } else if (origen === "extra") {
       if (datos && datos.length) {
@@ -278,7 +272,7 @@ export default function DashboardResultados({
   }
 
   function calcularPromedios(
-    datos: any[],
+    datos: ResultRow[],
     key: string,
     campos: string[],
     subkey: "dominios" | "dimensiones",
@@ -362,7 +356,7 @@ export default function DashboardResultados({
 
 
 
-  function conteosPorFicha(datos: any[], keyFicha: string) {
+  function conteosPorFicha(datos: ResultRow[], keyFicha: string) {
     if (keyFicha === "antiguedad") {
       const grupos = Array.from(
         new Set(
