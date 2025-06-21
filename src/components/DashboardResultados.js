@@ -16,6 +16,8 @@ import GeneralResultsTabs from "@/components/dashboard/GeneralResultsTabs";
 import FormaTabs from "@/components/dashboard/FormaTabs";
 import LogoCogent from "/logo_forma.png";
 import { FileDown, FileText, Home as HomeIcon } from "lucide-react";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { db } from "@/firebaseConfig";
 const nivelesRiesgo = [
     "Riesgo muy bajo",
     "Riesgo bajo",
@@ -109,8 +111,12 @@ export default function DashboardResultados({ rol, empresaNombre, soloGenerales,
     const cargo = rol === "psicologa" ? "Psicologist" : "Empresa";
     const tabPill = "px-5 py-2 rounded-full font-semibold border border-[#B2E2FF] text-[#172349] shrink-0 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#38BDF8] data-[state=active]:to-[#265FF2]";
     useEffect(() => {
-        const arr = JSON.parse(localStorage.getItem("resultadosCogent") || "[]");
-        setDatos(arr);
+        const cargar = async () => {
+            const snap = await getDocs(collection(db, "resultadosCogent"));
+            const arr = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            setDatos(arr);
+        };
+        cargar();
     }, []);
     // Empresas únicas (para filtro manual, psicóloga)
     const empresasResultados = Array.from(new Set(datos.map((d) => d.ficha?.empresa || "Sin empresa")));
@@ -273,7 +279,7 @@ export default function DashboardResultados({ rol, empresaNombre, soloGenerales,
         fichaConteosGlobal[cat.key] = conteosPorFicha(datosMostrados, cat.key);
     });
     const datosInforme = useMemo(() => {
-        const todos = gatherFlatResults();
+        const todos = gatherFlatResults(datos);
         return todos.filter((f) => empresaSeleccionada === "todas" || f.Empresa === empresaSeleccionada);
     }, [empresaSeleccionada]);
     const allHeaders = useMemo(() => Array.from(new Set(datosInforme.flatMap((fila) => Object.keys(fila)))), [datosInforme]);
@@ -399,20 +405,24 @@ export default function DashboardResultados({ rol, empresaNombre, soloGenerales,
     const toggleSeleccion = (index) => {
         setSeleccionados((prev) => prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]);
     };
-    const eliminarSeleccionados = () => {
+    const eliminarSeleccionados = async () => {
         if (seleccionados.length === 0)
             return;
+        const eliminados = datos.filter((_, i) => seleccionados.includes(i));
         const restantes = datos.filter((_, i) => !seleccionados.includes(i));
+        await Promise.all(eliminados.map((d) => deleteDoc(doc(db, "resultadosCogent", d.id))));
         setDatos(restantes);
-        localStorage.setItem("resultadosCogent", JSON.stringify(restantes));
         setSeleccionados([]);
     };
-    const eliminarPorEmpresa = () => {
+    const eliminarPorEmpresa = async () => {
+        const eliminados = empresaEliminar === "todas"
+            ? datos
+            : datos.filter((d) => d.ficha?.empresa === empresaEliminar);
         const restantes = empresaEliminar === "todas"
             ? []
             : datos.filter((d) => d.ficha?.empresa !== empresaEliminar);
+        await Promise.all(eliminados.map((d) => deleteDoc(doc(db, "resultadosCogent", d.id))));
         setDatos(restantes);
-        localStorage.setItem("resultadosCogent", JSON.stringify(restantes));
         setSeleccionados([]);
     };
     // ---- Render tablas individuales (solo para psicóloga) ----

@@ -2,8 +2,7 @@
  * Obtiene los resultados almacenados y los convierte en un arreglo
  * de objetos planos (una fila por empleado).
  */
-export function gatherFlatResults() {
-    const almacenados = JSON.parse(localStorage.getItem("resultadosCogent") || "[]");
+export function gatherFlatResults(almacenados) {
     return almacenados.map((d, idx) => {
         const fila = {
             Nro: idx + 1,

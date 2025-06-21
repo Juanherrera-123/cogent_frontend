@@ -1,5 +1,7 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState, useEffect } from "react";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "./firebaseConfig";
 import Consentimiento from "./components/Consentimiento";
 import FormSelector from "./components/FormSelector";
 import FichaDatosGenerales from "./components/FichaDatosGenerales";
@@ -73,45 +75,47 @@ export default function App() {
     };
     // Cuando finaliza la encuesta (luego del bloque de estrés)
     useEffect(() => {
-        if (step === "final") {
-            // Calcula resultados por formulario
-            let resultadoForma = null;
-            let resultadoGlobal = null;
-            if (formType === "A" && respuestas.bloques) {
-                const arr = Array.from({ length: preguntasA.length }, (_, i) => respuestas.bloques?.[i] ?? "");
-                resultadoForma = calcularFormaA(arr);
-                setResultadoFormaA(resultadoForma);
-                if (resultadoExtralaboral) {
-                    resultadoGlobal = calcularGlobalAExtrala(resultadoForma?.total?.suma ?? 0, resultadoExtralaboral.puntajeBrutoTotal ?? 0);
-                    setResultadoGlobalAExtra(resultadoGlobal);
+        const guardar = async () => {
+            if (step === "final") {
+                // Calcula resultados por formulario
+                let resultadoForma = null;
+                let resultadoGlobal = null;
+                if (formType === "A" && respuestas.bloques) {
+                    const arr = Array.from({ length: preguntasA.length }, (_, i) => respuestas.bloques?.[i] ?? "");
+                    resultadoForma = calcularFormaA(arr);
+                    setResultadoFormaA(resultadoForma);
+                    if (resultadoExtralaboral) {
+                        resultadoGlobal = calcularGlobalAExtrala(resultadoForma?.total?.suma ?? 0, resultadoExtralaboral.puntajeBrutoTotal ?? 0);
+                        setResultadoGlobalAExtra(resultadoGlobal);
+                    }
                 }
-            }
-            else if (formType === "B" && respuestas.bloques) {
-                const arr = Array.from({ length: preguntasB.length }, (_, i) => respuestas.bloques?.[i] ?? "");
-                resultadoForma = calcularFormaB(arr);
-                setResultadoFormaB(resultadoForma);
-                if (resultadoExtralaboral) {
-                    resultadoGlobal = calcularGlobalBExtrala(resultadoForma?.total?.suma ?? 0, resultadoExtralaboral.puntajeBrutoTotal ?? 0);
-                    setResultadoGlobalBExtra(resultadoGlobal);
+                else if (formType === "B" && respuestas.bloques) {
+                    const arr = Array.from({ length: preguntasB.length }, (_, i) => respuestas.bloques?.[i] ?? "");
+                    resultadoForma = calcularFormaB(arr);
+                    setResultadoFormaB(resultadoForma);
+                    if (resultadoExtralaboral) {
+                        resultadoGlobal = calcularGlobalBExtrala(resultadoForma?.total?.suma ?? 0, resultadoExtralaboral.puntajeBrutoTotal ?? 0);
+                        setResultadoGlobalBExtra(resultadoGlobal);
+                    }
                 }
+                // Guarda todo lo que quieras conservar
+                const data = {
+                    ficha,
+                    respuestas,
+                    resultadoFormaA: formType === "A" ? resultadoForma : undefined,
+                    resultadoFormaB: formType === "B" ? resultadoForma : undefined,
+                    resultadoGlobalAExtralaboral: formType === "A" ? resultadoGlobal : undefined,
+                    resultadoGlobalBExtralaboral: formType === "B" ? resultadoGlobal : undefined,
+                    resultadoEstres,
+                    resultadoExtralaboral,
+                    tipo: formType,
+                    fecha: ficha?.fecha || new Date().toISOString()
+                };
+                // Guarda en Firestore
+                await addDoc(collection(db, "resultadosCogent"), data);
             }
-            // Guarda todo lo que quieras conservar
-            const data = {
-                ficha,
-                respuestas,
-                resultadoFormaA: formType === "A" ? resultadoForma : undefined,
-                resultadoFormaB: formType === "B" ? resultadoForma : undefined,
-                resultadoGlobalAExtralaboral: formType === "A" ? resultadoGlobal : undefined,
-                resultadoGlobalBExtralaboral: formType === "B" ? resultadoGlobal : undefined,
-                resultadoEstres,
-                resultadoExtralaboral,
-                tipo: formType,
-                fecha: ficha?.fecha || new Date().toISOString()
-            };
-            // Guarda un array con push (no sobreescribe)
-            const prev = JSON.parse(localStorage.getItem("resultadosCogent") || "[]");
-            localStorage.setItem("resultadosCogent", JSON.stringify([...prev, data]));
-        }
+        };
+        guardar();
     }, [step, ficha, respuestas, resultadoEstres, resultadoExtralaboral, formType]);
     // Vista Home
     if (step === "inicio") {
