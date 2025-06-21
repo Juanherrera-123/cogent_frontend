@@ -1,6 +1,14 @@
 // src/data/baremosFormaB.ts
+import { Baremo } from "@/types";
 
-export const baremosFormaB = {
+export interface BaremosFormaB {
+  dimension: Record<string, Baremo[]>;
+  dominio: Record<string, Baremo[]>;
+  total: Baremo[];
+  global: Baremo[];
+}
+
+export const baremosFormaB: BaremosFormaB = {
   dimension: {
     "Características del liderazgo": [
       { nivel: "Sin riesgo", min: 0.0, max: 3.8 },

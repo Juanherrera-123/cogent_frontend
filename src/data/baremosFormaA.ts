@@ -1,6 +1,13 @@
 // src/data/baremosFormaA.ts
+import { Baremo } from "@/types";
 
-export const baremosFormaA = {
+export interface BaremosFormaA {
+  total: Baremo[];
+  dominios: Record<string, Baremo[]>;
+  dimensiones: Record<string, Baremo[]>;
+}
+
+export const baremosFormaA: BaremosFormaA = {
   // Puntaje total intralaboral
   total: [
     { nivel: "Sin riesgo", min: 0.0, max: 19.7 },

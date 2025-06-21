@@ -1,8 +1,9 @@
 import React, { useMemo } from "react";
 import { baremosFormaA } from "@/data/baremosFormaA";
 import { baremosFormaB } from "@/data/baremosFormaB";
+import { ResultRow } from "@/types";
 
-export default function TablaDominios({ datos, dominios, keyResultado }: { datos: any[]; dominios: string[]; keyResultado: string }) {
+export default function TablaDominios({ datos, dominios, keyResultado }: { datos: ResultRow[]; dominios: string[]; keyResultado: string }) {
   const nivelesRiesgo = [
     "Riesgo muy bajo",
     "Riesgo bajo",
@@ -30,8 +31,8 @@ export default function TablaDominios({ datos, dominios, keyResultado }: { datos
       const promedio = Math.round(prom * 10) / 10;
       const baremos =
         origen === "formaA"
-          ? (baremosFormaA.dominios as any)[dom] || []
-          : (baremosFormaB.dominio as any)[dom] || [];
+          ? baremosFormaA.dominios[dom] || []
+          : baremosFormaB.dominio[dom] || [];
       const nivel =
         baremos.find((b: any) => promedio >= b.min && promedio <= b.max)?.nivel || "No clasificado";
       return {
