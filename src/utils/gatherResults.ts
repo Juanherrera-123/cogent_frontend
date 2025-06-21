@@ -22,10 +22,7 @@ interface ResultadoExtraDimension {
  * de objetos planos (una fila por empleado).
  */
 
-export function gatherFlatResults(): FlatResult[] {
-  const almacenados: ResultRow[] = JSON.parse(
-    localStorage.getItem("resultadosCogent") || "[]"
-  );
+export function gatherFlatResults(almacenados: ResultRow[]): FlatResult[] {
 
   return almacenados.map((d, idx) => {
     const fila: FlatResult = {

@@ -59,6 +59,11 @@ npm run lint
 - `public/` - Static assets served directly
 - `index.html` - Entry point for the application
 
+## Firebase storage
+
+Results are saved in a Firestore collection named `resultadosCogent`. Edit
+`src/firebaseConfig.ts` with your Firebase project details before deploying.
+
 ## Sample credentials
 
 Default demo accounts are defined in `src/config/credentials.json`.
