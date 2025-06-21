@@ -4,6 +4,12 @@ import { baremosFormaA } from "../data/baremosFormaA";
 
 type Respuestas = string[];
 
+interface Baremo {
+  nivel: string;
+  min: number;
+  max: number;
+}
+
 // Preguntas con esquema directo e inverso
 const directas = new Set(
   esquemaFormaA.filter(q => q.esquema === "directo").map(q => q.numero)
@@ -64,12 +70,12 @@ export function calcularFormaA(respuestas: Respuestas) {
         dimension as keyof typeof factoresFormaA.dimensiones
       ] ?? preguntas.length;
     const transformado = Math.round(((suma * 100) / factor) * 10) / 10;
-    const baremo =
+    const baremo: Baremo[] =
       baremosFormaA.dimensiones[
         dimension as keyof typeof baremosFormaA.dimensiones
       ] || [];
     const nivel =
-      baremo.find((b: any) => transformado >= b.min && transformado <= b.max)?.nivel ||
+      baremo.find((b: Baremo) => transformado >= b.min && transformado <= b.max)?.nivel ||
       "No clasificado";
     resultadoDimensiones[dimension] = { suma, transformado, nivel };
   });
@@ -85,12 +91,12 @@ export function calcularFormaA(respuestas: Respuestas) {
         dominio as keyof typeof factoresFormaA.dominios
       ] ?? preguntas.length;
     const transformado = Math.round(((suma * 100) / factor) * 10) / 10;
-    const baremo =
+    const baremo: Baremo[] =
       baremosFormaA.dominios[
         dominio as keyof typeof baremosFormaA.dominios
       ] || [];
     const nivel =
-      baremo.find((b: any) => transformado >= b.min && transformado <= b.max)?.nivel ||
+      baremo.find((b: Baremo) => transformado >= b.min && transformado <= b.max)?.nivel ||
       "No clasificado";
     resultadoDominios[dominio] = { suma, transformado, nivel };
   });
@@ -101,7 +107,7 @@ export function calcularFormaA(respuestas: Respuestas) {
   );
   const totalTransformado = Math.round((sumaTotal * 100 / factoresFormaA.total) * 10) / 10;
   const baremoTotal = baremosFormaA.total.find(
-    b => totalTransformado >= b.min && totalTransformado <= b.max
+    (b: Baremo) => totalTransformado >= b.min && totalTransformado <= b.max
   );
 
   return {
