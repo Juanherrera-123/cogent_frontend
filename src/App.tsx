@@ -145,7 +145,7 @@ export default function App() {
         if (resultadoExtralaboral) {
           resultadoGlobal = calcularGlobalAExtrala(
             resultadoForma?.total?.suma ?? 0,
-            resultadoExtralaboral.puntajeBrutoTotal
+            resultadoExtralaboral.puntajeBrutoTotal ?? 0
           );
           setResultadoGlobalAExtra(resultadoGlobal);
         }
@@ -158,7 +158,7 @@ export default function App() {
         if (resultadoExtralaboral) {
           resultadoGlobal = calcularGlobalBExtrala(
             resultadoForma?.total?.suma ?? 0,
-            resultadoExtralaboral.puntajeBrutoTotal
+            resultadoExtralaboral.puntajeBrutoTotal ?? 0
           );
           setResultadoGlobalBExtra(resultadoGlobal);
         }
