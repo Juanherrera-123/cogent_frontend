@@ -2,6 +2,12 @@ import { esquemaFormaB } from "../data/esquemaFormaB";
 import { factoresFormaB } from "../data/factoresFormaB";
 import { baremosFormaB } from "../data/baremosFormaB";
 
+interface Baremo {
+  nivel: string;
+  min: number;
+  max: number;
+}
+
 // Mapeo para esquema de puntaje directo e inverso
 const directas = new Set(esquemaFormaB.filter(q => q.esquema === "directo").map(q => q.numero));
 const inversas = new Set(esquemaFormaB.filter(q => q.esquema === "inverso").map(q => q.numero));
@@ -65,12 +71,12 @@ export function calcularFormaB(respuestas: string[]) {
         dimension as keyof typeof factoresFormaB.dimension
       ] ?? preguntas.length;
     const transformado = Math.round(((suma * 100) / factor) * 10) / 10;
-    const baremo =
+    const baremo: Baremo[] =
       baremosFormaB.dimension[
         dimension as keyof typeof baremosFormaB.dimension
       ] || [];
     const nivel =
-      baremo.find((b: any) => transformado >= b.min && transformado <= b.max)?.nivel ||
+      baremo.find((b: Baremo) => transformado >= b.min && transformado <= b.max)?.nivel ||
       "No clasificado";
     resultadosDimension[dimension] = { suma, transformado, nivel };
   });
@@ -87,12 +93,12 @@ export function calcularFormaB(respuestas: string[]) {
         dominio as keyof typeof factoresFormaB.dominio
       ] ?? preguntas.length;
     const transformado = Math.round(((suma * 100) / factor) * 10) / 10;
-    const baremo =
+    const baremo: Baremo[] =
       baremosFormaB.dominio[
         dominio as keyof typeof baremosFormaB.dominio
       ] || [];
     const nivel =
-      baremo.find((b: any) => transformado >= b.min && transformado <= b.max)?.nivel ||
+      baremo.find((b: Baremo) => transformado >= b.min && transformado <= b.max)?.nivel ||
       "No clasificado";
     resultadosDominio[dominio] = { suma, transformado, nivel };
   });
@@ -105,8 +111,8 @@ export function calcularFormaB(respuestas: string[]) {
   const puntajeTotal = Math.round((sumaTotal * 100 / factoresFormaB.total) * 10) / 10;
 
   // Nivel total
-  const baremoTotal = baremosFormaB.total || [];
-  const nivelTotal = baremoTotal.find(b => puntajeTotal >= b.min && puntajeTotal <= b.max)?.nivel || "No clasificado";
+  const baremoTotal: Baremo[] = baremosFormaB.total || [];
+  const nivelTotal = baremoTotal.find((b: Baremo) => puntajeTotal >= b.min && puntajeTotal <= b.max)?.nivel || "No clasificado";
 
   return {
     dimensiones: resultadosDimension,
