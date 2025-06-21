@@ -17,12 +17,12 @@ type Pregunta = {
 type Props = {
   bloques: Bloque[];
   preguntas: Pregunta[];
-  onFinish: (respuestas: any) => void;
+  onFinish: (respuestas: Record<number, string>) => void;
 };
 
 export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Props) {
   const [bloqueActual, setBloqueActual] = useState(0);
-  const [respuestas, setRespuestas] = useState<any>({});
+  const [respuestas, setRespuestas] = useState<Record<number, string>>({});
 
   const debeMostrar = (bloque: Bloque) => {
     if (!bloque.condicional) return true;
@@ -51,8 +51,8 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
     );
 
   // Cambiar la respuesta
-  const handleChange = (idx: number, valor: any) => {
-    setRespuestas((prev: any) => ({ ...prev, [idx]: valor }));
+  const handleChange = (idx: number, valor: string) => {
+    setRespuestas((prev) => ({ ...prev, [idx]: valor }));
   };
 
   // Botón siguiente: validación y control del flujo

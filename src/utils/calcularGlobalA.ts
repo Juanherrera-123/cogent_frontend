@@ -1,11 +1,7 @@
 // src/utils/calcularGlobalA.ts
 
 // Baremos para el global A + extralaboral
-interface Baremo {
-  nivel: string;
-  min: number;
-  max: number;
-}
+import { Baremo } from "@/types";
 
 export const baremoGlobalAExtrala: Baremo[] = [
   { nivel: "Sin riesgo", min: 0.0, max: 18.8 },

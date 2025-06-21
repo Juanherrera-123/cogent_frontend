@@ -1,14 +1,10 @@
 import { esquemaFormaA } from "../data/esquemaFormaA";
 import { factoresFormaA } from "../data/factoresFormaA";
 import { baremosFormaA } from "../data/baremosFormaA";
+import { Baremo } from "@/types";
 
 type Respuestas = string[];
 
-interface Baremo {
-  nivel: string;
-  min: number;
-  max: number;
-}
 
 // Preguntas con esquema directo e inverso
 const directas = new Set(

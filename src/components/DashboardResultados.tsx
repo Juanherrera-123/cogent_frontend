@@ -13,7 +13,7 @@ import TablaDimensiones from "@/components/TablaDimensiones";
 import GraficaBarra from "@/components/GraficaBarra";
 import GraficaBarraSimple from "@/components/GraficaBarraSimple";
 import AdminEmpresas from "@/components/AdminEmpresas";
-import { CredencialEmpresa, ResultRow } from "@/types";
+import { CredencialEmpresa, ResultRow, CategoriaConteo } from "@/types";
 import GeneralResultsTabs from "@/components/dashboard/GeneralResultsTabs";
 import FormaTabs from "@/components/dashboard/FormaTabs";
 import LogoCogent from "/logo_forma.png";
@@ -244,7 +244,9 @@ export default function DashboardResultados({
               const form = d.tipo;
               let seccion = d.resultadoExtralaboral?.dimensiones?.[nombre];
               if (Array.isArray(d.resultadoExtralaboral?.dimensiones)) {
-                seccion = d.resultadoExtralaboral.dimensiones.find((x: any) => x.nombre === nombre);
+                seccion = d.resultadoExtralaboral.dimensiones.find(
+                  (x) => x.nombre === nombre
+                );
               }
               const puntaje = seccion?.transformado ?? seccion?.puntajeTransformado;
               if (typeof puntaje !== "number") return undefined;
@@ -289,7 +291,7 @@ export default function DashboardResultados({
         .map((d) => {
           let seccion = d[key]?.[subkey]?.[nombre];
           if (Array.isArray(d[key]?.[subkey])) {
-            const item = d[key][subkey].find((x: any) => x.nombre === nombre);
+            const item = d[key][subkey].find((x) => x.nombre === nombre);
             seccion = item;
           }
           if (typeof seccion === "object") {
@@ -386,11 +388,11 @@ export default function DashboardResultados({
     }));
   }
 
-  const fichaConteosA: Record<string, any[]> = {};
-  const fichaConteosB: Record<string, any[]> = {};
-  const fichaConteosExtra: Record<string, any[]> = {};
-  const fichaConteosEstres: Record<string, any[]> = {};
-  const fichaConteosGlobal: Record<string, any[]> = {};
+  const fichaConteosA: Record<string, CategoriaConteo[]> = {};
+  const fichaConteosB: Record<string, CategoriaConteo[]> = {};
+  const fichaConteosExtra: Record<string, CategoriaConteo[]> = {};
+  const fichaConteosEstres: Record<string, CategoriaConteo[]> = {};
+  const fichaConteosGlobal: Record<string, CategoriaConteo[]> = {};
 
   categoriasFicha.forEach((cat) => {
     fichaConteosA[cat.key] = conteosPorFicha(datosA, cat.key);
@@ -427,7 +429,7 @@ export default function DashboardResultados({
       nivelesEstresMap[n] = i;
     });
 
-    const row: Record<string, any> = {};
+    const row: Record<string, string | number | undefined> = {};
     allHeaders.forEach((h) => {
       const valores = datosInforme
         .map((f) => f[h])
@@ -463,7 +465,7 @@ export default function DashboardResultados({
 
   // ---- Exportar a Excel ----
   const handleExportar = () => {
-    let datosExportar: any[] = [];
+    let datosExportar: ResultRow[] = [];
     if (tab === "general") datosExportar = datosMostrados;
     else if (tab === "formaA") datosExportar = datosA;
     else if (tab === "formaB") datosExportar = datosB;

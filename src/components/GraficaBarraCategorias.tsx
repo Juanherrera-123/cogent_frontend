@@ -1,4 +1,5 @@
 import React from "react";
+import { CategoriaConteo } from "@/types";
 import {
   BarChart,
   Bar,
@@ -28,7 +29,7 @@ export default function GraficaBarraCategorias({
   titulo,
   chartType,
 }: {
-  datos: any[];
+  datos: CategoriaConteo[];
   titulo: string;
   chartType: "bar" | "histogram" | "pie";
 }) {

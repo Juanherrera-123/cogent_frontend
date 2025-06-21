@@ -43,6 +43,14 @@ export interface EstresResultado {
   nivel: string;
 }
 
+export interface SurveyResponses {
+  bloques?: string[];
+  extralaboral?: string[];
+  estres?: string[];
+  resultadoExtralaboral?: ExtralaboralResultado;
+  resultadoEstres?: EstresResultado;
+}
+
 export interface FichaDatosGenerales {
   fecha: string;
   nombre: string;
@@ -74,7 +82,7 @@ export interface FichaDatosGenerales {
 
 export interface ResultRow {
   ficha?: FichaDatosGenerales;
-  respuestas?: any;
+  respuestas?: SurveyResponses;
   resultadoFormaA?: IntralaboralResultado;
   resultadoFormaB?: IntralaboralResultado;
   resultadoExtralaboral?: ExtralaboralResultado;

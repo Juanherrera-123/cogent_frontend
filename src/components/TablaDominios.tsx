@@ -19,14 +19,14 @@ export default function TablaDominios({ datos, dominios, keyResultado }: { datos
         .map((d) => {
           let seccion = d[keyResultado]?.dominios?.[dom];
           if (Array.isArray(d[keyResultado]?.dominios)) {
-            seccion = d[keyResultado].dominios.find((x: any) => x.nombre === dom);
+            seccion = d[keyResultado].dominios.find((x) => x.nombre === dom);
           }
           if (typeof seccion === "object") {
             return seccion.transformado ?? seccion.puntajeTransformado;
           }
           return d[keyResultado]?.puntajesDominio?.[dom];
         })
-        .filter((v: any) => typeof v === "number");
+        .filter((v) => typeof v === "number");
       const prom = valores.length ? valores.reduce((a, b) => a + b, 0) / valores.length : 0;
       const promedio = Math.round(prom * 10) / 10;
       const baremos =
@@ -34,7 +34,7 @@ export default function TablaDominios({ datos, dominios, keyResultado }: { datos
           ? baremosFormaA.dominios[dom] || []
           : baremosFormaB.dominio[dom] || [];
       const nivel =
-        baremos.find((b: any) => promedio >= b.min && promedio <= b.max)?.nivel || "No clasificado";
+        baremos.find((b) => promedio >= b.min && promedio <= b.max)?.nivel || "No clasificado";
       return {
         promedio,
         nivel: nivel === "Sin riesgo" ? "Riesgo muy bajo" : nivel,
@@ -66,7 +66,7 @@ export default function TablaDominios({ datos, dominios, keyResultado }: { datos
               {dominios.map((dom, idx) => {
                 let seccion = d[keyResultado]?.dominios?.[dom];
                 if (Array.isArray(d[keyResultado]?.dominios)) {
-                  const item = d[keyResultado].dominios.find((x: any) => x.nombre === dom);
+                  const item = d[keyResultado].dominios.find((x) => x.nombre === dom);
                   seccion = item;
                 }
                 const valor =

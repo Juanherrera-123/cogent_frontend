@@ -1,12 +1,8 @@
 import { esquemaFormaB } from "../data/esquemaFormaB";
 import { factoresFormaB } from "../data/factoresFormaB";
 import { baremosFormaB } from "../data/baremosFormaB";
+import { Baremo } from "@/types";
 
-interface Baremo {
-  nivel: string;
-  min: number;
-  max: number;
-}
 
 // Mapeo para esquema de puntaje directo e inverso
 const directas = new Set(esquemaFormaB.filter(q => q.esquema === "directo").map(q => q.numero));

@@ -19,14 +19,14 @@ export default function TablaDimensiones({ datos, dimensiones, keyResultado }: {
         .map((d) => {
           let seccion = d[keyResultado]?.dimensiones?.[dim];
           if (Array.isArray(d[keyResultado]?.dimensiones)) {
-            seccion = d[keyResultado].dimensiones.find((x: any) => x.nombre === dim);
+            seccion = d[keyResultado].dimensiones.find((x) => x.nombre === dim);
           }
           if (typeof seccion === "object") {
             return seccion.transformado ?? seccion.puntajeTransformado;
           }
           return d[keyResultado]?.puntajesDimension?.[dim];
         })
-        .filter((v: any) => typeof v === "number");
+        .filter((v) => typeof v === "number");
       const prom = valores.length ? valores.reduce((a, b) => a + b, 0) / valores.length : 0;
       const promedio = Math.round(prom * 10) / 10;
       const baremos =
@@ -34,7 +34,7 @@ export default function TablaDimensiones({ datos, dimensiones, keyResultado }: {
           ? baremosFormaA.dimensiones[dim] || []
           : baremosFormaB.dimension[dim] || [];
       const nivel =
-        baremos.find((b: any) => promedio >= b.min && promedio <= b.max)?.nivel || "No clasificado";
+        baremos.find((b) => promedio >= b.min && promedio <= b.max)?.nivel || "No clasificado";
       return {
         promedio,
         nivel: nivel === "Sin riesgo" ? "Riesgo muy bajo" : nivel,
@@ -66,7 +66,7 @@ export default function TablaDimensiones({ datos, dimensiones, keyResultado }: {
               {dimensiones.map((dim, idx) => {
                 let seccion = d[keyResultado]?.dimensiones?.[dim];
                 if (Array.isArray(d[keyResultado]?.dimensiones)) {
-                  const item = d[keyResultado].dimensiones.find((x: any) => x.nombre === dim);
+                  const item = d[keyResultado].dimensiones.find((x) => x.nombre === dim);
                   seccion = item;
                 }
                 const valor =
