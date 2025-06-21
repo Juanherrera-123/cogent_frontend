@@ -5,6 +5,7 @@ import GraficaBarra from "@/components/GraficaBarra";
 import TablaIndividual from "@/components/TablaIndividual";
 import TablaDominios from "@/components/TablaDominios";
 import TablaDimensiones from "@/components/TablaDimensiones";
+import { NivelResumen } from "@/types";
 
 export default function FormaTabs({
   value,
@@ -24,9 +25,9 @@ export default function FormaTabs({
   value: string;
   onChange: (v: string) => void;
   datos: any[];
-  resumen: any[];
-  promediosDominios: any[];
-  promediosDimensiones: any[];
+  resumen: (NivelResumen & { cantidad: number })[];
+  promediosDominios: NivelResumen[];
+  promediosDimensiones: NivelResumen[];
   dominios: string[];
   dimensiones: string[];
   chartType: "bar" | "histogram" | "pie";

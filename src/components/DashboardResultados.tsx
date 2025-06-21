@@ -13,7 +13,7 @@ import TablaDimensiones from "@/components/TablaDimensiones";
 import GraficaBarra from "@/components/GraficaBarra";
 import GraficaBarraSimple from "@/components/GraficaBarraSimple";
 import AdminEmpresas from "@/components/AdminEmpresas";
-import { CredencialEmpresa } from "@/types";
+import { CredencialEmpresa, NivelResumen } from "@/types";
 import GeneralResultsTabs from "@/components/dashboard/GeneralResultsTabs";
 import FormaTabs from "@/components/dashboard/FormaTabs";
 import LogoCogent from "/logo_forma.png";
@@ -194,14 +194,23 @@ export default function DashboardResultados({
   const datosGlobalBE = datosMostrados.filter((d) => d.resultadoGlobalBExtralaboral);
 
   // ---- Resúmenes para gráficos ----
-  const resumenNivel = (datos: any[], key: string, niveles: string[]) =>
-    niveles.map((nivel) => ({
+  const resumenNivel = (
+    datos: any[],
+    key: string,
+    niveles: string[]
+  ): (NivelResumen & { cantidad: number })[] =>
+    niveles.map((nivel, indice) => ({
+      nombre: nivel,
+      indice,
       nivel,
       cantidad: datos.filter((d) => {
         const r = d[key];
         const nivelRes =
           r?.total?.nivel ?? r?.nivelTotal ?? r?.nivelGlobal ?? r?.nivel;
-        return nivelRes === nivel || (nivelRes === "Sin riesgo" && nivel === "Riesgo muy bajo");
+        return (
+          nivelRes === nivel ||
+          (nivelRes === "Sin riesgo" && nivel === "Riesgo muy bajo")
+        );
       }).length,
     }));
 
