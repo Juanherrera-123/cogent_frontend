@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { CredencialEmpresa } from "@/types";
+import { useState } from "react";
 
 export default function AdminEmpresas({
   empresas,

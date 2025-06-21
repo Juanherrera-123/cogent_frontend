@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Consentimiento from "./components/Consentimiento";
 import FormSelector from "./components/FormSelector";
 import FichaDatosGenerales from "./components/FichaDatosGenerales";
@@ -10,7 +10,6 @@ import PoliticaPrivacidad from "./components/PoliticaPrivacidad";
 import TerminosCondiciones from "./components/TerminosCondiciones";
 import credencialesBase from "./config/credentials.json";
 import { CredencialEmpresa } from "./types";
-import logoTexto from "./logo_texto.png";
 import {
   bloquesFormaA,
   bloquesFormaB,
