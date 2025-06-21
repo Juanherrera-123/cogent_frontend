@@ -472,7 +472,7 @@ export default function DashboardResultados({
 
   // ---- Exportar a Excel ----
   const handleExportar = () => {
-    let datosExportar: (ResultRow | FlatResult)[] = [];
+    let datosExportar: ResultRow[] | FlatResult[] = [];
     if (tab === "general") datosExportar = datosMostrados;
     else if (tab === "formaA") datosExportar = datosA;
     else if (tab === "formaB") datosExportar = datosB;
@@ -482,15 +482,17 @@ export default function DashboardResultados({
     else if (tab === "estres") datosExportar = datosEstres;
     else if (tab === "informe") datosExportar = datosInforme;
 
-    const filas =
-      tab === "informe"
-        ? datosInforme
-        : datosExportar.map((d, i) => ({
-            Nro: i + 1,
-            Empresa: d.ficha?.empresa || "",
-            Nombre: d.ficha?.nombre || "",
-            Sexo: d.ficha?.sexo || "",
-            Cargo: d.ficha?.cargo || "",
+      const filas =
+        tab === "informe"
+          ? datosInforme
+          : (datosExportar as ResultRow[]).map((d, i) => {
+              const row = d as ResultRow;
+              return {
+                Nro: i + 1,
+                Empresa: row.ficha?.empresa || "",
+                Nombre: row.ficha?.nombre || "",
+                Sexo: row.ficha?.sexo || "",
+                Cargo: row.ficha?.cargo || "",
             ...(tab === "formaA" && {
               "Puntaje Forma A": d.resultadoFormaA?.total?.transformado ?? "",
               "Nivel Forma A": d.resultadoFormaA?.total?.nivel ?? "",
@@ -527,8 +529,9 @@ export default function DashboardResultados({
               "Puntaje Estrés": d.resultadoEstres?.puntajeTransformado ?? "",
               "Nivel Estrés": d.resultadoEstres?.nivel ?? "",
             }),
-            Fecha: d.fecha ? new Date(d.fecha).toLocaleString() : "",
-          }));
+              Fecha: row.fecha ? new Date(row.fecha).toLocaleString() : "",
+              };
+            });
 
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(filas, { header: allHeaders });

@@ -44,7 +44,7 @@ export default function AdminEmpresas({
     if (!editUsuario.trim() || !editPassword.trim()) return;
     onEditar(
       credenciales[editIndex].usuario,
-      credenciales[editIndex].empresa,
+      credenciales[editIndex].empresa || "",
       editUsuario.trim(),
       editPassword.trim()
     );
@@ -136,7 +136,7 @@ export default function AdminEmpresas({
                         className="px-2 py-0.5 text-xs bg-yellow-400 rounded"
                         onClick={() => {
                           setEditIndex(idx);
-                          setEditNombre(c.empresa);
+                          setEditNombre(c.empresa || "");
                           setEditUsuario(c.usuario);
                           setEditPassword(c.password);
                         }}
