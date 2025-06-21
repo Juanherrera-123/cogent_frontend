@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
   LabelList,
 } from "recharts";
+import { NivelResumen } from "@/types";
 
 const gradientes = {
 
@@ -39,7 +40,7 @@ export default function GraficaBarraSimple({
   titulo,
   chartType,
 }: {
-  resumen: any[];
+  resumen: (NivelResumen & { cantidad: number })[];
   titulo: string;
   chartType: "bar" | "histogram" | "pie";
 }) {
