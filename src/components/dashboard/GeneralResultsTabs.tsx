@@ -2,6 +2,7 @@ import React from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import GraficaBarraSimple from "@/components/GraficaBarraSimple";
 import FichaTecnicaTabs, { CategoriaFicha } from "./FichaTecnicaTabs";
+import { NivelResumen } from "@/types";
 
 export default function GeneralResultsTabs({
   value,
@@ -29,10 +30,10 @@ export default function GeneralResultsTabs({
   datosB: any[];
   datosExtra: any[];
   datosEstres: any[];
-  resumenA: any[];
-  resumenB: any[];
-  resumenExtra: any[];
-  resumenEstres: any[];
+  resumenA: (NivelResumen & { cantidad: number })[];
+  resumenB: (NivelResumen & { cantidad: number })[];
+  resumenExtra: (NivelResumen & { cantidad: number })[];
+  resumenEstres: (NivelResumen & { cantidad: number })[];
   categoriaFicha: string;
   onCategoriaChange: (v: string) => void;
   categoriasFicha: readonly CategoriaFicha[];

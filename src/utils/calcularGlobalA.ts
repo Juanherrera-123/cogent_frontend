@@ -1,7 +1,13 @@
 // src/utils/calcularGlobalA.ts
 
 // Baremos para el global A + extralaboral
-export const baremoGlobalAExtrala = [
+interface Baremo {
+  nivel: string;
+  min: number;
+  max: number;
+}
+
+export const baremoGlobalAExtrala: Baremo[] = [
   { nivel: "Sin riesgo", min: 0.0, max: 18.8 },
   { nivel: "Riesgo bajo", min: 18.9, max: 24.4 },
   { nivel: "Riesgo medio", min: 24.5, max: 29.5 },
@@ -19,7 +25,9 @@ export function calcularGlobalAExtrala(
   global = Math.round(global * 10) / 10;
   if (global < 0) global = 0;
   if (global > 100) global = 100;
-  const baremo = baremoGlobalAExtrala.find(b => global >= b.min && global <= b.max);
+  const baremo = baremoGlobalAExtrala.find(
+    (b: Baremo) => global >= b.min && global <= b.max
+  );
   return {
     puntajeGlobal: global,
     nivelGlobal: baremo?.nivel ?? "No clasificado"
@@ -40,8 +48,9 @@ export function calcularGlobalBExtrala(
   global = Math.round(global * 10) / 10;
   if (global < 0) global = 0;
   if (global > 100) global = 100;
-  const baremo = baremosFormaB.global.find(
-    (b: any) => global >= b.min && global <= b.max
+  const baremosGlobal: Baremo[] = baremosFormaB.global;
+  const baremo = baremosGlobal.find(
+    (b: Baremo) => global >= b.min && global <= b.max
   );
   return {
     puntajeGlobal: global,

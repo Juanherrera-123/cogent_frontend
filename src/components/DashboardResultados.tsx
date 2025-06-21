@@ -201,7 +201,10 @@ export default function DashboardResultados({
         const r = d[key];
         const nivelRes =
           r?.total?.nivel ?? r?.nivelTotal ?? r?.nivelGlobal ?? r?.nivel;
-        return nivelRes === nivel || (nivelRes === "Sin riesgo" && nivel === "Riesgo muy bajo");
+        return (
+          nivelRes === nivel ||
+          (nivelRes === "Sin riesgo" && nivel === "Riesgo muy bajo")
+        );
       }).length,
     }));
 
@@ -404,7 +407,7 @@ export default function DashboardResultados({
     return todos.filter(
       (f) => empresaSeleccionada === "todas" || f.Empresa === empresaSeleccionada
     );
-  }, [empresaSeleccionada, datos]);
+  }, [empresaSeleccionada]);
 
   const allHeaders = useMemo(
     () =>

@@ -1,5 +1,18 @@
 import React from "react";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LabelList } from "recharts";
+import {
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  LabelList,
+} from "recharts";
+import { NivelResumen } from "@/types";
 
 const gradientes = {
   "Riesgo muy bajo": { id: "riesgo-muy-bajo", from: "#bfdbfe", to: "#3b82f6" },
@@ -27,7 +40,7 @@ export default function GraficaBarra({
   titulo,
   chartType,
 }: {
-  resumen: any[];
+  resumen: NivelResumen[];
   titulo: string;
   chartType: "bar" | "histogram" | "pie";
 }) {
