@@ -35,7 +35,7 @@ export default function GeneralResultsTabs({
   resumenEstres: any[];
   categoriaFicha: string;
   onCategoriaChange: (v: string) => void;
-  categoriasFicha: CategoriaFicha[];
+  categoriasFicha: readonly CategoriaFicha[];
   fichaConteos: Record<string, any[]>;
 }) {
   return (

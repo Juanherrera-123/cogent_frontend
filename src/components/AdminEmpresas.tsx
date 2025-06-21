@@ -44,7 +44,12 @@ export default function AdminEmpresas({
   const handleGuardarEdicion = () => {
     if (editIndex === null) return;
     if (!editUsuario.trim() || !editPassword.trim()) return;
-    onEditar(editIndex, editUsuario.trim(), editPassword.trim());
+    onEditar(
+      credenciales[editIndex].usuario,
+      credenciales[editIndex].empresa,
+      editUsuario.trim(),
+      editPassword.trim()
+    );
     setEditIndex(null);
     setEditUsuario("");
     setEditPassword("");

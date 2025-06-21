@@ -53,13 +53,15 @@ export default function Encuesta({ tipo = "A" }: { tipo?: TipoFormulario }) {
       ));
 
   // ¿Hay un filtro entre bloques?
-  const filtroBloque =
-    tipo === "A"
-      ? (bloqueActual === 13 && preguntas[105]) || // F1
-        (bloqueActual === 14 && preguntas[115])    // F2
-      : tipo === "B"
-        ? bloqueActual === 12 && preguntas[88]     // F3
-        : null;
+  const filtroBloque = (() => {
+    if (tipo === "A") {
+      if (bloqueActual === 13) return { ...preguntas[105], key: "F1" };
+      if (bloqueActual === 14) return { ...preguntas[115], key: "F2" };
+    } else if (tipo === "B" && bloqueActual === 12) {
+      return { ...preguntas[88], key: "F3" };
+    }
+    return null;
+  })();
 
   // Render
   return (
@@ -75,8 +77,18 @@ export default function Encuesta({ tipo = "A" }: { tipo?: TipoFormulario }) {
       {filtroBloque && (
         <div className="my-6">
           <p className="font-bold">{filtroBloque.texto}</p>
-          <button onClick={() => responderFiltro(filtroBloque.filtro, true)} className="mr-2 bg-primary-main text-white p-2 rounded">Sí</button>
-          <button onClick={() => responderFiltro(filtroBloque.filtro, false)} className="bg-primary-main text-white p-2 rounded">No</button>
+          <button
+            onClick={() => responderFiltro(filtroBloque.key, true)}
+            className="mr-2 bg-primary-main text-white p-2 rounded"
+          >
+            Sí
+          </button>
+          <button
+            onClick={() => responderFiltro(filtroBloque.key, false)}
+            className="bg-primary-main text-white p-2 rounded"
+          >
+            No
+          </button>
         </div>
       )}
 

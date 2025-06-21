@@ -136,7 +136,9 @@ export default function DashboardResultados({
   const [empresaEliminar, setEmpresaEliminar] = useState("todas");
   const [tab, setTab] = useState("general");
   const [tabGeneral, setTabGeneral] = useState("resumen");
-  const [categoriaFicha, setCategoriaFicha] = useState(categoriasFicha[0].key);
+  const [categoriaFicha, setCategoriaFicha] = useState<string>(
+    categoriasFicha[0].key
+  );
   const [tabIntra, setTabIntra] = useState("global"); // Para sub-tabs de formaA/B
 
   const [tabExtra, setTabExtra] = useState("global");
@@ -651,7 +653,7 @@ export default function DashboardResultados({
             resumenExtra={resumenExtra}
             resumenEstres={resumenEstres}
             categoriaFicha={categoriaFicha}
-            onCategoriaChange={setCategoriaFicha}
+            onCategoriaChange={(v) => setCategoriaFicha(v)}
             categoriasFicha={categoriasFicha}
             fichaConteos={fichaConteosGlobal}
           />
@@ -756,7 +758,11 @@ export default function DashboardResultados({
                 <div className="text-[var(--gray-medium)] py-4">No hay resultados Globales A.</div>
               ) : (
                 <>
-                  <GraficaBarraSimple resumen={resumenGlobalAE} titulo="Niveles Global A + Extra" />
+                  <GraficaBarraSimple
+                    resumen={resumenGlobalAE}
+                    titulo="Niveles Global A + Extra"
+                    chartType={chartType}
+                  />
                   {!soloGenerales && <TablaIndividual datos={datosGlobalAE} tipo="globalExtra" />}
                 </>
               )}
@@ -766,7 +772,11 @@ export default function DashboardResultados({
                 <div className="text-[var(--gray-medium)] py-4">No hay resultados Globales B.</div>
               ) : (
                 <>
-                  <GraficaBarraSimple resumen={resumenGlobalBE} titulo="Niveles Global B + Extra" />
+                  <GraficaBarraSimple
+                    resumen={resumenGlobalBE}
+                    titulo="Niveles Global B + Extra"
+                    chartType={chartType}
+                  />
                   {!soloGenerales && <TablaIndividual datos={datosGlobalBE} tipo="globalExtra" />}
                 </>
               )}

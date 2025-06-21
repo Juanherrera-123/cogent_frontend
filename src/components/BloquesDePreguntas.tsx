@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 type Bloque = {
   bloque: number;
-  preguntas: [number, number]; // índices de inicio y fin (INCLUSIVO)
+  preguntas: number[]; // índices de inicio y fin (INCLUSIVO)
   enunciado: string;
   condicional?: string | null; // "F1", "F2", "F3" o null
   obligatorio: boolean;
@@ -10,7 +10,7 @@ type Bloque = {
 
 type Pregunta = {
   texto: string;
-  tipo: "likert" | "yesno" | "estres";
+  tipo: string; // "likert" | "yesno" | "estres"
   filtro?: boolean; // true si es pregunta filtro (sí/no)
 };
 
@@ -29,11 +29,11 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
     // Buscar el bloque condicional correspondiente
     const bloqueFiltro = bloques.find(b => b.condicional === null && b.enunciado.toLowerCase().includes(nombre.toLowerCase()));
     // Si no está enunciado el nombre, buscar por orden fijo
-    let idx = null;
+    let idx: number | null = null;
     if (nombre === "F1") idx = 104;
     if (nombre === "F2") idx = 114;
     if (nombre === "F3") idx = 88;
-    return respuestas[idx];
+    return idx !== null ? respuestas[idx] : undefined;
   };
 
   // Valida si el bloque debe mostrarse según condicional

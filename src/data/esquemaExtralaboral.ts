@@ -9,14 +9,14 @@ export const preguntasInverso = [
 ];
 
 // Cómo se puntúan las respuestas
-export const puntajeDirecto = {
+export const puntajeDirecto: Record<string, number> = {
   "siempre": 0,
   "casi siempre": 1,
   "algunas veces": 2,
   "casi nunca": 3,
   "nunca": 4
 };
-export const puntajeInverso = {
+export const puntajeInverso: Record<string, number> = {
   "siempre": 4,
   "casi siempre": 3,
   "algunas veces": 2,
