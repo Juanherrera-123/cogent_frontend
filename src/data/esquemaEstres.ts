@@ -37,10 +37,12 @@ export const esquemaPuntajeEstres: {
 };
 
 // 2. Para saber a qué esquema pertenece cada pregunta (por número, base 1)
-export const mapaPreguntaEsquema: { [pregunta: number]: "esquema1" | "esquema2" | "esquema3" } = (() => {
-  const map: any = {};
+export const mapaPreguntaEsquema: Record<number, "esquema1" | "esquema2" | "esquema3"> = (() => {
+  const map: Record<number, "esquema1" | "esquema2" | "esquema3"> = {};
   Object.entries(esquemaPuntajeEstres).forEach(([esquema, data]) => {
-    data.items.forEach(num => map[num] = esquema);
+    data.items.forEach((num) => {
+      map[num] = esquema as "esquema1" | "esquema2" | "esquema3";
+    });
   });
   return map;
 })();

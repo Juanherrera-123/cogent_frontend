@@ -1,5 +1,10 @@
-export interface FlatResult {
-  [key: string]: any;
+export type FlatResult = Record<string, string | number | undefined>;
+
+interface ResultadoExtraDimension {
+  nombre: string;
+  puntajeTransformado?: number;
+  transformado?: number;
+  nivel?: string;
 }
 
 /**
@@ -68,9 +73,11 @@ export function gatherFlatResults(): FlatResult[] {
       fila["Puntaje Extralaboral"] =
         d.resultadoExtralaboral.puntajeTransformadoTotal ?? "";
       fila["Nivel Extralaboral"] = d.resultadoExtralaboral.nivelGlobal ?? "";
-      const dims = d.resultadoExtralaboral.dimensiones || [];
-      dims.forEach((dim: any) => {
-        fila[`Extra ${dim.nombre}`] = dim.puntajeTransformado ?? "";
+      const dims: ResultadoExtraDimension[] =
+        d.resultadoExtralaboral.dimensiones || [];
+      dims.forEach((dim) => {
+        const valor = dim.puntajeTransformado ?? dim.transformado ?? "";
+        fila[`Extra ${dim.nombre}`] = valor;
         fila[`Nivel Extra ${dim.nombre}`] = dim.nivel ?? "";
       });
     }
