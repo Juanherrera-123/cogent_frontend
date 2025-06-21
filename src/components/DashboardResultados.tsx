@@ -404,7 +404,7 @@ export default function DashboardResultados({
     return todos.filter(
       (f) => empresaSeleccionada === "todas" || f.Empresa === empresaSeleccionada
     );
-  }, [empresaSeleccionada, datos]);
+  }, [empresaSeleccionada]);
 
   const allHeaders = useMemo(
     () =>
