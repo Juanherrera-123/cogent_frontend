@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { bloquesFormaA, preguntasA, bloquesFormaB, preguntasB } from "../data/preguntas";
 
 type TipoFormulario = "A" | "B";
@@ -9,8 +9,6 @@ export default function Encuesta({ tipo = "A" }: { tipo?: TipoFormulario }) {
   const bloques = tipo === "A" ? bloquesFormaA : bloquesFormaB;
   const preguntas = tipo === "A" ? preguntasA : preguntasB;
 
-  // Estado para respuestas (puede ser objeto clave-valor)
-  const [respuestas, setRespuestas] = useState<{ [key: number]: any }>({});
   const [bloqueActual, setBloqueActual] = useState(0);
 
   // Estado para los filtros (sí/no en filtros)
