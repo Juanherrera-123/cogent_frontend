@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { cn } from "@/lib/utils";
 
 type Bloque = {
   bloque: number;
@@ -23,6 +24,7 @@ type Props = {
 export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Props) {
   const [bloqueActual, setBloqueActual] = useState(0);
   const [respuestas, setRespuestas] = useState<Record<number, string>>({});
+  const [faltantes, setFaltantes] = useState<number[]>([]);
 
   const debeMostrar = (bloque: Bloque) => {
     if (!bloque.condicional) return true;
@@ -53,14 +55,24 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
   // Cambiar la respuesta
   const handleChange = (idx: number, valor: string) => {
     setRespuestas((prev) => ({ ...prev, [idx]: valor }));
+    setFaltantes((prev) => prev.filter((f) => f !== idx));
   };
 
   // Botón siguiente: validación y control del flujo
   const handleSiguiente = () => {
-    if (preguntasFaltantes.length > 0) {
-      alert("Por favor responde todas las preguntas obligatorias.");
+    const falt = preguntasBloque
+      .map((preg, i) => ({
+        idx: bloque.preguntas[0] + i,
+        obligatoria: bloque.obligatorio || preg.filtro,
+      }))
+      .filter((q) => q.obligatoria && !respuestas[q.idx])
+      .map((q) => q.idx);
+
+    if (falt.length > 0) {
+      setFaltantes(falt);
       return;
     }
+    setFaltantes([]);
     // Buscar el siguiente bloque que deba mostrarse según condicional
     let next = bloqueActual + 1;
     while (next < bloques.length && !debeMostrar(bloques[next])) {
@@ -124,7 +136,7 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
       </label>
       {preg.tipo === "likert" && (
         <select
-          className="input"
+          className={cn("input", faltantes.includes(idx) && "border-red-500")}
           value={respuestas[idx] || ""}
           onChange={e => handleChange(idx, e.target.value)}
         >
@@ -138,7 +150,7 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
       )}
       {preg.tipo === "estres" && (
         <select
-          className="input"
+          className={cn("input", faltantes.includes(idx) && "border-red-500")}
           value={respuestas[idx] || ""}
           onChange={e => handleChange(idx, e.target.value)}
         >
@@ -151,7 +163,7 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
       )}
       {preg.tipo === "yesno" && (
         <select
-          className="input"
+          className={cn("input", faltantes.includes(idx) && "border-red-500")}
           value={respuestas[idx] || ""}
           onChange={e => handleChange(idx, e.target.value)}
         >
@@ -162,7 +174,12 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
         )}
        </div>
       );
-      })} 
+      })}
+      {faltantes.length > 0 && (
+        <div className="text-red-600 font-bold text-center">
+          Responde las preguntas marcadas en rojo.
+        </div>
+      )}
       <div className="flex gap-4 mt-4">
         {tieneAnterior && (
           <button
