@@ -24,19 +24,6 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
   const [bloqueActual, setBloqueActual] = useState(0);
   const [respuestas, setRespuestas] = useState<any>({});
 
-  // Saca la respuesta de la pregunta filtro (índice de pregunta filtro == índice en preguntas[])
-  const getFiltroRespuesta = (nombre: "F1" | "F2" | "F3") => {
-    // Buscar el bloque condicional correspondiente
-    const bloqueFiltro = bloques.find(b => b.condicional === null && b.enunciado.toLowerCase().includes(nombre.toLowerCase()));
-    // Si no está enunciado el nombre, buscar por orden fijo
-    let idx: number | null = null;
-    if (nombre === "F1") idx = 104;
-    if (nombre === "F2") idx = 114;
-    if (nombre === "F3") idx = 88;
-    return idx !== null ? respuestas[idx] : undefined;
-  };
-
-  // Valida si el bloque debe mostrarse según condicional
   const debeMostrar = (bloque: Bloque) => {
     if (!bloque.condicional) return true;
     if (bloque.condicional === "F1") return respuestas[105] === "sí";
