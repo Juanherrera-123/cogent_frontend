@@ -138,7 +138,7 @@ export default function App() {
       let resultadoGlobal = null;
       if (formType === "A" && respuestas.bloques) {
         const arr = Array.from({ length: preguntasA.length }, (_, i) =>
-          respuestas.bloques[i] ?? ""
+          respuestas.bloques?.[i] ?? ""
         );
         resultadoForma = calcularFormaA(arr);
         setResultadoFormaA(resultadoForma);
@@ -151,7 +151,7 @@ export default function App() {
         }
       } else if (formType === "B" && respuestas.bloques) {
         const arr = Array.from({ length: preguntasB.length }, (_, i) =>
-          respuestas.bloques[i] ?? ""
+          respuestas.bloques?.[i] ?? ""
         );
         resultadoForma = calcularFormaB(arr);
         setResultadoFormaB(resultadoForma);

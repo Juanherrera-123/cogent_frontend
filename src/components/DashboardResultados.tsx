@@ -193,10 +193,12 @@ export default function DashboardResultados({
 
   // ---- Resúmenes para gráficos ----
   const resumenNivel = (datos: ResultRow[], key: string, niveles: string[]) =>
-    niveles.map((nivel) => ({
+    niveles.map((nivel, idx) => ({
+      nombre: nivel,
       nivel,
+      indice: idx,
       cantidad: datos.filter((d) => {
-        const r = d[key];
+        const r = (d as any)[key];
         const nivelRes =
           r?.total?.nivel ?? r?.nivelTotal ?? r?.nivelGlobal ?? r?.nivel;
         return (
@@ -289,9 +291,10 @@ export default function DashboardResultados({
     campos.forEach((nombre) => {
       const valores = datos
         .map((d) => {
-          let seccion = d[key]?.[subkey]?.[nombre];
-          if (Array.isArray(d[key]?.[subkey])) {
-            const item = d[key][subkey].find((x) => x.nombre === nombre);
+          const res = (d as any)[key];
+          let seccion = res?.[subkey]?.[nombre];
+          if (Array.isArray(res?.[subkey])) {
+            const item = res[subkey].find((x: any) => x.nombre === nombre);
             seccion = item;
           }
           if (typeof seccion === "object") {
@@ -299,10 +302,10 @@ export default function DashboardResultados({
           }
           // Compatibilidad con estructura de Forma B (puntajesDimension/puntajesDominio)
           if (subkey === "dimensiones") {
-            return d[key]?.puntajesDimension?.[nombre];
+            return res?.puntajesDimension?.[nombre];
           }
           if (subkey === "dominios") {
-            return d[key]?.puntajesDominio?.[nombre];
+            return res?.puntajesDominio?.[nombre];
           }
           return undefined;
         })
@@ -381,10 +384,12 @@ export default function DashboardResultados({
         }).length,
       }));
     }
-    const grupos = Array.from(new Set(datos.map((d) => d.ficha?.[keyFicha] ?? "Sin dato")));
+    const grupos = Array.from(
+      new Set(datos.map((d) => (d.ficha as any)?.[keyFicha] ?? "Sin dato"))
+    );
     return grupos.map((valor) => ({
       nombre: valor,
-      cantidad: datos.filter((d) => (d.ficha?.[keyFicha] ?? "Sin dato") === valor).length,
+      cantidad: datos.filter((d) => ((d.ficha as any)?.[keyFicha] ?? "Sin dato") === valor).length,
     }));
   }
 
@@ -465,7 +470,7 @@ export default function DashboardResultados({
 
   // ---- Exportar a Excel ----
   const handleExportar = () => {
-    let datosExportar: ResultRow[] = [];
+    let datosExportar: (ResultRow | FlatResult)[] = [];
     if (tab === "general") datosExportar = datosMostrados;
     else if (tab === "formaA") datosExportar = datosA;
     else if (tab === "formaB") datosExportar = datosB;
