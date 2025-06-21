@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 
 import * as XLSX from "xlsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { gatherFlatResults } from "@/utils/gatherResults";
+import { gatherFlatResults, FlatResult } from "@/utils/gatherResults";
 import { exportElementToPDF } from "@/utils/pdfExport";
 import { dimensionesExtralaboral } from "@/data/esquemaExtralaboral";
 import { baremosFormaA } from "@/data/baremosFormaA";
@@ -244,7 +244,9 @@ export default function DashboardResultados({
           const indices = datos
             .map((d) => {
               const form = d.tipo;
-              let seccion = d.resultadoExtralaboral?.dimensiones?.[nombre];
+              let seccion = (d.resultadoExtralaboral as any)?.dimensiones?.[
+                nombre as any
+              ];
               if (Array.isArray(d.resultadoExtralaboral?.dimensiones)) {
                 seccion = d.resultadoExtralaboral.dimensiones.find(
                   (x) => x.nombre === nombre

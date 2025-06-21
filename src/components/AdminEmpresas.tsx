@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CredencialEmpresa } from "@/types";
 
 export default function AdminEmpresas({
   credenciales,
@@ -6,7 +7,7 @@ export default function AdminEmpresas({
   onEliminar,
   onEditar
 }: {
-  credenciales: { usuario: string; password: string; empresa: string }[];
+  credenciales: CredencialEmpresa[];
   onAgregar: (nombre: string, usuario: string, password: string) => void;
   onEliminar: (usuario: string) => void;
   onEditar: (
