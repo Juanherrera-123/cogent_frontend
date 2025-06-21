@@ -13,7 +13,7 @@ export default function FichaTecnicaTabs({
   chartType,
   tabClass,
 }: {
-  categorias: CategoriaFicha[];
+  categorias: readonly CategoriaFicha[];
   categoria: string;
   onChange: (value: string) => void;
   conteos: Record<string, any[]>;
