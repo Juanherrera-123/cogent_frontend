@@ -68,10 +68,18 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
 
   const [error, setError] = useState<string>("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
     if (type === "checkbox") {
-      setDatos({ ...datos, [name]: checked, ...(name === "menosAnioEmpresa" && checked ? { aniosEmpresa: "" } : {}), ...(name === "menosAnioCargo" && checked ? { aniosCargo: "" } : {}) });
+      setDatos({
+        ...datos,
+        [name]: checked,
+        ...(name === "menosAnioEmpresa" && checked ? { aniosEmpresa: "" } : {}),
+        ...(name === "menosAnioCargo" && checked ? { aniosCargo: "" } : {}),
+      });
     } else {
       setDatos({ ...datos, [name]: value });
     }
