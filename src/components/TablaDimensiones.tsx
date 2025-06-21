@@ -17,14 +17,15 @@ export default function TablaDimensiones({ datos, dimensiones, keyResultado }: {
     return dimensiones.map((dim) => {
       const valores = datos
         .map((d) => {
-          let seccion = d[keyResultado]?.dimensiones?.[dim];
-          if (Array.isArray(d[keyResultado]?.dimensiones)) {
-            seccion = d[keyResultado].dimensiones.find((x) => x.nombre === dim);
+          const res = (d as any)[keyResultado];
+          let seccion = res?.dimensiones?.[dim];
+          if (Array.isArray(res?.dimensiones)) {
+            seccion = res.dimensiones.find((x: any) => x.nombre === dim);
           }
           if (typeof seccion === "object") {
             return seccion.transformado ?? seccion.puntajeTransformado;
           }
-          return d[keyResultado]?.puntajesDimension?.[dim];
+          return res?.puntajesDimension?.[dim];
         })
         .filter((v) => typeof v === "number");
       const prom = valores.length ? valores.reduce((a, b) => a + b, 0) / valores.length : 0;
@@ -64,15 +65,16 @@ export default function TablaDimensiones({ datos, dimensiones, keyResultado }: {
               <td>{d.ficha?.empresa}</td>
               <td>{d.ficha?.nombre}</td>
               {dimensiones.map((dim, idx) => {
-                let seccion = d[keyResultado]?.dimensiones?.[dim];
-                if (Array.isArray(d[keyResultado]?.dimensiones)) {
-                  const item = d[keyResultado].dimensiones.find((x) => x.nombre === dim);
+                const res = (d as any)[keyResultado];
+                let seccion = res?.dimensiones?.[dim];
+                if (Array.isArray(res?.dimensiones)) {
+                  const item = res.dimensiones.find((x: any) => x.nombre === dim);
                   seccion = item;
                 }
                 const valor =
                   typeof seccion === "object"
                     ? seccion.transformado ?? seccion.puntajeTransformado
-                    : d[keyResultado]?.puntajesDimension?.[dim];
+                    : res?.puntajesDimension?.[dim];
                 return <td key={idx}>{valor ?? ""}</td>;
               })}
             </tr>

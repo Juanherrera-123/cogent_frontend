@@ -17,14 +17,15 @@ export default function TablaDominios({ datos, dominios, keyResultado }: { datos
     return dominios.map((dom) => {
       const valores = datos
         .map((d) => {
-          let seccion = d[keyResultado]?.dominios?.[dom];
-          if (Array.isArray(d[keyResultado]?.dominios)) {
-            seccion = d[keyResultado].dominios.find((x) => x.nombre === dom);
+          const res = (d as any)[keyResultado];
+          let seccion = res?.dominios?.[dom];
+          if (Array.isArray(res?.dominios)) {
+            seccion = res.dominios.find((x: any) => x.nombre === dom);
           }
           if (typeof seccion === "object") {
             return seccion.transformado ?? seccion.puntajeTransformado;
           }
-          return d[keyResultado]?.puntajesDominio?.[dom];
+          return res?.puntajesDominio?.[dom];
         })
         .filter((v) => typeof v === "number");
       const prom = valores.length ? valores.reduce((a, b) => a + b, 0) / valores.length : 0;
@@ -64,15 +65,16 @@ export default function TablaDominios({ datos, dominios, keyResultado }: { datos
               <td>{d.ficha?.empresa}</td>
               <td>{d.ficha?.nombre}</td>
               {dominios.map((dom, idx) => {
-                let seccion = d[keyResultado]?.dominios?.[dom];
-                if (Array.isArray(d[keyResultado]?.dominios)) {
-                  const item = d[keyResultado].dominios.find((x) => x.nombre === dom);
+                const res = (d as any)[keyResultado];
+                let seccion = res?.dominios?.[dom];
+                if (Array.isArray(res?.dominios)) {
+                  const item = res.dominios.find((x: any) => x.nombre === dom);
                   seccion = item;
                 }
                 const valor =
                   typeof seccion === "object"
                     ? seccion.transformado ?? seccion.puntajeTransformado
-                    : d[keyResultado]?.puntajesDominio?.[dom];
+                    : res?.puntajesDominio?.[dom];
                 return <td key={idx}>{valor ?? ""}</td>;
               })}
             </tr>

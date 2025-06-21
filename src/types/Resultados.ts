@@ -11,9 +11,16 @@ export interface DimensionResultado {
 }
 
 export interface IntralaboralResultado {
-  dimensiones: Record<string, DimensionResultado>;
-  dominios: Record<string, DimensionResultado>;
-  total: DimensionResultado & { suma: number };
+  dimensiones?: Record<string, DimensionResultado>;
+  dominios?: Record<string, DimensionResultado>;
+  total?: (DimensionResultado & { suma?: number }) | null;
+  valido?: boolean;
+  error?: string;
+  puntajeTransformadoTotal?: number;
+  puntajeTransformado?: number;
+  puntajeTotalTransformado?: number;
+  nivelTotal?: string;
+  nivel?: string;
 }
 
 export interface ExtralaboralDimensionResultado {
@@ -25,10 +32,11 @@ export interface ExtralaboralDimensionResultado {
 
 export interface ExtralaboralResultado {
   valido: boolean;
-  dimensiones: ExtralaboralDimensionResultado[];
-  puntajeBrutoTotal: number;
-  puntajeTransformadoTotal: number;
-  nivelGlobal: string;
+  error?: string;
+  dimensiones?: ExtralaboralDimensionResultado[];
+  puntajeBrutoTotal?: number;
+  puntajeTransformadoTotal?: number;
+  nivelGlobal?: string;
 }
 
 export interface GlobalResultado {
@@ -38,9 +46,10 @@ export interface GlobalResultado {
 
 export interface EstresResultado {
   valido: boolean;
-  puntajeBruto: number;
-  puntajeTransformado: number;
-  nivel: string;
+  error?: string;
+  puntajeBruto?: number;
+  puntajeTransformado?: number;
+  nivel?: string;
 }
 
 export interface SurveyResponses {
