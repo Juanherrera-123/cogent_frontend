@@ -35,6 +35,7 @@ import { calcularExtralaboral } from "./utils/calcularExtralaboral";
 import { calcularFormaA } from "./utils/calcularFormaA";
 import { calcularFormaB } from "./utils/calcularFormaB";
 import { calcularGlobalAExtrala, calcularGlobalBExtrala } from "./utils/calcularGlobalA";
+import removeUndefined from "./utils/removeUndefined";
 
 type RolUsuario = "ninguno" | "psicologa" | "dueno";
 
@@ -184,8 +185,9 @@ export default function App() {
           data.resultadoFormaB = resultadoForma;
           data.resultadoGlobalBExtralaboral = resultadoGlobal;
         }
-        // Guarda en Firestore
-        await addDoc(collection(db, "resultadosCogent"), data);
+        // Limpia datos y guarda en Firestore
+        const cleanData = removeUndefined(data);
+        await addDoc(collection(db, "resultadosCogent"), cleanData);
       }
     };
     guardar();
