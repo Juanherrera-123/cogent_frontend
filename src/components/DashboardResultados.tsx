@@ -35,14 +35,18 @@ type Props = {
   soloGenerales?: boolean;
   empresaFiltro?: string;
   credenciales?: CredencialEmpresa[];
-  onAgregarEmpresa?: (nombre: string, usuario: string, password: string) => void;
-  onEliminarEmpresa?: (usuario: string) => void;
+  onAgregarEmpresa?: (
+    nombre: string,
+    usuario: string,
+    password: string
+  ) => Promise<boolean>;
+  onEliminarEmpresa?: (usuario: string) => Promise<boolean>;
   onEditarEmpresa?: (
     originalUsuario: string,
     nombre: string,
     usuario: string,
     password: string
-  ) => void;
+  ) => Promise<boolean>;
   onBack?: () => void;
 };
 
@@ -939,9 +943,15 @@ export default function DashboardResultados({
           <TabsContent value="empresas">
             <AdminEmpresas
               credenciales={credenciales}
-              onAgregar={onAgregarEmpresa || (() => {})}
-              onEliminar={onEliminarEmpresa || (() => {})}
-              onEditar={onEditarEmpresa || (() => {})}
+              onAgregar={
+                onAgregarEmpresa || (async () => false)
+              }
+              onEliminar={
+                onEliminarEmpresa || (async () => false)
+              }
+              onEditar={
+                onEditarEmpresa || (async () => false)
+              }
             />
           </TabsContent>
         )}

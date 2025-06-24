@@ -126,24 +126,38 @@ export default function App() {
     nombre: string,
     usuario: string,
     password: string
-  ) => {
-    const docRef = await addDoc(collection(db, "credencialesCogent"), {
-      usuario,
-      password,
-      rol: "dueno",
-      empresa: nombre,
-    });
-    setCredenciales((prev) => [
-      ...prev,
-      { id: docRef.id, usuario, password, rol: "dueno", empresa: nombre },
-    ]);
+  ): Promise<boolean> => {
+    try {
+      const docRef = await addDoc(collection(db, "credencialesCogent"), {
+        usuario,
+        password,
+        rol: "dueno",
+        empresa: nombre,
+      });
+      setCredenciales((prev) => [
+        ...prev,
+        { id: docRef.id, usuario, password, rol: "dueno", empresa: nombre },
+      ]);
+      return true;
+    } catch (err) {
+      console.error("Error al agregar empresa", err);
+      alert("No se pudo agregar la empresa");
+      return false;
+    }
   };
 
-  const eliminarEmpresa = async (usuario: string) => {
+  const eliminarEmpresa = async (usuario: string): Promise<boolean> => {
     const cred = credenciales.find((c) => c.usuario === usuario);
-    if (!cred?.id) return;
-    await deleteDoc(doc(db, "credencialesCogent", cred.id));
-    setCredenciales((prev) => prev.filter((c) => c.usuario !== usuario));
+    if (!cred?.id) return false;
+    try {
+      await deleteDoc(doc(db, "credencialesCogent", cred.id));
+      setCredenciales((prev) => prev.filter((c) => c.usuario !== usuario));
+      return true;
+    } catch (err) {
+      console.error("Error al eliminar empresa", err);
+      alert("No se pudo eliminar la empresa");
+      return false;
+    }
   };
 
   const editarEmpresa = async (
@@ -151,21 +165,28 @@ export default function App() {
     nombre: string,
     usuario: string,
     password: string
-  ) => {
+  ): Promise<boolean> => {
     const cred = credenciales.find((c) => c.usuario === originalUsuario);
-    if (!cred?.id) return;
-    await updateDoc(doc(db, "credencialesCogent", cred.id), {
-      usuario,
-      password,
-      empresa: nombre,
-    });
-    setCredenciales((prev) =>
-      prev.map((c) =>
-        c.usuario === originalUsuario
-          ? { ...c, usuario, password, empresa: nombre }
-          : c
-      )
-    );
+    if (!cred?.id) return false;
+    try {
+      await updateDoc(doc(db, "credencialesCogent", cred.id), {
+        usuario,
+        password,
+        empresa: nombre,
+      });
+      setCredenciales((prev) =>
+        prev.map((c) =>
+          c.usuario === originalUsuario
+            ? { ...c, usuario, password, empresa: nombre }
+            : c
+        )
+      );
+      return true;
+    } catch (err) {
+      console.error("Error al editar empresa", err);
+      alert("No se pudo editar la empresa");
+      return false;
+    }
   };
 
   // Cuando finaliza la encuesta (luego del bloque de estrés)
@@ -222,7 +243,12 @@ export default function App() {
         }
         // Limpia datos y guarda en Firestore
         const cleanData = removeUndefined(data);
-        await addDoc(collection(db, "resultadosCogent"), cleanData);
+        try {
+          await addDoc(collection(db, "resultadosCogent"), cleanData);
+        } catch (err) {
+          console.error("Error al guardar resultados", err);
+          alert("No se pudieron guardar los resultados");
+        }
       }
     };
     guardar();
