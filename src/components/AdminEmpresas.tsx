@@ -8,14 +8,14 @@ export default function AdminEmpresas({
   onEditar
 }: {
   credenciales: CredencialEmpresa[];
-  onAgregar: (nombre: string, usuario: string, password: string) => void;
-  onEliminar: (usuario: string) => void;
+  onAgregar: (nombre: string, usuario: string, password: string) => Promise<boolean>;
+  onEliminar: (usuario: string) => Promise<boolean>;
   onEditar: (
     originalUsuario: string,
     nombre: string,
     usuario: string,
     password: string
-  ) => void;
+  ) => Promise<boolean>;
 }) {
   const [nombre, setNombre] = useState("");
   const [usuario, setUsuario] = useState("");
@@ -25,12 +25,14 @@ export default function AdminEmpresas({
   const [editUsuario, setEditUsuario] = useState("");
   const [editPassword, setEditPassword] = useState("");
 
-  const handleAgregar = () => {
+  const handleAgregar = async () => {
     if (!nombre.trim() || !usuario.trim() || !password.trim()) return;
-    onAgregar(nombre.trim(), usuario.trim(), password.trim());
-    setNombre("");
-    setUsuario("");
-    setPassword("");
+    const ok = await onAgregar(nombre.trim(), usuario.trim(), password.trim());
+    if (ok) {
+      setNombre("");
+      setUsuario("");
+      setPassword("");
+    }
   };
 
   const startEdit = (idx: number) => {
@@ -39,18 +41,20 @@ export default function AdminEmpresas({
     setEditPassword("");
   };
 
-  const handleGuardarEdicion = () => {
+  const handleGuardarEdicion = async () => {
     if (editIndex === null) return;
     if (!editUsuario.trim() || !editPassword.trim()) return;
-    onEditar(
+    const ok = await onEditar(
       credenciales[editIndex].usuario,
       credenciales[editIndex].empresa || "",
       editUsuario.trim(),
       editPassword.trim()
     );
-    setEditIndex(null);
-    setEditUsuario("");
-    setEditPassword("");
+    if (ok) {
+      setEditIndex(null);
+      setEditUsuario("");
+      setEditPassword("");
+    }
   };
 
   return (
@@ -146,7 +150,9 @@ export default function AdminEmpresas({
                       <button
                         type="button"
                         className="px-2 py-0.5 text-xs bg-red-600 text-white rounded"
-                        onClick={() => onEliminar(c.usuario)}
+                        onClick={async () => {
+                          await onEliminar(c.usuario);
+                        }}
                       >
                         Eliminar
                       </button>
