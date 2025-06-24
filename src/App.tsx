@@ -168,18 +168,22 @@ export default function App() {
       }
 
         // Guarda todo lo que quieras conservar
-        const data = {
+        const data: any = {
           ficha,
           respuestas,
-          resultadoFormaA: formType === "A" ? resultadoForma : undefined,
-          resultadoFormaB: formType === "B" ? resultadoForma : undefined,
-          resultadoGlobalAExtralaboral: formType === "A" ? resultadoGlobal : undefined,
-          resultadoGlobalBExtralaboral: formType === "B" ? resultadoGlobal : undefined,
           resultadoEstres,
           resultadoExtralaboral,
           tipo: formType,
-          fecha: ficha?.fecha || new Date().toISOString()
+          fecha: ficha?.fecha || new Date().toISOString(),
         };
+        if (formType === "A") {
+          data.resultadoFormaA = resultadoForma;
+          data.resultadoGlobalAExtralaboral = resultadoGlobal;
+        }
+        if (formType === "B") {
+          data.resultadoFormaB = resultadoForma;
+          data.resultadoGlobalBExtralaboral = resultadoGlobal;
+        }
         // Guarda en Firestore
         await addDoc(collection(db, "resultadosCogent"), data);
       }
