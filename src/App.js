@@ -18,6 +18,7 @@ import { calcularExtralaboral } from "./utils/calcularExtralaboral";
 import { calcularFormaA } from "./utils/calcularFormaA";
 import { calcularFormaB } from "./utils/calcularFormaB";
 import { calcularGlobalAExtrala, calcularGlobalBExtrala } from "./utils/calcularGlobalA";
+import removeUndefined from "./utils/removeUndefined";
 export default function App() {
     const [step, setStep] = useState("inicio");
     const [formType, setFormType] = useState(null);
@@ -102,17 +103,22 @@ export default function App() {
                 const data = {
                     ficha,
                     respuestas,
-                    resultadoFormaA: formType === "A" ? resultadoForma : undefined,
-                    resultadoFormaB: formType === "B" ? resultadoForma : undefined,
-                    resultadoGlobalAExtralaboral: formType === "A" ? resultadoGlobal : undefined,
-                    resultadoGlobalBExtralaboral: formType === "B" ? resultadoGlobal : undefined,
                     resultadoEstres,
                     resultadoExtralaboral,
                     tipo: formType,
-                    fecha: ficha?.fecha || new Date().toISOString()
+                    fecha: ficha?.fecha || new Date().toISOString(),
                 };
-                // Guarda en Firestore
-                await addDoc(collection(db, "resultadosCogent"), data);
+                if (formType === "A") {
+                    data.resultadoFormaA = resultadoForma;
+                    data.resultadoGlobalAExtralaboral = resultadoGlobal;
+                }
+                if (formType === "B") {
+                    data.resultadoFormaB = resultadoForma;
+                    data.resultadoGlobalBExtralaboral = resultadoGlobal;
+                }
+                // Limpia datos y guarda en Firestore
+                const cleanData = removeUndefined(data);
+                await addDoc(collection(db, "resultadosCogent"), cleanData);
             }
         };
         guardar();
