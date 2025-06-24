@@ -63,19 +63,21 @@ npm run lint
 
 Results are saved in a Firestore collection named `resultadosCogent`. Edit
 `src/firebaseConfig.ts` with your Firebase project details before deploying.
+User credentials are synchronized through another collection called
+`credencialesCogent`.
 
 ## Sample credentials
 
-Default demo accounts are defined in `src/config/credentials.json`.
-You can adjust or add accounts by editing this file:
+Default demo accounts are provided via the `VITE_DEMO_CREDENTIALS` environment
+variable. When the application starts it fetches any stored credentials from the
+`credencialesCogent` collection and merges them with the demo accounts.
+You can adjust the demo accounts by changing `VITE_DEMO_CREDENTIALS`:
 
 - **Psicóloga**: `psicologa` / `cogent2024`
 - **Sonria**: `sonria` / `sonria123`
 - **Aeropuerto**: `aeropuerto` / `eldorado123`
 
-In the dashboard's **Empresas** tab you can review all stored credentials,
-including their passwords. Each entry provides **Editar** and **Eliminar**
-actions. **Eliminar** removes a custom credential from `localStorage` and the
-table instantly, while **Editar** lets you update the company name, username or
-password.
+In the dashboard's **Empresas** tab you can review all stored credentials and
+add, edit or delete them. These changes are persisted to Firestore so they are
+available to all users of the dashboard.
 

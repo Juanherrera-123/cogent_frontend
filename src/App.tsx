@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  getDocs,
+  doc,
+} from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import Consentimiento from "./components/Consentimiento";
 import FormSelector from "./components/FormSelector";
@@ -10,7 +17,6 @@ import Login from "./components/Login";
 import HomePage from "./components/HomePage";
 import PoliticaPrivacidad from "./components/PoliticaPrivacidad";
 import TerminosCondiciones from "./components/TerminosCondiciones";
-import credencialesBase from "./config/credentials.json";
 import {
   CredencialEmpresa,
   FichaDatosGenerales as FichaDatos,
@@ -58,16 +64,49 @@ export default function App() {
   const [formType, setFormType] = useState<"A" | "B" | null>(null);
   const [ficha, setFicha] = useState<FichaDatos | null>(null);
 
-  const [empresasIniciales, setEmpresasIniciales] = useState<string[]>(() => {
-    const guardadas = JSON.parse(localStorage.getItem("empresasCogent") || "[]");
-    return guardadas.length ? guardadas : ["Sonria", "Aeropuerto El Dorado"];
-  });
-  const [credenciales, setCredenciales] = useState<(CredencialEmpresa & { rol: string })[]>(() => {
-    const extras: (CredencialEmpresa & { rol: string })[] = JSON.parse(
-      localStorage.getItem("credencialesCogent") || "[]"
+  const demoCredenciales: (CredencialEmpresa & { rol: string })[] = JSON.parse(
+    import.meta.env.VITE_DEMO_CREDENTIALS || "[]"
+  );
+
+  const [credenciales, setCredenciales] = useState<
+    (CredencialEmpresa & { rol: string; id?: string })[]
+  >(demoCredenciales);
+  const [empresasIniciales, setEmpresasIniciales] = useState<string[]>(() =>
+    demoCredenciales
+      .filter((c) => c.rol === "dueno" && c.empresa)
+      .map((c) => c.empresa!)
+  );
+
+  useEffect(() => {
+    const cargarCreds = async () => {
+      const snap = await getDocs(collection(db, "credencialesCogent"));
+      const extras = snap.docs.map((d) => ({
+        id: d.id,
+        ...(d.data() as CredencialEmpresa & { rol: string }),
+      }));
+      setCredenciales((prev) => {
+        const merged = [...prev];
+        extras.forEach((c) => {
+          if (!merged.some((m) => m.usuario === c.usuario)) {
+            merged.push(c);
+          }
+        });
+        return merged;
+      });
+    };
+    cargarCreds();
+  }, []);
+
+  useEffect(() => {
+    const empresas = Array.from(
+      new Set(
+        credenciales
+          .filter((c) => c.rol === "dueno" && c.empresa)
+          .map((c) => c.empresa as string)
+      )
     );
-    return [...credencialesBase, ...extras];
-  });
+    setEmpresasIniciales(empresas);
+  }, [credenciales]);
 
   // Para guardar todas las respuestas por sección
   const [respuestas, setRespuestas] = useState<SurveyResponses>({});
@@ -83,54 +122,50 @@ export default function App() {
   const [rol, setRol] = useState<RolUsuario>("ninguno");
   const [empresaActual, setEmpresaActual] = useState<string | null>(null);
 
-  const agregarEmpresa = (
+  const agregarEmpresa = async (
     nombre: string,
     usuario: string,
     password: string
   ) => {
-    const nuevasEmpresas = [...empresasIniciales, nombre];
-    setEmpresasIniciales(nuevasEmpresas);
-    localStorage.setItem("empresasCogent", JSON.stringify(nuevasEmpresas));
-
-    const extras = JSON.parse(localStorage.getItem("credencialesCogent") || "[]");
-    extras.push({ usuario, password, rol: "dueno", empresa: nombre });
-    localStorage.setItem("credencialesCogent", JSON.stringify(extras));
-    setCredenciales([...credencialesBase, ...extras]);
+    const docRef = await addDoc(collection(db, "credencialesCogent"), {
+      usuario,
+      password,
+      rol: "dueno",
+      empresa: nombre,
+    });
+    setCredenciales((prev) => [
+      ...prev,
+      { id: docRef.id, usuario, password, rol: "dueno", empresa: nombre },
+    ]);
   };
 
-  const eliminarEmpresa = (usuario: string) => {
-    const extras: (CredencialEmpresa & { rol: string })[] = JSON.parse(
-      localStorage.getItem("credencialesCogent") || "[]"
-    );
-    const filtradas = extras.filter((c) => c.usuario !== usuario);
-    localStorage.setItem("credencialesCogent", JSON.stringify(filtradas));
-    setCredenciales([...credencialesBase, ...filtradas]);
+  const eliminarEmpresa = async (usuario: string) => {
+    const cred = credenciales.find((c) => c.usuario === usuario);
+    if (!cred?.id) return;
+    await deleteDoc(doc(db, "credencialesCogent", cred.id));
+    setCredenciales((prev) => prev.filter((c) => c.usuario !== usuario));
   };
 
-  const editarEmpresa = (
+  const editarEmpresa = async (
     originalUsuario: string,
     nombre: string,
     usuario: string,
     password: string
   ) => {
-    const extras: (CredencialEmpresa & { rol: string })[] = JSON.parse(
-      localStorage.getItem("credencialesCogent") || "[]"
+    const cred = credenciales.find((c) => c.usuario === originalUsuario);
+    if (!cred?.id) return;
+    await updateDoc(doc(db, "credencialesCogent", cred.id), {
+      usuario,
+      password,
+      empresa: nombre,
+    });
+    setCredenciales((prev) =>
+      prev.map((c) =>
+        c.usuario === originalUsuario
+          ? { ...c, usuario, password, empresa: nombre }
+          : c
+      )
     );
-    const nuevas = extras.map((c) =>
-      c.usuario === originalUsuario
-        ? { usuario, password, rol: "dueno", empresa: nombre }
-        : c
-    );
-    localStorage.setItem("credencialesCogent", JSON.stringify(nuevas));
-    setCredenciales([...credencialesBase, ...nuevas]);
-    const empresasGuardadas = JSON.parse(localStorage.getItem("empresasCogent") || "[]");
-    const anterior = extras.find((c) => c.usuario === originalUsuario)?.empresa;
-    let nuevasEmp = empresasGuardadas.filter((e: string) => e !== anterior);
-    if (!nuevasEmp.includes(nombre)) {
-      nuevasEmp.push(nombre);
-    }
-    setEmpresasIniciales(nuevasEmp);
-    localStorage.setItem("empresasCogent", JSON.stringify(nuevasEmp));
   };
 
   // Cuando finaliza la encuesta (luego del bloque de estrés)
