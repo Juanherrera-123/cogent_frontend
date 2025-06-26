@@ -8,11 +8,12 @@ import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyAJtQDBJPV3VK4ko3jbjWxPVUIDgO2jB9s",
   authDomain: "cogent-58e64.firebaseapp.com",
+  databaseURL: "https://cogent-58e64-default-rtdb.firebaseio.com",
   projectId: "cogent-58e64",
   storageBucket: "cogent-58e64.firebasestorage.app",
   messagingSenderId: "626852020152",
   appId: "1:626852020152:web:36729b3dfbdff857b6994d",
-  measurementId: "G-FBV0W6MEB7",
+  measurementId: "G-FBV0W6MEB7"
 };
 
 // Inicializa la app de Firebase
