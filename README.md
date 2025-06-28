@@ -21,6 +21,12 @@ Clone the repository and install the required packages:
 npm install
 ```
 
+After installing dependencies, copy `.env.example` to `.env`:
+
+```bash
+cp .env.example .env
+```
+
 ## Development server
 
 Start the local development server with hot reloading:
@@ -71,7 +77,8 @@ User credentials are synchronized through another collection called
 Default demo accounts are provided via the `VITE_DEMO_CREDENTIALS` environment
 variable. When the application starts it fetches any stored credentials from the
 `credencialesCogent` collection and merges them with the demo accounts.
-You can adjust the demo accounts by changing `VITE_DEMO_CREDENTIALS`:
+These credentials are defined in `.env.example` which you should copy to `.env`.
+You can adjust the demo accounts by editing `VITE_DEMO_CREDENTIALS`:
 
 - **Psicóloga**: `psicologa` / `cogent2024`
 - **Sonria**: `sonria` / `sonria123`
