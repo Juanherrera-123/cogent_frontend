@@ -196,7 +196,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         />
       </div>
       {/* Nombre y cédula */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <input
           type="text"
           name="nombre"
@@ -215,7 +215,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         />
       </div>
       {/* Sexo y año de nacimiento */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <select
           name="sexo"
           className={cn("input flex-1", erroresCampos["sexo"] && "border-red-500")}
@@ -238,7 +238,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         />
       </div>
       {/* Estado civil y estudios */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <select
           name="estadoCivil"
           className={cn("input flex-1", erroresCampos["estadoCivil"] && "border-red-500")}
@@ -272,7 +272,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         onChange={handleChange}
       />
       {/* Lugar de residencia */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <input
           type="text"
           name="residenciaCiudad"
@@ -291,7 +291,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         />
       </div>
       {/* Estrato y tipo de vivienda */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <select
           name="estrato"
           className={cn("input flex-1", erroresCampos["estrato"] && "border-red-500")}
@@ -327,7 +327,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         max={99}
       />
       {/* Lugar de trabajo */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <input
           type="text"
           name="trabajoCiudad"
@@ -346,7 +346,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         />
       </div>
       {/* Años en empresa */}
-      <div className="flex gap-4 items-center">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center">
         <input
           type="checkbox"
           name="menosAnioEmpresa"
@@ -368,7 +368,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         )}
       </div>
       {/* Cargo y tipo de cargo */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <input
           type="text"
           name="cargo"
@@ -390,7 +390,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         </select>
       </div>
       {/* Años en cargo */}
-      <div className="flex gap-4 items-center">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center">
         <input
           type="checkbox"
           name="menosAnioCargo"
@@ -421,7 +421,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         onChange={handleChange}
       />
       {/* Tipo de contrato y horas diarias */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <select
           name="tipoContrato"
           className={cn("input flex-1", erroresCampos["tipoContrato"] && "border-red-500")}
