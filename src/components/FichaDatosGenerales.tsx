@@ -170,7 +170,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
       <div>
         <label className="block mb-1 font-semibold text-text-main">Empresa*</label>
         <select
-          className={cn("input mb-2", erroresCampos["empresa"] && "border-red-500")}
+          className={cn("input mb-2 w-full", erroresCampos["empresa"] && "border-red-500")}
           value={empresa}
           name="empresa"
           onChange={(e) => {
@@ -190,18 +190,18 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         <input
           type="date"
           name="fecha"
-          className={cn("input mb-2", erroresCampos["fecha"] && "border-red-500")}
+          className={cn("input mb-2 w-full", erroresCampos["fecha"] && "border-red-500")}
           value={datos.fecha}
           onChange={handleChange}
         />
       </div>
       {/* Nombre y cédula */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <input
           type="text"
           name="nombre"
           placeholder="Nombre completo*"
-          className={cn("input flex-1", erroresCampos["nombre"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["nombre"] && "border-red-500")}
           value={datos.nombre}
           onChange={handleChange}
         />
@@ -209,16 +209,16 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
           type="text"
           name="cedula"
           placeholder="Cédula/Documento*"
-          className={cn("input flex-1", erroresCampos["cedula"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["cedula"] && "border-red-500")}
           value={datos.cedula}
           onChange={handleChange}
         />
       </div>
       {/* Sexo y año de nacimiento */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <select
           name="sexo"
-          className={cn("input flex-1", erroresCampos["sexo"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["sexo"] && "border-red-500")}
           value={datos.sexo}
           onChange={handleChange}
         >
@@ -230,7 +230,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
           type="number"
           name="nacimiento"
           placeholder="Año de nacimiento*"
-          className={cn("input flex-1", erroresCampos["nacimiento"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["nacimiento"] && "border-red-500")}
           value={datos.nacimiento}
           onChange={handleChange}
           min={1900}
@@ -238,10 +238,10 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         />
       </div>
       {/* Estado civil y estudios */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <select
           name="estadoCivil"
-          className={cn("input flex-1", erroresCampos["estadoCivil"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["estadoCivil"] && "border-red-500")}
           value={datos.estadoCivil}
           onChange={handleChange}
         >
@@ -252,7 +252,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         </select>
         <select
           name="estudios"
-          className={cn("input flex-1", erroresCampos["estudios"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["estudios"] && "border-red-500")}
           value={datos.estudios}
           onChange={handleChange}
         >
@@ -267,17 +267,17 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         type="text"
         name="ocupacion"
         placeholder="Ocupación o profesión*"
-        className={cn("input", erroresCampos["ocupacion"] && "border-red-500")}
+        className={cn("input w-full", erroresCampos["ocupacion"] && "border-red-500")}
         value={datos.ocupacion}
         onChange={handleChange}
       />
       {/* Lugar de residencia */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <input
           type="text"
           name="residenciaCiudad"
           placeholder="Ciudad/Municipio residencia*"
-          className={cn("input flex-1", erroresCampos["residenciaCiudad"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["residenciaCiudad"] && "border-red-500")}
           value={datos.residenciaCiudad}
           onChange={handleChange}
         />
@@ -285,16 +285,16 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
           type="text"
           name="residenciaDepto"
           placeholder="Departamento residencia*"
-          className={cn("input flex-1", erroresCampos["residenciaDepto"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["residenciaDepto"] && "border-red-500")}
           value={datos.residenciaDepto}
           onChange={handleChange}
         />
       </div>
       {/* Estrato y tipo de vivienda */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <select
           name="estrato"
-          className={cn("input flex-1", erroresCampos["estrato"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["estrato"] && "border-red-500")}
           value={datos.estrato}
           onChange={handleChange}
         >
@@ -305,7 +305,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         </select>
         <select
           name="vivienda"
-          className={cn("input flex-1", erroresCampos["vivienda"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["vivienda"] && "border-red-500")}
           value={datos.vivienda}
           onChange={handleChange}
         >
@@ -320,19 +320,19 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         type="number"
         name="dependientes"
         placeholder="Nº de personas que dependen de usted*"
-        className="input"
+        className="input w-full"
         value={datos.dependientes}
         onChange={handleChange}
         min={0}
         max={99}
       />
       {/* Lugar de trabajo */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <input
           type="text"
           name="trabajoCiudad"
           placeholder="Ciudad/Municipio trabajo*"
-          className={cn("input flex-1", erroresCampos["trabajoCiudad"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["trabajoCiudad"] && "border-red-500")}
           value={datos.trabajoCiudad}
           onChange={handleChange}
         />
@@ -340,13 +340,13 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
           type="text"
           name="trabajoDepto"
           placeholder="Departamento trabajo*"
-          className={cn("input flex-1", erroresCampos["trabajoDepto"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["trabajoDepto"] && "border-red-500")}
           value={datos.trabajoDepto}
           onChange={handleChange}
         />
       </div>
       {/* Años en empresa */}
-      <div className="flex gap-4 items-center">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center">
         <input
           type="checkbox"
           name="menosAnioEmpresa"
@@ -359,7 +359,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
             type="number"
             name="aniosEmpresa"
             placeholder="¿Cuántos años en la empresa?*"
-            className={cn("input flex-1", erroresCampos["aniosEmpresa"] && "border-red-500")}
+            className={cn("input w-full md:flex-1", erroresCampos["aniosEmpresa"] && "border-red-500")}
             value={datos.aniosEmpresa}
             onChange={handleChange}
             min={1}
@@ -368,18 +368,18 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         )}
       </div>
       {/* Cargo y tipo de cargo */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <input
           type="text"
           name="cargo"
           placeholder="Nombre del cargo*"
-          className={cn("input flex-1", erroresCampos["cargo"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["cargo"] && "border-red-500")}
           value={datos.cargo}
           onChange={handleChange}
         />
         <select
           name="tipoCargo"
-          className={cn("input flex-1", erroresCampos["tipoCargo"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["tipoCargo"] && "border-red-500")}
           value={datos.tipoCargo}
           onChange={handleChange}
         >
@@ -390,7 +390,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         </select>
       </div>
       {/* Años en cargo */}
-      <div className="flex gap-4 items-center">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center">
         <input
           type="checkbox"
           name="menosAnioCargo"
@@ -403,7 +403,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
             type="number"
             name="aniosCargo"
             placeholder="¿Cuántos años en el cargo?*"
-            className={cn("input flex-1", erroresCampos["aniosCargo"] && "border-red-500")}
+            className={cn("input w-full md:flex-1", erroresCampos["aniosCargo"] && "border-red-500")}
             value={datos.aniosCargo}
             onChange={handleChange}
             min={1}
@@ -416,15 +416,15 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         type="text"
         name="area"
         placeholder="Nombre del área/departamento/sección*"
-        className={cn("input", erroresCampos["area"] && "border-red-500")}
+        className={cn("input w-full", erroresCampos["area"] && "border-red-500")}
         value={datos.area}
         onChange={handleChange}
       />
       {/* Tipo de contrato y horas diarias */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <select
           name="tipoContrato"
-          className={cn("input flex-1", erroresCampos["tipoContrato"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["tipoContrato"] && "border-red-500")}
           value={datos.tipoContrato}
           onChange={handleChange}
         >
@@ -437,7 +437,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
           type="number"
           name="horasDiarias"
           placeholder="Horas diarias establecidas*"
-          className={cn("input flex-1", erroresCampos["horasDiarias"] && "border-red-500")}
+          className={cn("input w-full md:flex-1", erroresCampos["horasDiarias"] && "border-red-500")}
           value={datos.horasDiarias}
           onChange={handleChange}
           min={1}
@@ -447,7 +447,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
       {/* Tipo de salario */}
       <select
         name="tipoSalario"
-        className={cn("input", erroresCampos["tipoSalario"] && "border-red-500")}
+        className={cn("input w-full", erroresCampos["tipoSalario"] && "border-red-500")}
         value={datos.tipoSalario}
         onChange={handleChange}
       >
