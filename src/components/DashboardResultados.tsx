@@ -595,10 +595,10 @@ export default function DashboardResultados({
   // ---- Pestañas ----
   return (
 
-    <div className="min-h-screen bg-gradient-to-b from-[#F7FAFF] to-[#EAF3FF] flex flex-col items-center py-10">
+    <div className="min-h-screen bg-gradient-to-b from-[#F7FAFF] to-[#EAF3FF] flex flex-col items-center py-10 px-2">
       <div
         ref={containerRef}
-        className="w-full max-w-7xl bg-white rounded-2xl shadow-xl p-8 md:p-10 flex flex-col gap-8"
+        className="w-full max-w-7xl bg-white rounded-2xl shadow-xl p-8 md:p-10 flex flex-col gap-8 mx-auto"
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
