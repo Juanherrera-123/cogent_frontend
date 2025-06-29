@@ -18,11 +18,13 @@ import { calcularFormaA } from "./utils/calcularFormaA";
 import { calcularFormaB } from "./utils/calcularFormaB";
 import { calcularGlobalAExtrala, calcularGlobalBExtrala } from "./utils/calcularGlobalA";
 import removeUndefined from "./utils/removeUndefined";
+import { demoCredencialesConst } from "./data/demoCredenciales";
 export default function App() {
     const [step, setStep] = useState("inicio");
     const [formType, setFormType] = useState(null);
     const [ficha, setFicha] = useState(null);
-    const demoCredenciales = JSON.parse(import.meta.env.VITE_DEMO_CREDENTIALS || "[]");
+    const demoCredenciales = JSON.parse(import.meta.env.VITE_DEMO_CREDENTIALS ||
+        JSON.stringify(demoCredencialesConst));
     const [credenciales, setCredenciales] = useState(demoCredenciales);
     const [empresasIniciales, setEmpresasIniciales] = useState(() => demoCredenciales
         .filter((c) => c.rol === "dueno" && c.empresa)
