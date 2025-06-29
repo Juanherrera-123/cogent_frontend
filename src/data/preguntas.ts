@@ -221,11 +221,11 @@ export const bloquesFormaB = [
  ];
 
 export const bloqueExtralaboral = [
-  { bloque: 1, preguntas: [0, 30], enunciado: "Por favor, responda las siguientes preguntas relacionadas con aspectos fuera del entorno laboral.", condicional: null, obligatorio: true }
+  { bloque: 1, preguntas: [0, 30], enunciado: "CUESTIONARIO EXTRALABORAL. Por favor, responda las siguientes preguntas relacionadas con aspectos fuera del entorno laboral.", condicional: null, obligatorio: true }
 ];
 
 export const bloqueEstres = [
-  { bloque: 1, preguntas: [0, 30], enunciado: "A continuación encontrará una serie de síntomas y situaciones, marque con qué frecuencia las ha experimentado en los últimos meses.", condicional: null, obligatorio: true }
+  { bloque: 1, preguntas: [0, 30], enunciado: "CUESTIONARIO ESTRES. A continuación encontrará una serie de síntomas y situaciones, marque con qué frecuencia las ha experimentado en los últimos meses.", condicional: null, obligatorio: true }
 ];
 
 export const preguntasA = [
@@ -284,7 +284,7 @@ export const preguntasA = [
   { texto: "53.Me informan con claridad cuáles son mis funciones", tipo: "likert" },
   { texto: "54.Me informan cuáles son las decisiones que puedo tomar en mi trabajo", tipo: "likert" },
   { texto: "55.Me explican claramente los resultados que debo lograr en mi trabajo", tipo: "likert" },
-  { texto: "56.Me explican claramente el efecto de mi trabajo de la empresa", tipo: "likert" },
+  { texto: "56.Me explican claramente el efecto de mi trabajo dentro de la empresa", tipo: "likert" },
   { texto: "57.Me explican claramente los objetivos de mi trabajo", tipo: "likert" },
   { texto: "58.Me informan claramente quién me puede orientar para hacer mi trabajo", tipo: "likert" },
   { texto: "59.Me informan claramente con quién puedo resolver los asuntos de trabajo", tipo: "likert" },
