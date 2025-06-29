@@ -13,6 +13,7 @@ import {
   LabelList,
 } from "recharts";
 import { NivelResumen } from "@/types";
+import renderPieLabel from "@/components/CustomPieLabel";
 
 const gradientes = {
   "Riesgo muy bajo": { id: "riesgo-muy-bajo", from: "#bfdbfe", to: "#3b82f6" },
@@ -58,7 +59,17 @@ export default function GraficaBarra({
                 </linearGradient>
               ))}
             </defs>
-            <Pie data={resumen} dataKey="indice" nameKey="nombre" label>
+            <Pie
+              data={resumen}
+              dataKey="indice"
+              nameKey="nombre"
+              label={renderPieLabel(
+                resumen.length,
+                (payload) => `${payload.nombre}: ${payload.nivel}`,
+                (payload) => payload.nivel
+              )}
+              labelLine={false}
+            >
               {resumen.map((d, i) => (
                 <Cell key={i} fill={colorPorNivel[d.nivel as keyof typeof colorPorNivel]} />
               ))}

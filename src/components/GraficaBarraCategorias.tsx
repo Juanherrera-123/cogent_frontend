@@ -13,6 +13,7 @@ import {
   ResponsiveContainer,
   LabelList,
 } from "recharts";
+import renderPieLabel from "@/components/CustomPieLabel";
 
 // Blue palette used for chart segments
 const coloresAzulFicha = [
@@ -52,9 +53,13 @@ export default function GraficaBarraCategorias({
               data={datosConPorcentaje}
               dataKey="cantidad"
               nameKey="nombre"
-              label={({ payload }) =>
-                `${payload.nombre}: ${payload.cantidad} (${payload.porcentaje.toFixed(0)}%)`
-              }
+              label={renderPieLabel(
+                datosConPorcentaje.length,
+                (payload) =>
+                  `${payload.nombre}: ${payload.cantidad} (${payload.porcentaje.toFixed(0)}%)`,
+                (payload) => `${payload.porcentaje.toFixed(0)}%`
+              )}
+              labelLine={false}
             >
               {datosConPorcentaje.map((_, i) => (
                 <Cell key={i} fill={coloresAzulFicha[i % coloresAzulFicha.length]} />
