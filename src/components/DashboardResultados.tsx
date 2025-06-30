@@ -595,7 +595,11 @@ export default function DashboardResultados({
   // ---- Pestañas ----
   return (
 
-    <div className="min-h-screen bg-gradient-to-b from-[#F7FAFF] to-[#EAF3FF] flex flex-col items-center py-10 px-2">
+    <div className="min-h-screen flex flex-col items-center py-10 px-2">
+      <div className="background-shapes">
+        <div className="shape rhombus rhombus-1"></div>
+        <div className="shape rhombus rhombus-2"></div>
+      </div>
       <div
         ref={containerRef}
         className="w-full max-w-7xl bg-white rounded-2xl shadow-xl p-8 md:p-10 flex flex-col gap-8 mx-auto"
