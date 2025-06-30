@@ -13,6 +13,7 @@ import {
   LabelList,
 } from "recharts";
 import { NivelResumen } from "@/types";
+import renderPieLabel from "@/components/CustomPieLabel";
 
 const gradientes = {
 
@@ -71,9 +72,15 @@ export default function GraficaBarraSimple({
               data={datos}
               dataKey="cantidad"
               nameKey="nivel"
-              label={({ payload }) =>
-                `${payload.nivel}: ${payload.cantidad} (${payload.porcentaje.toFixed(0)}%)`
-              }
+              label={renderPieLabel(
+                datos.length,
+                (payload) =>
+                  `${payload.nivel}: ${payload.cantidad} (${payload.porcentaje.toFixed(0)}%)`,
+                (payload) => `${payload.porcentaje.toFixed(0)}%`,
+                undefined,
+                (payload) => payload.porcentaje > 0
+              )}
+              labelLine={false}
             >
               {datos.map((d, i) => (
                 <Cell key={i} fill={colores[d.nivel as keyof typeof colores]} />
