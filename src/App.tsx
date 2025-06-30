@@ -17,6 +17,7 @@ import Login from "./components/Login";
 import HomePage from "./components/HomePage";
 import PoliticaPrivacidad from "./components/PoliticaPrivacidad";
 import TerminosCondiciones from "./components/TerminosCondiciones";
+import RhomboidBackground from "./components/RhomboidBackground";
 import {
   CredencialEmpresa,
   FichaDatosGenerales as FichaDatos,
@@ -256,9 +257,10 @@ export default function App() {
     guardar();
   }, [step, ficha, respuestas, resultadoEstres, resultadoExtralaboral, formType]);
 
-  // Vista Home
+  let content: React.ReactNode;
+
   if (step === "inicio") {
-    return (
+    content = (
       <HomePage
         onStartSurvey={() => setStep("consent")}
         onViewResults={() => setStep("login")}
@@ -266,19 +268,12 @@ export default function App() {
         onTerms={() => setStep("terms")}
       />
     );
-  }
-
-  if (step === "privacy") {
-    return <PoliticaPrivacidad onBack={() => setStep("inicio")} />;
-  }
-
-  if (step === "terms") {
-    return <TerminosCondiciones onBack={() => setStep("inicio")} />;
-  }
-
-  // Vista Login
-  if (step === "login") {
-    return (
+  } else if (step === "privacy") {
+    content = <PoliticaPrivacidad onBack={() => setStep("inicio")} />;
+  } else if (step === "terms") {
+    content = <TerminosCondiciones onBack={() => setStep("inicio")} />;
+  } else if (step === "login") {
+    content = (
       <Login
         usuarios={credenciales}
         onLogin={(nuevoRol, empresa) => {
@@ -289,11 +284,8 @@ export default function App() {
         onCancel={() => setStep("inicio")}
       />
     );
-  }
-
-  // Vista Dashboard
-  if (step === "dashboard") {
-    return (
+  } else if (step === "dashboard") {
+    content = (
       <DashboardResultados
         rol={rol as "psicologa" | "dueno"}
         empresaNombre={empresaActual || undefined}
@@ -306,107 +298,111 @@ export default function App() {
         onBack={() => setStep("inicio")}
       />
     );
+  } else {
+    content = (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--background-main)]">
+        {step === "consent" && (
+          <Consentimiento onAceptar={() => setStep("selector")} />
+        )}
+        {step === "selector" && (
+          <FormSelector
+            onSelect={(form) => {
+              setFormType(form);
+              setStep("ficha");
+            }}
+          />
+        )}
+        {step === "ficha" && (
+          <FichaDatosGenerales
+            empresasIniciales={empresasIniciales}
+            onGuardar={(datos) => {
+              setFicha(datos);
+              setStep("bloques");
+            }}
+          />
+        )}
+        {step === "bloques" && (
+          <BloquesDePreguntas
+            bloques={formType === "A" ? bloquesFormaA : bloquesFormaB}
+            preguntas={formType === "A" ? preguntasA : preguntasB}
+            onFinish={(respuestasBloques) => {
+              const ordered = Array.from(
+                { length: formType === "A" ? preguntasA.length : preguntasB.length },
+                (_, i) => respuestasBloques[i] ?? ""
+              );
+              setRespuestas((prev) => ({ ...prev, bloques: ordered }));
+              setStep("extralaboral");
+            }}
+          />
+        )}
+        {step === "extralaboral" && (
+          <BloquesDePreguntas
+            bloques={bloqueExtralaboral}
+            preguntas={preguntasExtralaboral}
+            onFinish={(respuestasExtra) => {
+              const ordered = Array.from(
+                { length: preguntasExtralaboral.length },
+                (_, i) => respuestasExtra[i] ?? ""
+              );
+              const resultado = calcularExtralaboral(
+                ordered,
+                formType as "A" | "B"
+              );
+              setResultadoExtralaboral(resultado);
+              setRespuestas((prev) => ({
+                ...prev,
+                extralaboral: ordered,
+                resultadoExtralaboral: resultado
+              }));
+              setStep("estres");
+            }}
+          />
+        )}
+        {step === "estres" && (
+          <BloquesDePreguntas
+            bloques={bloqueEstres}
+            preguntas={preguntasEstres}
+            onFinish={(respuestasEstres) => {
+              const ordered = Array.from(
+                { length: preguntasEstres.length },
+                (_, i) => respuestasEstres[i] ?? ""
+              );
+              const resultado = calcularEstres(
+                ordered,
+                formType as "A" | "B"
+              );
+              setResultadoEstres(resultado);
+              setRespuestas((prev) => ({
+                ...prev,
+                estres: ordered,
+                resultadoEstres: resultado
+              }));
+              setStep("final");
+            }}
+          />
+        )}
+        {step === "final" && (
+          <div className="p-8 bg-white rounded-xl shadow-md text-[var(--text-main)] font-bold text-2xl flex flex-col items-center gap-4">
+            <div>
+              ¡Encuesta completada!<br />
+              Gracias por tu participación.
+            </div>
+            <button
+              className="bg-primary-main text-white px-6 py-2 rounded-lg shadow hover:bg-primary-light text-base"
+              onClick={() => setStep("inicio")}
+            >
+              Volver al inicio
+            </button>
+          </div>
+        )}
+      </div>
+    );
   }
 
-  // Flujo de encuesta
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--background-main)]">
-      {step === "consent" && (
-        <Consentimiento onAceptar={() => setStep("selector")} />
-      )}
-      {step === "selector" && (
-        <FormSelector
-          onSelect={(form) => {
-            setFormType(form);
-            setStep("ficha");
-          }}
-        />
-      )}
-      {step === "ficha" && (
-        <FichaDatosGenerales
-          empresasIniciales={empresasIniciales}
-          onGuardar={(datos) => {
-            setFicha(datos);
-            setStep("bloques");
-          }}
-        />
-      )}
-      {step === "bloques" && (
-        <BloquesDePreguntas
-          bloques={formType === "A" ? bloquesFormaA : bloquesFormaB}
-          preguntas={formType === "A" ? preguntasA : preguntasB}
-          onFinish={(respuestasBloques) => {
-            const ordered = Array.from(
-              { length: formType === "A" ? preguntasA.length : preguntasB.length },
-              (_, i) => respuestasBloques[i] ?? ""
-            );
-            setRespuestas((prev) => ({ ...prev, bloques: ordered }));
-            setStep("extralaboral");
-          }}
-        />
-      )}
-      {step === "extralaboral" && (
-        <BloquesDePreguntas
-          bloques={bloqueExtralaboral}
-          preguntas={preguntasExtralaboral}
-          onFinish={(respuestasExtra) => {
-            const ordered = Array.from(
-              { length: preguntasExtralaboral.length },
-              (_, i) => respuestasExtra[i] ?? ""
-            );
-            const resultado = calcularExtralaboral(
-              ordered,
-              formType as "A" | "B"
-            );
-            setResultadoExtralaboral(resultado);
-            setRespuestas((prev) => ({
-              ...prev,
-              extralaboral: ordered,
-              resultadoExtralaboral: resultado
-            }));
-            setStep("estres");
-          }}
-        />
-      )}
-      {step === "estres" && (
-        <BloquesDePreguntas
-          bloques={bloqueEstres}
-          preguntas={preguntasEstres}
-          onFinish={(respuestasEstres) => {
-            const ordered = Array.from(
-              { length: preguntasEstres.length },
-              (_, i) => respuestasEstres[i] ?? ""
-            );
-            const resultado = calcularEstres(
-              ordered,
-              formType as "A" | "B"
-            );
-            setResultadoEstres(resultado);
-            setRespuestas((prev) => ({
-              ...prev,
-              estres: ordered,
-              resultadoEstres: resultado
-            }));
-            setStep("final");
-          }}
-        />
-      )}
-      {step === "final" && (
-
-        <div className="p-8 bg-white rounded-xl shadow-md text-[var(--text-main)] font-bold text-2xl flex flex-col items-center gap-4">
-
-          <div>
-            ¡Encuesta completada!<br />
-            Gracias por tu participación.
-          </div>
-          <button
-            className="bg-primary-main text-white px-6 py-2 rounded-lg shadow hover:bg-primary-light text-base"
-            onClick={() => setStep("inicio")}
-          >
-            Volver al inicio
-          </button>
-        </div>
-      )}
-    </div>
+    <>
+      <RhomboidBackground />
+      {content}
+    </>
   );
 }
