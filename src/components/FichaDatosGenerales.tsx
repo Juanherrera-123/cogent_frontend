@@ -337,13 +337,15 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
       </div>
       {/* Años en empresa */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center">
-        <input
-          type="checkbox"
-          name="menosAnioEmpresa"
-          checked={datos.menosAnioEmpresa}
-          onChange={handleChange}
-        />
-        <label className="text-sm">¿Menos de un año en la empresa?</label>
+        <label className="text-sm flex items-center gap-2">
+          ¿Menos de un año en la empresa?
+          <input
+            type="checkbox"
+            name="menosAnioEmpresa"
+            checked={datos.menosAnioEmpresa}
+            onChange={handleChange}
+          />
+        </label>
         {!datos.menosAnioEmpresa && (
           <input
             type="number"
@@ -381,13 +383,15 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
       </div>
       {/* Años en cargo */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center">
-        <input
-          type="checkbox"
-          name="menosAnioCargo"
-          checked={datos.menosAnioCargo}
-          onChange={handleChange}
-        />
-        <label className="text-sm">¿Menos de un año en el cargo?</label>
+        <label className="text-sm flex items-center gap-2">
+          ¿Menos de un año en el cargo?
+          <input
+            type="checkbox"
+            name="menosAnioCargo"
+            checked={datos.menosAnioCargo}
+            onChange={handleChange}
+          />
+        </label>
         {!datos.menosAnioCargo && (
           <input
             type="number"
