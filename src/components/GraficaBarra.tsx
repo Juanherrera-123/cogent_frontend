@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import { NivelResumen } from "@/types";
 import renderPieLabel from "@/components/CustomPieLabel";
+import shortNivelRiesgo from "@/utils/shortNivelRiesgo";
 
 const gradientes = {
   "Riesgo muy bajo": { id: "riesgo-muy-bajo", from: "#bfdbfe", to: "#3b82f6" },
@@ -66,7 +67,8 @@ export default function GraficaBarra({
               label={renderPieLabel(
                 resumen.length,
                 (payload) => `${payload.nombre}: ${payload.nivel}`,
-                (payload) => payload.nivel
+                (payload) => shortNivelRiesgo(payload.nivel),
+                0
               )}
               labelLine={false}
             >
