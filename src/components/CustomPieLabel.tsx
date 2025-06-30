@@ -14,9 +14,15 @@ export function renderPieLabel<T extends Record<string, any>>(
     if (showCondition && !showCondition(payload as T)) {
       return null;
     }
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = length === 1 ? cx : cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = length === 1 ? cy : cy + radius * Math.sin(-midAngle * RADIAN);
+    const inner = Number(innerRadius) || 0;
+    const outer = Number(outerRadius) || 0;
+    const centerX = Number(cx) || 0;
+    const centerY = Number(cy) || 0;
+    const angle = Number(midAngle) || 0;
+
+    const radius = inner + (outer - inner) * 0.5;
+    const x = length === 1 ? centerX : centerX + radius * Math.cos(-angle * RADIAN);
+    const y = length === 1 ? centerY : centerY + radius * Math.sin(-angle * RADIAN);
     const text = shortFormat && length >= shortenThreshold ? shortFormat(payload as T) : format(payload as T);
     return (
       <text x={x} y={y} textAnchor="middle" dominantBaseline="central" fill="var(--text-main)">
