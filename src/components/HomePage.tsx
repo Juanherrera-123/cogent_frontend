@@ -13,11 +13,11 @@ type Props = {
 export default function HomePage({ onStartSurvey, onViewResults, onPrivacy, onTerms }: Props) {
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
-      <div className="fixed top-[7vh] left-1/2 w-[450px] h-[450px] -translate-x-1/2 pointer-events-none z-0">
-        <div className="absolute top-0 left-1/2 w-[120px] h-[120px] -translate-x-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl blur-sm shadow-lg"></div>
-        <div className="absolute top-1/2 right-0 w-[120px] h-[120px] -translate-y-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl blur-sm shadow-lg"></div>
-        <div className="absolute bottom-0 left-1/2 w-[120px] h-[120px] -translate-x-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl blur-sm shadow-lg"></div>
-        <div className="absolute top-1/2 left-0 w-[120px] h-[120px] -translate-y-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl blur-sm shadow-lg"></div>
+      <div className="fixed top-[7vh] right-[8vw] w-[320px] h-[320px] pointer-events-none z-0">
+        <div className="absolute top-0 left-1/2 w-[120px] h-[120px] -translate-x-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl shadow-lg"></div>
+        <div className="absolute top-1/2 right-0 w-[120px] h-[120px] -translate-y-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl shadow-lg"></div>
+        <div className="absolute bottom-0 left-1/2 w-[120px] h-[120px] -translate-x-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl shadow-lg"></div>
+        <div className="absolute top-1/2 left-0 w-[120px] h-[120px] -translate-y-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl shadow-lg"></div>
       </div>
       <svg
         className="absolute left-0 top-0 opacity-20 w-[320px] h-[320px] -z-10"
