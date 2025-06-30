@@ -90,6 +90,8 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    min-height: 100vh;
+    background: linear-gradient(160deg,#eaf5ff 0%,#d1eaff 40%,#f6fafd 100%);
   }
 }
 
@@ -106,4 +108,31 @@
     color: var(--text-main);
 
   }
+}
+
+.background-shapes {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.shape.rhombus {
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  opacity: 0.10;
+  background: linear-gradient(135deg,#1158b7 0%,#57b5fa 100%);
+  clip-path: polygon(50% 0,100% 50%,50% 100%,0 50%);
+}
+.rhombus-1 {
+  top: 6vh;
+  left: 12vw;
+  transform: rotate(-8deg);
+}
+.rhombus-2 {
+  bottom: 4vh;
+  right: 14vw;
+  transform: rotate(15deg);
+  opacity: 0.07;
+  filter: blur(2px);
 }
