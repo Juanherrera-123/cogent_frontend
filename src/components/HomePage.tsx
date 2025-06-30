@@ -12,7 +12,11 @@ type Props = {
 
 export default function HomePage({ onStartSurvey, onViewResults, onPrivacy, onTerms }: Props) {
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#F4F8FA] to-[#FFFFFF] overflow-hidden">
+    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      <div className="background-shapes">
+        <div className="shape rhombus rhombus-1"></div>
+        <div className="shape rhombus rhombus-2"></div>
+      </div>
       <svg
         className="absolute left-0 top-0 opacity-20 w-[320px] h-[320px] -z-10"
         viewBox="0 0 320 320"
