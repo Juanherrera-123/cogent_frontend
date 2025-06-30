@@ -14,7 +14,6 @@ import {
 } from "recharts";
 import { NivelResumen } from "@/types";
 import renderPieLabel from "@/components/CustomPieLabel";
-import shortNivelRiesgo from "@/utils/shortNivelRiesgo";
 
 const gradientes = {
 
@@ -77,9 +76,9 @@ export default function GraficaBarraSimple({
                 datos.length,
                 (payload) =>
                   `${payload.nivel}: ${payload.cantidad} (${payload.porcentaje.toFixed(0)}%)`,
-                (payload) =>
-                  `${shortNivelRiesgo(payload.nivel)} (${payload.porcentaje.toFixed(0)}%)`,
-                0
+                (payload) => `${payload.porcentaje.toFixed(0)}%`,
+                undefined,
+                (payload) => payload.porcentaje > 0
               )}
               labelLine={false}
             >

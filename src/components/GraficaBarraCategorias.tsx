@@ -58,7 +58,8 @@ export default function GraficaBarraCategorias({
                 (payload) =>
                   `${payload.nombre}: ${payload.cantidad} (${payload.porcentaje.toFixed(0)}%)`,
                 (payload) => `${payload.porcentaje.toFixed(0)}%`,
-                0
+                undefined,
+                (payload) => payload.porcentaje > 0
               )}
               labelLine={false}
             >

@@ -7,24 +7,19 @@ export function renderPieLabel<T extends Record<string, any>>(
   length: number,
   format: (payload: T) => string,
   shortFormat?: (payload: T) => string,
-  shortenThreshold = 6
+  shortenThreshold = 6,
+  showCondition?: (payload: T) => boolean
 ) {
   return ({ cx = 0, cy = 0, midAngle = 0, innerRadius = 0, outerRadius = 0, payload }: PieLabelRenderProps): React.ReactNode => {
-    const cxNum = Number(cx);
-    const cyNum = Number(cy);
-    const inner = Number(innerRadius);
-    const outer = Number(outerRadius);
-
-    const radius = inner + (outer - inner) * 0.5;
-    const x = length === 1 ? cxNum : cxNum + radius * Math.cos(-midAngle * RADIAN);
-    const y = length === 1 ? cyNum : cyNum + radius * Math.sin(-midAngle * RADIAN);
-    const text =
-      shortFormat && length >= shortenThreshold
-        ? shortFormat(payload as T)
-        : format(payload as T);
+    if (showCondition && !showCondition(payload as T)) {
+      return null;
+    }
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = length === 1 ? cx : cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = length === 1 ? cy : cy + radius * Math.sin(-midAngle * RADIAN);
+    const text = shortFormat && length >= shortenThreshold ? shortFormat(payload as T) : format(payload as T);
     return (
       <text x={x} y={y} textAnchor="middle" dominantBaseline="central" fill="var(--text-main)">
-        <title>{format(payload as T)}</title>
         {text}
       </text>
     );
