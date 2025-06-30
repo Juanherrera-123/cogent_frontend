@@ -8,27 +8,11 @@ export default function FormSelector({
   onSelect: (form: "A" | "B") => void;
 }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#F4F8FA] to-[#FFFFFF] px-2 relative overflow-hidden">
-      {/* Background decorative SVG */}
-      <svg
-        className="absolute left-0 top-0 opacity-10 w-[320px] h-[320px] -z-10"
-        viewBox="0 0 320 320"
-      >
-        <circle cx="160" cy="160" r="140" fill="url(#grad1)" />
-        <defs>
-          <linearGradient
-            id="grad1"
-            x1="60"
-            y1="30"
-            x2="260"
-            y2="260"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop stopColor="#2EC4FF" />
-            <stop offset="1" stopColor="#005DFF" />
-          </linearGradient>
-        </defs>
-      </svg>
+    <div className="min-h-screen flex items-center justify-center px-2 relative overflow-hidden">
+      <div className="background-shapes">
+        <div className="shape rhombus rhombus-1"></div>
+        <div className="shape rhombus rhombus-2"></div>
+      </div>
 
       {/* Card */}
       <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 w-full max-w-md mx-auto animate-fadeIn flex flex-col items-center">

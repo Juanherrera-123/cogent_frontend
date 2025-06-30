@@ -28,17 +28,11 @@ export default function Login({ usuarios, onLogin, onCancel }: Props) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#F4F8FA] to-white px-2 relative">
-      {/* Decorative background */}
-      <svg className="absolute left-0 top-0 opacity-10 w-[320px] h-[320px] -z-10" viewBox="0 0 320 320">
-        <circle cx="160" cy="160" r="140" fill="url(#grad1)" />
-        <defs>
-          <linearGradient id="grad1" x1="60" y1="30" x2="260" y2="260" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#2EC4FF" />
-            <stop offset="1" stopColor="#005DFF" />
-          </linearGradient>
-        </defs>
-      </svg>
+    <div className="min-h-screen flex items-center justify-center px-2 relative">
+      <div className="background-shapes">
+        <div className="shape rhombus rhombus-1"></div>
+        <div className="shape rhombus rhombus-2"></div>
+      </div>
 
       <form
         onSubmit={handleSubmit}
