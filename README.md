@@ -64,6 +64,8 @@ npm run lint
 - `src/` - Application source code
 - `public/` - Static assets served directly
 - `index.html` - Entry point for the application
+- Compiled JavaScript generated from the TypeScript sources is excluded from
+  version control. Only the `.ts` and `.tsx` files under `src/` are tracked.
 
 ## Firebase storage
 
