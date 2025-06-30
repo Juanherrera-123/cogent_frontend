@@ -1,4 +1,4 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import { useState, useEffect } from "react";
 import { collection, addDoc, updateDoc, deleteDoc, getDocs, doc, } from "firebase/firestore";
 import { db } from "./firebaseConfig";
@@ -11,6 +11,7 @@ import Login from "./components/Login";
 import HomePage from "./components/HomePage";
 import PoliticaPrivacidad from "./components/PoliticaPrivacidad";
 import TerminosCondiciones from "./components/TerminosCondiciones";
+import RhomboidBackground from "./components/RhomboidBackground";
 import { bloquesFormaA, bloquesFormaB, preguntasA, preguntasB, preguntasExtralaboral, preguntasEstres, bloqueExtralaboral, bloqueEstres } from "./data/preguntas";
 import { calcularEstres } from "./utils/calcularEstres";
 import { calcularExtralaboral } from "./utils/calcularExtralaboral";
@@ -177,58 +178,58 @@ export default function App() {
         };
         guardar();
     }, [step, ficha, respuestas, resultadoEstres, resultadoExtralaboral, formType]);
-    // Vista Home
+    let content;
     if (step === "inicio") {
-        return (_jsx(HomePage, { onStartSurvey: () => setStep("consent"), onViewResults: () => setStep("login"), onPrivacy: () => setStep("privacy"), onTerms: () => setStep("terms") }));
+        content = (_jsx(HomePage, { onStartSurvey: () => setStep("consent"), onViewResults: () => setStep("login"), onPrivacy: () => setStep("privacy"), onTerms: () => setStep("terms") }));
     }
-    if (step === "privacy") {
-        return _jsx(PoliticaPrivacidad, { onBack: () => setStep("inicio") });
+    else if (step === "privacy") {
+        content = _jsx(PoliticaPrivacidad, { onBack: () => setStep("inicio") });
     }
-    if (step === "terms") {
-        return _jsx(TerminosCondiciones, { onBack: () => setStep("inicio") });
+    else if (step === "terms") {
+        content = _jsx(TerminosCondiciones, { onBack: () => setStep("inicio") });
     }
-    // Vista Login
-    if (step === "login") {
-        return (_jsx(Login, { usuarios: credenciales, onLogin: (nuevoRol, empresa) => {
+    else if (step === "login") {
+        content = (_jsx(Login, { usuarios: credenciales, onLogin: (nuevoRol, empresa) => {
                 setRol(nuevoRol);
                 setEmpresaActual(empresa || null);
                 setStep("dashboard");
             }, onCancel: () => setStep("inicio") }));
     }
-    // Vista Dashboard
-    if (step === "dashboard") {
-        return (_jsx(DashboardResultados, { rol: rol, empresaNombre: empresaActual || undefined, empresaFiltro: rol === "dueno" ? empresaActual || undefined : undefined, soloGenerales: rol === "dueno", credenciales: credenciales.filter((c) => c.rol === "dueno"), onAgregarEmpresa: agregarEmpresa, onEliminarEmpresa: eliminarEmpresa, onEditarEmpresa: editarEmpresa, onBack: () => setStep("inicio") }));
+    else if (step === "dashboard") {
+        content = (_jsx(DashboardResultados, { rol: rol, empresaNombre: empresaActual || undefined, empresaFiltro: rol === "dueno" ? empresaActual || undefined : undefined, soloGenerales: rol === "dueno", credenciales: credenciales.filter((c) => c.rol === "dueno"), onAgregarEmpresa: agregarEmpresa, onEliminarEmpresa: eliminarEmpresa, onEditarEmpresa: editarEmpresa, onBack: () => setStep("inicio") }));
     }
-    // Flujo de encuesta
-    return (_jsxs("div", { className: "min-h-screen flex flex-col items-center justify-center bg-[var(--background-main)]", children: [step === "consent" && (_jsx(Consentimiento, { onAceptar: () => setStep("selector") })), step === "selector" && (_jsx(FormSelector, { onSelect: (form) => {
-                    setFormType(form);
-                    setStep("ficha");
-                } })), step === "ficha" && (_jsx(FichaDatosGenerales, { empresasIniciales: empresasIniciales, onGuardar: (datos) => {
-                    setFicha(datos);
-                    setStep("bloques");
-                } })), step === "bloques" && (_jsx(BloquesDePreguntas, { bloques: formType === "A" ? bloquesFormaA : bloquesFormaB, preguntas: formType === "A" ? preguntasA : preguntasB, onFinish: (respuestasBloques) => {
-                    const ordered = Array.from({ length: formType === "A" ? preguntasA.length : preguntasB.length }, (_, i) => respuestasBloques[i] ?? "");
-                    setRespuestas((prev) => ({ ...prev, bloques: ordered }));
-                    setStep("extralaboral");
-                } })), step === "extralaboral" && (_jsx(BloquesDePreguntas, { bloques: bloqueExtralaboral, preguntas: preguntasExtralaboral, onFinish: (respuestasExtra) => {
-                    const ordered = Array.from({ length: preguntasExtralaboral.length }, (_, i) => respuestasExtra[i] ?? "");
-                    const resultado = calcularExtralaboral(ordered, formType);
-                    setResultadoExtralaboral(resultado);
-                    setRespuestas((prev) => ({
-                        ...prev,
-                        extralaboral: ordered,
-                        resultadoExtralaboral: resultado
-                    }));
-                    setStep("estres");
-                } })), step === "estres" && (_jsx(BloquesDePreguntas, { bloques: bloqueEstres, preguntas: preguntasEstres, onFinish: (respuestasEstres) => {
-                    const ordered = Array.from({ length: preguntasEstres.length }, (_, i) => respuestasEstres[i] ?? "");
-                    const resultado = calcularEstres(ordered, formType);
-                    setResultadoEstres(resultado);
-                    setRespuestas((prev) => ({
-                        ...prev,
-                        estres: ordered,
-                        resultadoEstres: resultado
-                    }));
-                    setStep("final");
-                } })), step === "final" && (_jsxs("div", { className: "p-8 bg-white rounded-xl shadow-md text-[var(--text-main)] font-bold text-2xl flex flex-col items-center gap-4", children: [_jsxs("div", { children: ["\u00A1Encuesta completada!", _jsx("br", {}), "Gracias por tu participaci\u00F3n."] }), _jsx("button", { className: "bg-primary-main text-white px-6 py-2 rounded-lg shadow hover:bg-primary-light text-base", onClick: () => setStep("inicio"), children: "Volver al inicio" })] }))] }));
+    else {
+        content = (_jsxs("div", { className: "min-h-screen flex flex-col items-center justify-center bg-[var(--background-main)]", children: [step === "consent" && (_jsx(Consentimiento, { onAceptar: () => setStep("selector") })), step === "selector" && (_jsx(FormSelector, { onSelect: (form) => {
+                        setFormType(form);
+                        setStep("ficha");
+                    } })), step === "ficha" && (_jsx(FichaDatosGenerales, { empresasIniciales: empresasIniciales, onGuardar: (datos) => {
+                        setFicha(datos);
+                        setStep("bloques");
+                    } })), step === "bloques" && (_jsx(BloquesDePreguntas, { bloques: formType === "A" ? bloquesFormaA : bloquesFormaB, preguntas: formType === "A" ? preguntasA : preguntasB, onFinish: (respuestasBloques) => {
+                        const ordered = Array.from({ length: formType === "A" ? preguntasA.length : preguntasB.length }, (_, i) => respuestasBloques[i] ?? "");
+                        setRespuestas((prev) => ({ ...prev, bloques: ordered }));
+                        setStep("extralaboral");
+                    } })), step === "extralaboral" && (_jsx(BloquesDePreguntas, { bloques: bloqueExtralaboral, preguntas: preguntasExtralaboral, onFinish: (respuestasExtra) => {
+                        const ordered = Array.from({ length: preguntasExtralaboral.length }, (_, i) => respuestasExtra[i] ?? "");
+                        const resultado = calcularExtralaboral(ordered, formType);
+                        setResultadoExtralaboral(resultado);
+                        setRespuestas((prev) => ({
+                            ...prev,
+                            extralaboral: ordered,
+                            resultadoExtralaboral: resultado
+                        }));
+                        setStep("estres");
+                    } })), step === "estres" && (_jsx(BloquesDePreguntas, { bloques: bloqueEstres, preguntas: preguntasEstres, onFinish: (respuestasEstres) => {
+                        const ordered = Array.from({ length: preguntasEstres.length }, (_, i) => respuestasEstres[i] ?? "");
+                        const resultado = calcularEstres(ordered, formType);
+                        setResultadoEstres(resultado);
+                        setRespuestas((prev) => ({
+                            ...prev,
+                            estres: ordered,
+                            resultadoEstres: resultado
+                        }));
+                        setStep("final");
+                    } })), step === "final" && (_jsxs("div", { className: "p-8 bg-white rounded-xl shadow-md text-[var(--text-main)] font-bold text-2xl flex flex-col items-center gap-4", children: [_jsxs("div", { children: ["\u00A1Encuesta completada!", _jsx("br", {}), "Gracias por tu participaci\u00F3n."] }), _jsx("button", { className: "bg-primary-main text-white px-6 py-2 rounded-lg shadow hover:bg-primary-light text-base", onClick: () => setStep("inicio"), children: "Volver al inicio" })] }))] }));
+    }
+    return (_jsxs(_Fragment, { children: [_jsx(RhomboidBackground, {}), content] }));
 }
