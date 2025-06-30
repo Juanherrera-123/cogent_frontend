@@ -18,9 +18,13 @@ export function renderPieLabel<T extends Record<string, any>>(
     const radius = inner + (outer - inner) * 0.5;
     const x = length === 1 ? cxNum : cxNum + radius * Math.cos(-midAngle * RADIAN);
     const y = length === 1 ? cyNum : cyNum + radius * Math.sin(-midAngle * RADIAN);
-    const text = shortFormat && length >= shortenThreshold ? shortFormat(payload as T) : format(payload as T);
+    const text =
+      shortFormat && length >= shortenThreshold
+        ? shortFormat(payload as T)
+        : format(payload as T);
     return (
       <text x={x} y={y} textAnchor="middle" dominantBaseline="central" fill="var(--text-main)">
+        <title>{format(payload as T)}</title>
         {text}
       </text>
     );
