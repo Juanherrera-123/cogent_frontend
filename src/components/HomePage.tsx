@@ -13,26 +13,12 @@ type Props = {
 export default function HomePage({ onStartSurvey, onViewResults, onPrivacy, onTerms }: Props) {
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
-      <div className="fixed top-[7vh] right-[8vw] w-[320px] h-[320px] pointer-events-none z-0">
-        <div className="absolute top-0 left-1/2 w-[120px] h-[120px] -translate-x-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl shadow-lg"></div>
-        <div className="absolute top-1/2 right-0 w-[120px] h-[120px] -translate-y-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl shadow-lg"></div>
-        <div className="absolute bottom-0 left-1/2 w-[120px] h-[120px] -translate-x-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl shadow-lg"></div>
-        <div className="absolute top-1/2 left-0 w-[120px] h-[120px] -translate-y-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl shadow-lg"></div>
+      <div className="fixed top-[7vh] right-[8vw] w-[450px] h-[450px] pointer-events-none z-0">
+        <div className="absolute top-0 left-1/2 w-[160px] h-[160px] -translate-x-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl shadow-lg"></div>
+        <div className="absolute top-1/2 right-0 w-[160px] h-[160px] -translate-y-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl shadow-lg"></div>
+        <div className="absolute bottom-0 left-1/2 w-[160px] h-[160px] -translate-x-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl shadow-lg"></div>
+        <div className="absolute top-1/2 left-0 w-[160px] h-[160px] -translate-y-1/2 rotate-45 bg-gradient-to-br from-blue-600 to-blue-200 opacity-20 rounded-3xl shadow-lg"></div>
       </div>
-      <svg
-        className="absolute left-0 top-0 opacity-20 w-[320px] h-[320px] -z-10"
-        viewBox="0 0 320 320"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle cx="160" cy="160" r="140" fill="url(#grad1)" />
-        <defs>
-          <linearGradient id="grad1" x1="60" y1="30" x2="260" y2="260" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#2EC4FF" />
-            <stop offset="1" stopColor="#005DFF" />
-          </linearGradient>
-        </defs>
-      </svg>
 
       <div className="flex items-center justify-center gap-6 mb-8 animate-fadeIn">
         <img
