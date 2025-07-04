@@ -1,6 +1,7 @@
 // src/components/QuestionBlock.tsx
 
 import React, { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const questions = [
   {
@@ -55,7 +56,14 @@ export default function QuestionBlock({ onNext }: { onNext: () => void }) {
       <form>
         {questions.map((q, idx) => (
           <div key={q.id} className="mb-6">
-            <p className="font-sans text-text-main mb-2">{q.text}</p>
+            <p
+              className={cn(
+                "font-sans text-text-main mb-2",
+                responses[idx] === 0 && "text-red-500"
+              )}
+            >
+              {q.text}
+            </p>
             <div className="flex gap-4">
               {options.map((opt) => (
                 <label key={opt.value} className="font-sans">
