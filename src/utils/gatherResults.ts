@@ -31,6 +31,34 @@ export function gatherFlatResults(almacenados: ResultRow[]): FlatResult[] {
       Nombre: d.ficha?.nombre || "",
       Sexo: d.ficha?.sexo || "",
       Cargo: d.ficha?.cargo || "",
+      "Fecha ficha": d.ficha?.fecha || "",
+      Cédula: d.ficha?.cedula || "",
+      Nacimiento: d.ficha?.nacimiento || "",
+      "Estado civil": d.ficha?.estadoCivil || "",
+      Estudios: d.ficha?.estudios || "",
+      Ocupación: d.ficha?.ocupacion || "",
+      "Ciudad residencia": d.ficha?.residenciaCiudad || "",
+      "Departamento residencia": d.ficha?.residenciaDepto || "",
+      Estrato: d.ficha?.estrato || "",
+      Vivienda: d.ficha?.vivienda || "",
+      Dependientes: d.ficha?.dependientes || "",
+      "Ciudad trabajo": d.ficha?.trabajoCiudad || "",
+      "Departamento trabajo": d.ficha?.trabajoDepto || "",
+      "Años empresa": d.ficha
+        ? d.ficha.menosAnioEmpresa
+          ? "Menos de un año"
+          : d.ficha.aniosEmpresa
+        : "",
+      "Tipo cargo": d.ficha?.tipoCargo || "",
+      "Años cargo": d.ficha
+        ? d.ficha.menosAnioCargo
+          ? "Menos de un año"
+          : d.ficha.aniosCargo
+        : "",
+      Área: d.ficha?.area || "",
+      "Tipo contrato": d.ficha?.tipoContrato || "",
+      "Horas diarias": d.ficha?.horasDiarias || "",
+      "Tipo salario": d.ficha?.tipoSalario || "",
     };
 
     if (d.resultadoFormaA) {
