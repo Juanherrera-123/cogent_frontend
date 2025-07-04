@@ -121,7 +121,12 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
   const idx = bloque.preguntas[0] + i;
   return (
     <div key={idx} className="mb-4">
-      <label className="font-semibold block mb-1">
+      <label
+        className={cn(
+          "font-semibold block mb-1",
+          faltantes.includes(idx) && "text-red-500"
+        )}
+      >
         {`${idx + 1}. ${preg.texto.replace(/^\d+\.?\s*/, "")}`}
       </label>
       {preg.tipo === "likert" && (
