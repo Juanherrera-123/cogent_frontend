@@ -4,22 +4,17 @@ import { baremosFormaB } from "@/data/baremosFormaB";
 import { ResultRow } from "@/types";
 
 export default function TablaDimensiones({ datos, dimensiones, keyResultado }: { datos: ResultRow[]; dimensiones: string[]; keyResultado: string }) {
-  const nivelesRiesgo = [
-    "Riesgo muy bajo",
-    "Riesgo bajo",
-    "Riesgo medio",
-    "Riesgo alto",
-    "Riesgo muy alto",
-  ];
 
   const promedios = useMemo(() => {
     const origen = keyResultado.toLowerCase().includes("formab") ? "formaB" : "formaA";
     return dimensiones.map((dim) => {
       const valores = datos
         .map((d) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const res = (d as any)[keyResultado];
           let seccion = res?.dimensiones?.[dim];
           if (Array.isArray(res?.dimensiones)) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             seccion = res.dimensiones.find((x: any) => x.nombre === dim);
           }
           if (typeof seccion === "object") {
@@ -28,7 +23,10 @@ export default function TablaDimensiones({ datos, dimensiones, keyResultado }: {
           return res?.puntajesDimension?.[dim];
         })
         .filter((v) => typeof v === "number");
-      const prom = valores.length ? valores.reduce((a, b) => a + b, 0) / valores.length : 0;
+      if (valores.length === 0) {
+        return { promedio: undefined, nivel: "Sin datos" };
+      }
+      const prom = valores.reduce((a, b) => a + b, 0) / valores.length;
       const promedio = Math.round(prom * 10) / 10;
       const baremos =
         origen === "formaA"
@@ -65,9 +63,11 @@ export default function TablaDimensiones({ datos, dimensiones, keyResultado }: {
               <td>{d.ficha?.empresa}</td>
               <td>{d.ficha?.nombre}</td>
               {dimensiones.map((dim, idx) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const res = (d as any)[keyResultado];
                 let seccion = res?.dimensiones?.[dim];
                 if (Array.isArray(res?.dimensiones)) {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   const item = res.dimensiones.find((x: any) => x.nombre === dim);
                   seccion = item;
                 }
@@ -84,7 +84,7 @@ export default function TablaDimensiones({ datos, dimensiones, keyResultado }: {
             <td>Promedio</td>
             <td></td>
             {promedios.map((p, idx) => (
-              <td key={idx}>{p.promedio || ""}</td>
+              <td key={idx}>{p.promedio ?? "—"}</td>
             ))}
           </tr>
           <tr className="font-semibold bg-gray-100">
@@ -92,7 +92,7 @@ export default function TablaDimensiones({ datos, dimensiones, keyResultado }: {
             <td>Nivel</td>
             <td></td>
             {promedios.map((p, idx) => (
-              <td key={idx}>{p.nivel || ""}</td>
+              <td key={idx}>{p.promedio === undefined ? "Sin datos" : p.nivel}</td>
             ))}
           </tr>
         </tbody>
