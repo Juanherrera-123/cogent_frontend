@@ -26,7 +26,6 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
         </div>
 
         <div className="text-[#313B4A] text-justify font-montserrat text-base md:text-lg leading-relaxed mb-8 space-y-4">
-          <p>Fecha: __________________________</p>
           <p>
             Fecha:
             <input
@@ -70,13 +69,6 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
             La información de estadística generales y resultados de la evaluación será presentada al interior de la
             Empresa, garantizando la confidencialidad de los datos personales.
           </p>
-
-          <div className="space-y-2 pt-4">
-            <p>Firma: _________________________________</p>
-            <p>Nombre: ________________________________</p>
-            <p>Cargo: _________________________________</p>
-            <p>C.C : __________________________________</p>
-          </div>
         </div>
 
         <div className="text-xs text-center text-[#313B4A] font-montserrat mb-8 space-y-1">
@@ -89,20 +81,6 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
           </p>
 
           <div className="space-y-2 pt-4">
-            <p>
-              Firma:
-              <input
-                type="text"
-                className="border-b border-[#313B4A] w-60 ml-2 focus:outline-none"
-              />
-            </p>
-            <p>
-              Nombre:
-              <input
-                type="text"
-                className="border-b border-[#313B4A] w-60 ml-2 focus:outline-none"
-              />
-            </p>
             <p>
               Cargo:
               <input
