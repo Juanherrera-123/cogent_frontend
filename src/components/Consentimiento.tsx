@@ -1,6 +1,56 @@
-import React from "react";
+import React, { useState } from "react";
+import { cn } from "@/lib/utils";
+
+type DatosConsentimiento = {
+  fecha: string;
+  nombre: string;
+  cedula: string;
+  ciudad: string;
+  cargo: string;
+  ccFirma: string;
+};
 
 export default function Consentimiento({ onAceptar }: { onAceptar: () => void }) {
+  const [datos, setDatos] = useState<DatosConsentimiento>({
+    fecha: "",
+    nombre: "",
+    cedula: "",
+    ciudad: "",
+    cargo: "",
+    ccFirma: "",
+  });
+  const [errores, setErrores] = useState<Record<string, boolean>>({});
+  const [error, setError] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setDatos({ ...datos, [name]: value });
+    setErrores((prev) => ({ ...prev, [name]: false }));
+  };
+
+  const handleAceptar = () => {
+    const faltantes: Record<string, boolean> = {};
+    const campos: Array<keyof DatosConsentimiento> = [
+      "fecha",
+      "nombre",
+      "cedula",
+      "ciudad",
+      "cargo",
+      "ccFirma",
+    ];
+    campos.forEach((campo) => {
+      if (!datos[campo]) faltantes[campo] = true;
+    });
+    if (Object.keys(faltantes).length > 0) {
+      setErrores(faltantes);
+      setError("Por favor complete todos los campos obligatorios.");
+      return;
+    }
+    setErrores({});
+    setError("");
+    onAceptar();
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden px-2">
       <div className="background-shapes">
@@ -29,25 +79,49 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
           <p>
             Fecha:
             <input
-              type="text"
-              className="border-b border-[#313B4A] w-40 ml-2 focus:outline-none"
+              type="date"
+              name="fecha"
+              value={datos.fecha}
+              onChange={handleChange}
+              className={cn(
+                "border border-gray-300 bg-white rounded-xl px-4 py-2 w-40 ml-2 focus:outline-none",
+                errores["fecha"] && "border-red-500"
+              )}
             />
           </p>
           <p>
             Yo,
             <input
               type="text"
-              className="border-b border-[#313B4A] w-56 mx-2 focus:outline-none"
+              name="nombre"
+              value={datos.nombre}
+              onChange={handleChange}
+              className={cn(
+                "border border-gray-300 bg-white rounded-xl px-2 py-1 w-56 mx-2 focus:outline-none",
+                errores["nombre"] && "border-red-500"
+              )}
             />
             identificado con cédula CC.
             <input
               type="text"
-              className="border-b border-[#313B4A] w-40 mx-2 focus:outline-none"
+              name="cedula"
+              value={datos.cedula}
+              onChange={handleChange}
+              className={cn(
+                "border border-gray-300 bg-white rounded-xl px-2 py-1 w-40 mx-2 focus:outline-none",
+                errores["cedula"] && "border-red-500"
+              )}
             />
             de
             <input
               type="text"
-              className="border-b border-[#313B4A] w-40 mx-2 focus:outline-none"
+              name="ciudad"
+              value={datos.ciudad}
+              onChange={handleChange}
+              className={cn(
+                "border border-gray-300 bg-white rounded-xl px-2 py-1 w-40 mx-2 focus:outline-none",
+                errores["ciudad"] && "border-red-500"
+              )}
             />
             , habiendo sido claramente informado(a) sobre los objetivos y procedimientos, acepto de manera voluntaria,
             participar en la aplicación de la Batería de Riesgo Psicosocial elaborada por el Ministerio de la Protección
@@ -85,14 +159,26 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
               Cargo:
               <input
                 type="text"
-                className="border-b border-[#313B4A] w-60 ml-2 focus:outline-none"
+                name="cargo"
+                value={datos.cargo}
+                onChange={handleChange}
+                className={cn(
+                  "border border-gray-300 bg-white rounded-xl px-2 py-1 w-60 ml-2 focus:outline-none",
+                  errores["cargo"] && "border-red-500"
+                )}
               />
             </p>
             <p>
               C.C :
               <input
                 type="text"
-                className="border-b border-[#313B4A] w-60 ml-2 focus:outline-none"
+                name="ccFirma"
+                value={datos.ccFirma}
+                onChange={handleChange}
+                className={cn(
+                  "border border-gray-300 bg-white rounded-xl px-2 py-1 w-60 ml-2 focus:outline-none",
+                  errores["ccFirma"] && "border-red-500"
+                )}
               />
             </p>
           </div>
@@ -108,8 +194,11 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
           </p>
         </div>
 
+        {error && (
+          <div className="text-red-600 font-bold text-center mb-4">{error}</div>
+        )}
         <button
-          onClick={onAceptar}
+          onClick={handleAceptar}
           className="w-full md:w-3/4 py-4 rounded-xl font-bold text-lg text-white bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] shadow-lg transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#2EC4FF]"
         >
           Acepto y deseo continuar
