@@ -198,6 +198,5 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
           Acepto y deseo continuar
         </button>
       </div>
-    </div>
   );
 }
