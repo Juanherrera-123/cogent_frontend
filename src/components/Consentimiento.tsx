@@ -143,17 +143,11 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
             La información de estadística generales y resultados de la evaluación será presentada al interior de la
             Empresa, garantizando la confidencialidad de los datos personales.
           </p>
-        </div>
-
-        <div className="text-xs text-center text-[#313B4A] font-montserrat mb-8 space-y-1">
-          <p>Versión: 01</p>
-          <p>Fecha: febrero 2023</p>
-          <p>Copia controlada</p>
-          <p>
+            <p>
             Hago constar que el presente documento ha sido leído y entendido por mí en su integridad, de manera libre y
             espontánea.
           </p>
-
+        </div>
           <div className="space-y-2 pt-4">
             <p>
               Cargo:
