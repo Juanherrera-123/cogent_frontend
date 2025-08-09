@@ -20,6 +20,7 @@ import LogoCogent from "/logo_forma.png";
 import { FileDown, FileText, Home as HomeIcon } from "lucide-react";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
+import { calcularFormaA } from "@/utils/calcularFormaA";
 
 const nivelesRiesgo = [
   "Riesgo muy bajo",
@@ -162,7 +163,17 @@ export default function DashboardResultados({
   useEffect(() => {
     const cargar = async () => {
       const snap = await getDocs(collection(db, "resultadosCogent"));
-      const arr = snap.docs.map((d) => ({ id: d.id, ...(d.data() as ResultRow) }));
+      const arr = snap.docs.map((d) => {
+        const data = { id: d.id, ...(d.data() as ResultRow) };
+        if (
+          data.tipo === "A" &&
+          data.respuestas?.bloques &&
+          !data.resultadoFormaA?.dimensiones?.["Retroalimentación del desempeño"]
+        ) {
+          data.resultadoFormaA = calcularFormaA(data.respuestas.bloques);
+        }
+        return data;
+      });
       setDatos(arr);
     };
     cargar();
