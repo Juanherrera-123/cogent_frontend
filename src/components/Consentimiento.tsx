@@ -176,8 +176,6 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
               />
             </p>
           </div>
-        </div>
-
         <div className="text-xs text-center text-[#313B4A] font-montserrat mb-8 space-y-1">
           <p>Versión: 01</p>
           <p>Fecha: febrero 2023</p>
@@ -198,5 +196,6 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
           Acepto y deseo continuar
         </button>
       </div>
+    </div>
   );
 }
