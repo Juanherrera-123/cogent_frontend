@@ -62,9 +62,12 @@ export function gatherFlatResults(almacenados: ResultRow[]): FlatResult[] {
     };
 
     if (d.resultadoFormaA) {
-      fila["Forma A (puntaje transformado)"] =
-        d.resultadoFormaA.total?.transformado ?? "";
-      fila["Forma A (nivel de riesgo)"] = d.resultadoFormaA.total?.nivel ?? "";
+      fila[
+        "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial intralaboral - Forma A (puntaje transformado)"
+      ] = d.resultadoFormaA.total?.transformado ?? "";
+      fila[
+        "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial intralaboral - Forma A (nivel de riesgo)"
+      ] = d.resultadoFormaA.total?.nivel ?? "";
       const domA = d.resultadoFormaA.dominios || {};
       Object.keys(domA).forEach((k) => {
         const v = domA[k] as DimensionResultado & { puntajeTransformado?: number };
@@ -83,13 +86,17 @@ export function gatherFlatResults(almacenados: ResultRow[]): FlatResult[] {
 
     if (d.resultadoFormaB) {
       const resB = d.resultadoFormaB as IntralaboralResultadoCompat;
-      fila["Forma B (puntaje transformado)"] =
+      fila[
+        "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial intralaboral - Forma B (puntaje transformado)"
+      ] =
         resB.total?.transformado ??
         resB.puntajeTransformadoTotal ??
         resB.puntajeTransformado ??
         resB.puntajeTotalTransformado ??
         "";
-      fila["Forma B (nivel de riesgo)"] =
+      fila[
+        "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial intralaboral - Forma B (nivel de riesgo)"
+      ] =
         resB.total?.nivel ??
         resB.nivelTotal ??
         resB.nivel ??
@@ -111,10 +118,12 @@ export function gatherFlatResults(almacenados: ResultRow[]): FlatResult[] {
     }
 
     if (d.resultadoExtralaboral) {
-      fila["Extralaboral (puntaje transformado)"] =
-        d.resultadoExtralaboral.puntajeTransformadoTotal ?? "";
-      fila["Extralaboral (nivel de riesgo)"] =
-        d.resultadoExtralaboral.nivelGlobal ?? "";
+      fila[
+        "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial extralaboral (puntaje transformado)"
+      ] = d.resultadoExtralaboral.puntajeTransformadoTotal ?? "";
+      fila[
+        "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial extralaboral (nivel de riesgo)"
+      ] = d.resultadoExtralaboral.nivelGlobal ?? "";
       const dims: ResultadoExtraDimension[] =
         d.resultadoExtralaboral.dimensiones || [];
       dims.forEach((dim) => {
@@ -126,20 +135,12 @@ export function gatherFlatResults(almacenados: ResultRow[]): FlatResult[] {
       });
     }
 
-    if (d.resultadoGlobalAExtralaboral) {
-      fila["Global A+Extra (puntaje transformado)"] =
-        d.resultadoGlobalAExtralaboral.puntajeGlobal ?? "";
-      fila["Global A+Extra (nivel de riesgo)"] =
-        d.resultadoGlobalAExtralaboral.nivelGlobal ?? "";
-    }
-
     if (d.resultadoEstres) {
-      fila["Estrés (puntaje transformado)"] =
+      fila["Puntaje total evaluación de estrés (puntaje transformado)"] =
         d.resultadoEstres.puntajeTransformado ?? "";
-      fila["Estrés (nivel de riesgo)"] = d.resultadoEstres.nivel ?? "";
+      fila["Puntaje total evaluación de estrés (nivel de riesgo)"] =
+        d.resultadoEstres.nivel ?? "";
     }
-
-    fila["Fecha"] = d.fecha ? new Date(d.fecha).toLocaleString() : "";
 
     return fila;
   });
