@@ -28,13 +28,35 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
         <div className="text-[#313B4A] text-justify font-montserrat text-base md:text-lg leading-relaxed mb-8 space-y-4">
           <p>Fecha: __________________________</p>
           <p>
-            Yo, __________________________ identificado con cédula CC. ________________ de ________________, habiendo
-            sido claramente informado(a) sobre los objetivos y procedimientos, acepto de manera voluntaria, participar
-            en la aplicación de la Batería de Riesgo Psicosocial elaborada por el Ministerio de la Protección Social y
-            la Universidad Javeriana, entendiendo que los fines de la evaluación son netamente ocupacionales, y que la
-            información recolectada será analizada de manera confidencial para orientar acciones de mejoría para el
-            personal de la Empresa.
+            Fecha:
+            <input
+              type="text"
+              className="border-b border-[#313B4A] w-40 ml-2 focus:outline-none"
+            />
           </p>
+          <p>
+            Yo,
+            <input
+              type="text"
+              className="border-b border-[#313B4A] w-56 mx-2 focus:outline-none"
+            />
+            identificado con cédula CC.
+            <input
+              type="text"
+              className="border-b border-[#313B4A] w-40 mx-2 focus:outline-none"
+            />
+            de
+            <input
+              type="text"
+              className="border-b border-[#313B4A] w-40 mx-2 focus:outline-none"
+            />
+            , habiendo sido claramente informado(a) sobre los objetivos y procedimientos, acepto de manera voluntaria,
+            participar en la aplicación de la Batería de Riesgo Psicosocial elaborada por el Ministerio de la Protección
+            Social y la Universidad Javeriana, entendiendo que los fines de la evaluación son netamente ocupacionales, y
+            que la información recolectada será analizada de manera confidencial para orientar acciones de mejoría para
+            el personal de la Empresa.
+          </p>
+          <p>Los datos consignados en la evaluación no serán usados para afectar las condiciones contractuales.</p>
           <p>
             Los resultados individuales de la presente evaluación no serán revelados sin autorización por escrito del
             colaborador, la empresa recibirá un informe consolidado con los resultados generales para la Empresa.
@@ -48,16 +70,53 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
             La información de estadística generales y resultados de la evaluación será presentada al interior de la
             Empresa, garantizando la confidencialidad de los datos personales.
           </p>
-          <p>
-            Hago constar que el presente documento ha sido leído y entendido por mí en su integridad, de manera libre y
-            espontánea.
-          </p>
 
           <div className="space-y-2 pt-4">
             <p>Firma: _________________________________</p>
             <p>Nombre: ________________________________</p>
             <p>Cargo: _________________________________</p>
             <p>C.C : __________________________________</p>
+          </div>
+        </div>
+
+        <div className="text-xs text-center text-[#313B4A] font-montserrat mb-8 space-y-1">
+          <p>Versión: 01</p>
+          <p>Fecha: febrero 2023</p>
+          <p>Copia controlada</p>
+          <p>
+            Hago constar que el presente documento ha sido leído y entendido por mí en su integridad, de manera libre y
+            espontánea.
+          </p>
+
+          <div className="space-y-2 pt-4">
+            <p>
+              Firma:
+              <input
+                type="text"
+                className="border-b border-[#313B4A] w-60 ml-2 focus:outline-none"
+              />
+            </p>
+            <p>
+              Nombre:
+              <input
+                type="text"
+                className="border-b border-[#313B4A] w-60 ml-2 focus:outline-none"
+              />
+            </p>
+            <p>
+              Cargo:
+              <input
+                type="text"
+                className="border-b border-[#313B4A] w-60 ml-2 focus:outline-none"
+              />
+            </p>
+            <p>
+              C.C :
+              <input
+                type="text"
+                className="border-b border-[#313B4A] w-60 ml-2 focus:outline-none"
+              />
+            </p>
           </div>
         </div>
 
