@@ -83,6 +83,67 @@ const dimensionesExtra = dimensionesExtralaboral.map((d) => d.nombre);
 const nivelesEstres = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto"];
 const nivelesExtra = nivelesRiesgo;
 const nivelesForma = nivelesRiesgo;
+const fichaTecnicaHeaders = [
+    "Nro",
+    "Empresa",
+    "Sexo",
+    "Cargo",
+    "Fecha ficha",
+    "Cédula",
+    "Nacimiento",
+    "Estado civil",
+    "Estudios",
+    "Ocupación",
+    "Ciudad residencia",
+    "Departamento residencia",
+    "Estrato",
+    "Vivienda",
+    "Dependientes",
+    "Ciudad trabajo",
+    "Departamento trabajo",
+    "Años empresa",
+    "Tipo cargo",
+    "Años cargo",
+    "Área",
+    "Tipo contrato",
+    "Horas diarias",
+    "Tipo salario",
+];
+const informeHeaderOrder = [
+    "Nombre",
+    ...fichaTecnicaHeaders,
+    "Forma A (puntaje transformado)",
+    "Forma A (nivel de riesgo)",
+    ...dominiosA.flatMap((k) => [
+        `DOMINIO: ${k} - Forma A (puntaje transformado)`,
+        `DOMINIO: ${k} - Forma A (nivel de riesgo)`,
+    ]),
+    ...dimensionesA.flatMap((k) => [
+        `Dimensión: ${k} - Forma A (puntaje transformado)`,
+        `Dimensión: ${k} - Forma A (nivel de riesgo)`,
+    ]),
+    "Forma B (puntaje transformado)",
+    "Forma B (nivel de riesgo)",
+    ...dominiosB.flatMap((k) => [
+        `DOMINIO: ${k} - Forma B (puntaje transformado)`,
+        `DOMINIO: ${k} - Forma B (nivel de riesgo)`,
+    ]),
+    ...dimensionesB.flatMap((k) => [
+        `Dimensión: ${k} - Forma B (puntaje transformado)`,
+        `Dimensión: ${k} - Forma B (nivel de riesgo)`,
+    ]),
+    "Extralaboral (puntaje transformado)",
+    "Extralaboral (nivel de riesgo)",
+    ...dimensionesExtra.flatMap((k) => [
+        `Dimensión: ${k} - Extralaboral (puntaje transformado)`,
+        `Dimensión: ${k} - Extralaboral (nivel de riesgo)`,
+    ]),
+    "Global A+Extra (puntaje transformado)",
+    "Global A+Extra (nivel de riesgo)",
+    "Estrés (puntaje transformado)",
+    "Estrés (nivel de riesgo)",
+    "Fecha",
+];
 const categoriasFicha = [
     { key: "sexo", label: "Género" },
     { key: "estadoCivil", label: "Estado civil" },
@@ -291,7 +352,11 @@ export default function DashboardResultados({ rol, empresaNombre, soloGenerales,
         const todos = gatherFlatResults(datos);
         return todos.filter((f) => empresaSeleccionada === "todas" || f.Empresa === empresaSeleccionada);
     }, [empresaSeleccionada]);
-    const allHeaders = useMemo(() => Array.from(new Set(datosInforme.flatMap((fila) => Object.keys(fila)))), [datosInforme]);
+    const allHeaders = useMemo(() => {
+        const base = informeHeaderOrder.filter((h) => datosInforme.some((fila) => h in fila));
+        const remaining = Array.from(new Set(datosInforme.flatMap((fila) => Object.keys(fila)))).filter((h) => !base.includes(h));
+        return [...base, ...remaining];
+    }, [datosInforme]);
     const promedioInforme = useMemo(() => {
         const nivelesMap = {};
         nivelesRiesgo.forEach((n, i) => {
