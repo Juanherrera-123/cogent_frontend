@@ -18,31 +18,56 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
         <h2 className="text-2xl md:text-3xl font-bold text-[#132045] text-center font-montserrat mb-1">
           Consentimiento Informado
         </h2>
+        <div className="text-base font-semibold text-[#132045] text-center font-montserrat">
+          Aplicación Batería de Riesgos Psicosociales
+        </div>
         <div className="text-base font-semibold text-[#2EC4FF] mb-6 text-center font-montserrat">
           Resolución 2764 de 2022
         </div>
 
         <div className="text-[#313B4A] text-justify font-montserrat text-base md:text-lg leading-relaxed mb-8 space-y-4">
+          <p>Fecha: __________________________</p>
           <p>
-            He sido claramente informado(a) sobre los objetivos y procedimientos, acepto de manera voluntaria, participar en la aplicación de la Batería de Riesgo Psicosocial elaborada por el Ministerio de la Protección Social y la Universidad Javeriana, entendiendo que los fines de la evaluación son netamente ocupacionales, y que la información recolectada será analizada de manera confidencial para orientar acciones de mejoría para el personal de la Empresa.
+            Yo, __________________________ identificado con cédula CC. ________________ de ________________, habiendo
+            sido claramente informado(a) sobre los objetivos y procedimientos, acepto de manera voluntaria, participar
+            en la aplicación de la Batería de Riesgo Psicosocial elaborada por el Ministerio de la Protección Social y
+            la Universidad Javeriana, entendiendo que los fines de la evaluación son netamente ocupacionales, y que la
+            información recolectada será analizada de manera confidencial para orientar acciones de mejoría para el
+            personal de la Empresa.
           </p>
           <p>
-            Los resultados individuales de la presente evaluación no serán revelados sin autorización por escrito del colaborador, la empresa recibirá un informe consolidado con los resultados generales para la Empresa.
+            Los resultados individuales de la presente evaluación no serán revelados sin autorización por escrito del
+            colaborador, la empresa recibirá un informe consolidado con los resultados generales para la Empresa.
+          </p>
+          <p>Los datos consignados en la evaluación no serán usados para afectar las condiciones contractuales.</p>
+          <p>
+            Dado el carácter confidencial de esta evaluación, esta información será incluida en la historia clínica de
+            cada colaborador.
           </p>
           <p>
-            Los datos consignados en la evaluación no serán usados para afectar las condiciones contractuales.
+            La información de estadística generales y resultados de la evaluación será presentada al interior de la
+            Empresa, garantizando la confidencialidad de los datos personales.
           </p>
           <p>
-            Dado el carácter confidencial de esta evaluación, esta información será incluida en la historia clínica de cada colaborador.
+            Hago constar que el presente documento ha sido leído y entendido por mí en su integridad, de manera libre y
+            espontánea.
           </p>
+
+          <div className="space-y-2 pt-4">
+            <p>Firma: _________________________________</p>
+            <p>Nombre: ________________________________</p>
+            <p>Cargo: _________________________________</p>
+            <p>C.C : __________________________________</p>
+          </div>
+        </div>
+
+        <div className="text-xs text-center text-[#313B4A] font-montserrat mb-8 space-y-1">
+          <p>Versión: 01</p>
+          <p>Fecha: febrero 2023</p>
+          <p>Copia controlada</p>
           <p>
-            La información de estadísticas generales y resultados de la evaluación será presentada al interior de la empresa, garantizándo los la confidencialidad de los datos personales.
-          </p>
-          <p>
-            Hago constar que el presente documento ha sido leído y entendido por mi en su integridad, de manera libre y espontánea. 
-          </p>
-           <p>
-            Este consentimiento es exclusivo de Psykhe Consultores SST SAS, Prohibida su reproducción. Todos los derechos reservados. 
+            Este material es para uso exclusivo de Psykhe Consultores SST SAS. Prohibida su reproducción. Todos los
+            derechos reservados®
           </p>
         </div>
 
