@@ -1,8 +1,17 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 
+type DatosConsentimiento = {
+  fecha: string;
+  nombre: string;
+  cedula: string;
+  ciudad: string;
+  cargo: string;
+  ccFirma: string;
+};
+
 export default function Consentimiento({ onAceptar }: { onAceptar: () => void }) {
-  const [datos, setDatos] = useState({
+  const [datos, setDatos] = useState<DatosConsentimiento>({
     fecha: "",
     nombre: "",
     cedula: "",
@@ -21,8 +30,16 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
 
   const handleAceptar = () => {
     const faltantes: Record<string, boolean> = {};
-    ["fecha", "nombre", "cedula", "ciudad", "cargo", "ccFirma"].forEach((campo) => {
-      if (!(datos as any)[campo]) faltantes[campo] = true;
+    const campos: Array<keyof DatosConsentimiento> = [
+      "fecha",
+      "nombre",
+      "cedula",
+      "ciudad",
+      "cargo",
+      "ccFirma",
+    ];
+    campos.forEach((campo) => {
+      if (!datos[campo]) faltantes[campo] = true;
     });
     if (Object.keys(faltantes).length > 0) {
       setErrores(faltantes);
@@ -62,12 +79,12 @@ export default function Consentimiento({ onAceptar }: { onAceptar: () => void })
           <p>
             Fecha:
             <input
-              type="text"
+              type="date"
               name="fecha"
               value={datos.fecha}
               onChange={handleChange}
               className={cn(
-                "border border-gray-300 bg-white rounded-xl px-2 py-1 w-40 ml-2 focus:outline-none",
+                "border border-gray-300 bg-white rounded-xl px-4 py-2 w-40 ml-2 focus:outline-none",
                 errores["fecha"] && "border-red-500"
               )}
             />
