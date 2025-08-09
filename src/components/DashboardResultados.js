@@ -80,6 +80,94 @@ const dimensionesB = [
     "Reconocimiento y compensación",
 ];
 const dimensionesExtra = dimensionesExtralaboral.map((d) => d.nombre);
+const formaAOrden = [
+    {
+        dominio: "Liderazgo y relaciones sociales en el trabajo",
+        dimensiones: [
+            "Características del liderazgo",
+            "Relaciones sociales en el trabajo",
+            "Retroalimentación del desempeño",
+            "Relación con los colaboradores",
+        ],
+    },
+    {
+        dominio: "Control sobre el trabajo",
+        dimensiones: [
+            "Claridad de rol",
+            "Capacitación",
+            "Participación y manejo del cambio",
+            "Oportunidades para el uso y desarrollo de habilidades y conocimientos",
+            "Control y autonomía sobre el trabajo",
+        ],
+    },
+    {
+        dominio: "Demandas del trabajo",
+        dimensiones: [
+            "Demandas ambientales y de esfuerzo físico",
+            "Demandas emocionales",
+            "Demandas cuantitativas",
+            "Influencia del trabajo sobre el entorno extralaboral",
+            "Exigencias de responsabilidad del cargo",
+            "Demandas de carga mental",
+            "Consistencia del rol",
+            "Demandas de la jornada de trabajo",
+        ],
+    },
+    {
+        dominio: "Recompensas",
+        dimensiones: [
+            "Recompensas derivadas de la pertenencia a la organización y del trabajo que se realiza",
+            "Reconocimiento y compensación",
+        ],
+    },
+];
+const formaBOrden = [
+    {
+        dominio: "Liderazgo y relaciones sociales en el trabajo",
+        dimensiones: [
+            "Características del liderazgo",
+            "Relaciones sociales en el trabajo",
+            "Retroalimentación del desempeño",
+        ],
+    },
+    {
+        dominio: "Control sobre el trabajo",
+        dimensiones: [
+            "Claridad de rol",
+            "Capacitación",
+            "Participación y manejo del cambio",
+            "Oportunidades para el uso y desarrollo de habilidades y conocimientos",
+            "Control y autonomía sobre el trabajo",
+        ],
+    },
+    {
+        dominio: "Demandas del trabajo",
+        dimensiones: [
+            "Demandas ambientales y de esfuerzo físico",
+            "Demandas emocionales",
+            "Demandas cuantitativas",
+            "Influencia del trabajo sobre el entorno extralaboral",
+            "Demandas de carga mental",
+            "Demandas de la jornada de trabajo",
+        ],
+    },
+    {
+        dominio: "Recompensas",
+        dimensiones: [
+            "Recompensas derivadas de la pertenencia a la organización y del trabajo que se realiza",
+            "Reconocimiento y compensación",
+        ],
+    },
+];
+const extralaboralOrden = [
+    "Tiempo fuera del trabajo",
+    "Relaciones familiares",
+    "Comunicación y relaciones interpersonales",
+    "Situación económica del grupo familiar",
+    "Características de la vivienda y de su entorno",
+    "Influencia del entorno extralaboral sobre el trabajo",
+    "Desplazamiento vivienda – trabajo – vivienda",
+];
 const nivelesEstres = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto"];
 const nivelesExtra = nivelesRiesgo;
 const nivelesForma = nivelesRiesgo;
@@ -109,40 +197,40 @@ const fichaTecnicaHeaders = [
     "Horas diarias",
     "Tipo salario",
 ];
-const informeHeaderOrder = [
-    "Nombre",
-    ...fichaTecnicaHeaders,
-    "Forma A (puntaje transformado)",
-    "Forma A (nivel de riesgo)",
-    ...dominiosA.flatMap((k) => [
-        `DOMINIO: ${k} - Forma A (puntaje transformado)`,
-        `DOMINIO: ${k} - Forma A (nivel de riesgo)`,
-    ]),
-    ...dimensionesA.flatMap((k) => [
+const formaAHeaders = formaAOrden.flatMap(({ dominio, dimensiones }) => [
+    ...dimensiones.flatMap((k) => [
         `Dimensión: ${k} - Forma A (puntaje transformado)`,
         `Dimensión: ${k} - Forma A (nivel de riesgo)`,
     ]),
-    "Forma B (puntaje transformado)",
-    "Forma B (nivel de riesgo)",
-    ...dominiosB.flatMap((k) => [
-        `DOMINIO: ${k} - Forma B (puntaje transformado)`,
-        `DOMINIO: ${k} - Forma B (nivel de riesgo)`,
-    ]),
-    ...dimensionesB.flatMap((k) => [
+    `DOMINIO: ${dominio} - Forma A (puntaje transformado)`,
+    `DOMINIO: ${dominio} - Forma A (nivel de riesgo)`,
+]);
+const formaBHeaders = formaBOrden.flatMap(({ dominio, dimensiones }) => [
+    ...dimensiones.flatMap((k) => [
         `Dimensión: ${k} - Forma B (puntaje transformado)`,
         `Dimensión: ${k} - Forma B (nivel de riesgo)`,
     ]),
-    "Extralaboral (puntaje transformado)",
-    "Extralaboral (nivel de riesgo)",
-    ...dimensionesExtra.flatMap((k) => [
-        `Dimensión: ${k} - Extralaboral (puntaje transformado)`,
-        `Dimensión: ${k} - Extralaboral (nivel de riesgo)`,
-    ]),
-    "Global A+Extra (puntaje transformado)",
-    "Global A+Extra (nivel de riesgo)",
-    "Estrés (puntaje transformado)",
-    "Estrés (nivel de riesgo)",
-    "Fecha",
+    `DOMINIO: ${dominio} - Forma B (puntaje transformado)`,
+    `DOMINIO: ${dominio} - Forma B (nivel de riesgo)`,
+]);
+const extralaboralHeaders = extralaboralOrden.flatMap((k) => [
+    `Dimensión: ${k} - Extralaboral (puntaje transformado)`,
+    `Dimensión: ${k} - Extralaboral (nivel de riesgo)`,
+]);
+const informeHeaderOrder = [
+    "Nombre",
+    ...fichaTecnicaHeaders,
+    ...formaAHeaders,
+    "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial intralaboral - Forma A (puntaje transformado)",
+    "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial intralaboral - Forma A (nivel de riesgo)",
+    ...formaBHeaders,
+    "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial intralaboral - Forma B (puntaje transformado)",
+    "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial intralaboral - Forma B (nivel de riesgo)",
+    ...extralaboralHeaders,
+    "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial extralaboral (puntaje transformado)",
+    "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial extralaboral (nivel de riesgo)",
+    "Puntaje total evaluación de estrés (puntaje transformado)",
+    "Puntaje total evaluación de estrés (nivel de riesgo)",
 ];
 const categoriasFicha = [
     { key: "sexo", label: "Género" },
