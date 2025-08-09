@@ -26,9 +26,9 @@ export function gatherFlatResults(almacenados: ResultRow[]): FlatResult[] {
 
   return almacenados.map((d, idx) => {
     const fila: FlatResult = {
+      Nombre: d.ficha?.nombre || "",
       Nro: idx + 1,
       Empresa: d.ficha?.empresa || "",
-      Nombre: d.ficha?.nombre || "",
       Sexo: d.ficha?.sexo || "",
       Cargo: d.ficha?.cargo || "",
       "Fecha ficha": d.ficha?.fecha || "",
@@ -62,32 +62,34 @@ export function gatherFlatResults(almacenados: ResultRow[]): FlatResult[] {
     };
 
     if (d.resultadoFormaA) {
-      fila["Puntaje Forma A"] =
+      fila["Forma A (puntaje transformado)"] =
         d.resultadoFormaA.total?.transformado ?? "";
-      fila["Nivel Forma A"] = d.resultadoFormaA.total?.nivel ?? "";
+      fila["Forma A (nivel de riesgo)"] = d.resultadoFormaA.total?.nivel ?? "";
       const domA = d.resultadoFormaA.dominios || {};
       Object.keys(domA).forEach((k) => {
         const v = domA[k] as DimensionResultado & { puntajeTransformado?: number };
-        fila[`A ${k}`] = v.transformado ?? v.puntajeTransformado ?? "";
-        fila[`Nivel A ${k}`] = v.nivel ?? "";
+        fila[`DOMINIO: ${k} - Forma A (puntaje transformado)`] =
+          v.transformado ?? v.puntajeTransformado ?? "";
+        fila[`DOMINIO: ${k} - Forma A (nivel de riesgo)`] = v.nivel ?? "";
       });
       const dimA = d.resultadoFormaA.dimensiones || {};
       Object.keys(dimA).forEach((k) => {
         const v = dimA[k] as DimensionResultado & { puntajeTransformado?: number };
-        fila[`A ${k}`] = v.transformado ?? v.puntajeTransformado ?? "";
-        fila[`Nivel A ${k}`] = v.nivel ?? "";
+        fila[`Dimensión: ${k} - Forma A (puntaje transformado)`] =
+          v.transformado ?? v.puntajeTransformado ?? "";
+        fila[`Dimensión: ${k} - Forma A (nivel de riesgo)`] = v.nivel ?? "";
       });
     }
 
     if (d.resultadoFormaB) {
       const resB = d.resultadoFormaB as IntralaboralResultadoCompat;
-      fila["Puntaje Forma B"] =
+      fila["Forma B (puntaje transformado)"] =
         resB.total?.transformado ??
         resB.puntajeTransformadoTotal ??
         resB.puntajeTransformado ??
         resB.puntajeTotalTransformado ??
         "";
-      fila["Nivel Forma B"] =
+      fila["Forma B (nivel de riesgo)"] =
         resB.total?.nivel ??
         resB.nivelTotal ??
         resB.nivel ??
@@ -95,39 +97,46 @@ export function gatherFlatResults(almacenados: ResultRow[]): FlatResult[] {
       const domB = resB.dominios || {};
       Object.keys(domB).forEach((k) => {
         const v = domB[k] as DimensionResultado & { puntajeTransformado?: number };
-        fila[`B ${k}`] = v.transformado ?? v.puntajeTransformado ?? "";
-        fila[`Nivel B ${k}`] = v.nivel ?? "";
+        fila[`DOMINIO: ${k} - Forma B (puntaje transformado)`] =
+          v.transformado ?? v.puntajeTransformado ?? "";
+        fila[`DOMINIO: ${k} - Forma B (nivel de riesgo)`] = v.nivel ?? "";
       });
       const dimB = resB.dimensiones || {};
       Object.keys(dimB).forEach((k) => {
         const v = dimB[k] as DimensionResultado & { puntajeTransformado?: number };
-        fila[`B ${k}`] = v.transformado ?? v.puntajeTransformado ?? "";
-        fila[`Nivel B ${k}`] = v.nivel ?? "";
+        fila[`Dimensión: ${k} - Forma B (puntaje transformado)`] =
+          v.transformado ?? v.puntajeTransformado ?? "";
+        fila[`Dimensión: ${k} - Forma B (nivel de riesgo)`] = v.nivel ?? "";
       });
     }
 
     if (d.resultadoExtralaboral) {
-      fila["Puntaje Extralaboral"] =
+      fila["Extralaboral (puntaje transformado)"] =
         d.resultadoExtralaboral.puntajeTransformadoTotal ?? "";
-      fila["Nivel Extralaboral"] = d.resultadoExtralaboral.nivelGlobal ?? "";
+      fila["Extralaboral (nivel de riesgo)"] =
+        d.resultadoExtralaboral.nivelGlobal ?? "";
       const dims: ResultadoExtraDimension[] =
         d.resultadoExtralaboral.dimensiones || [];
       dims.forEach((dim) => {
         const valor = dim.puntajeTransformado ?? dim.transformado ?? "";
-        fila[`Extra ${dim.nombre}`] = valor;
-        fila[`Nivel Extra ${dim.nombre}`] = dim.nivel ?? "";
+        fila[`Dimensión: ${dim.nombre} - Extralaboral (puntaje transformado)`] =
+          valor;
+        fila[`Dimensión: ${dim.nombre} - Extralaboral (nivel de riesgo)`] =
+          dim.nivel ?? "";
       });
     }
 
     if (d.resultadoGlobalAExtralaboral) {
-      fila["Puntaje Global A+Extra"] =
+      fila["Global A+Extra (puntaje transformado)"] =
         d.resultadoGlobalAExtralaboral.puntajeGlobal ?? "";
-      fila["Nivel Global"] = d.resultadoGlobalAExtralaboral.nivelGlobal ?? "";
+      fila["Global A+Extra (nivel de riesgo)"] =
+        d.resultadoGlobalAExtralaboral.nivelGlobal ?? "";
     }
 
     if (d.resultadoEstres) {
-      fila["Puntaje Estrés"] = d.resultadoEstres.puntajeTransformado ?? "";
-      fila["Nivel Estrés"] = d.resultadoEstres.nivel ?? "";
+      fila["Estrés (puntaje transformado)"] =
+        d.resultadoEstres.puntajeTransformado ?? "";
+      fila["Estrés (nivel de riesgo)"] = d.resultadoEstres.nivel ?? "";
     }
 
     fila["Fecha"] = d.fecha ? new Date(d.fecha).toLocaleString() : "";
