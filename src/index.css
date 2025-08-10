@@ -113,3 +113,4 @@
 
 @page { size: A4; margin: 24pt; }
 .page-break { page-break-before: always; }
+h1, h2, h3, ul, li, table { page-break-inside: avoid; }

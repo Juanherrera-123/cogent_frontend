@@ -4,6 +4,7 @@ import * as XLSX from "xlsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { gatherFlatResults, FlatResult } from "@/utils/gatherResults";
 import { exportElementToPDF } from "@/utils/pdfExport";
+import { usePdfExport } from "@/hooks/usePdfExport";
 import { dimensionesExtralaboral } from "@/data/esquemaExtralaboral";
 import { baremosFormaA } from "@/data/baremosFormaA";
 import { baremosFormaB } from "@/data/baremosFormaB";
@@ -315,8 +316,7 @@ export default function DashboardResultados({
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
   const [seleccionados, setSeleccionados] = useState<number[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
-  const reportRef = useRef<HTMLDivElement>(null);
-  const [renderReport, setRenderReport] = useState(false);
+  const { ref: offscreenRef, rendering, progress, exportNow } = usePdfExport();
 
   const saludo = rol === "psicologa" ? "Hola Lilian Navas" : empresaNombre || "";
   const cargo = rol === "psicologa" ? "Psicologist" : "Empresa";
@@ -766,15 +766,10 @@ export default function DashboardResultados({
   }, [reportPayload, recomendaciones, conclusiones]);
 
   async function onGenerarInformePDF() {
-    setRenderReport(true);
-    await new Promise((r) => setTimeout(r, 350));
-    if (reportRef.current) {
-      const fn = `Informe_${reportPayload.empresa.nombre}_${new Date(
-        reportPayload.fechaInformeISO
-      ).toISOString().slice(0, 10)}.pdf`;
-      await exportElementToPDF(reportRef.current, fn);
-    }
-    setRenderReport(false);
+    const fn = `Informe_${reportPayload.empresa.nombre}_${new Date(
+      reportPayload.fechaInformeISO
+    ).toISOString().slice(0, 10)}.pdf`;
+    await exportNow(fn);
   }
 
   // ---- Exportar a Excel ----
@@ -1133,13 +1128,16 @@ export default function DashboardResultados({
               <button
                 onClick={onGenerarInformePDF}
                 className="px-4 py-2 rounded-md bg-black text-white w-full"
+                disabled={rendering}
               >
-                Generar PDF
+                {rendering ? "Generando…" : "Generar PDF"}
               </button>
+              {rendering && (
+                <p className="text-xs text-gray-500 mt-2">{progress}</p>
+              )}
             </aside>
             <section className="flex-1 bg-white rounded-xl shadow p-6">
               <ReportePDF
-                ref={reportRef}
                 empresa={{
                   nombre: reportPayload.empresa.nombre,
                   nit: reportPayload.empresa.nit,
@@ -1192,9 +1190,10 @@ export default function DashboardResultados({
             </section>
           </div>
 
-          {renderReport && (
-            <div style={{ position: 'absolute', left: '-99999px', top: 0, width: '794pt' }}>
+          {rendering && (
+            <div style={{ position: "absolute", left: "-99999px", top: 0, width: "794pt" }}>
               <ReportePDF
+                ref={offscreenRef}
                 empresa={{
                   nombre: reportPayload.empresa.nombre,
                   nit: reportPayload.empresa.nit,
@@ -1203,7 +1202,7 @@ export default function DashboardResultados({
                 fechaInformeISO={reportPayload.fechaInformeISO}
                 global={reportPayload.global}
                 tablas={{
-                  sociodemo: <TablaIndividual datos={datosMostrados} tipo="formaA" />, 
+                  sociodemo: <TablaIndividual datos={datosMostrados} tipo="formaA" />,
                   intralaboral: (
                     <div className="space-y-6">
                       <TablaDominios datos={datosA} dominios={dominiosA} keyResultado="resultadoFormaA" />
@@ -1235,7 +1234,7 @@ export default function DashboardResultados({
                   ),
                   extralaboral: (
                     <GraficaBarraCategorias
-                      datos={resumenExtra.map(r => ({ nombre: r.nombre, cantidad: r.cantidad })) as CategoriaConteo[]}
+                      datos={resumenExtra.map((r) => ({ nombre: r.nombre, cantidad: r.cantidad })) as CategoriaConteo[]}
                       titulo="Niveles Extralaborales"
                       chartType={chartType}
                     />
