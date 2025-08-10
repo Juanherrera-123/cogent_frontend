@@ -32,6 +32,18 @@ const nivelesRiesgo = [
     "Riesgo alto",
     "Riesgo muy alto",
 ];
+const STORAGE_KEY = (empresaId) => `cogent_report_options_${empresaId}`;
+function loadOptions(empresaId) {
+    try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY(empresaId)) || "");
+    }
+    catch {
+        return null;
+    }
+}
+function saveOptions(empresaId, opts) {
+    localStorage.setItem(STORAGE_KEY(empresaId), JSON.stringify(opts));
+}
 // Dominios y dimensiones (adapta los nombres si cambian)
 const dominiosA = [
     "Liderazgo y relaciones sociales en el trabajo",
@@ -532,6 +544,34 @@ export default function DashboardResultados({ rol, empresaNombre, soloGenerales,
         resumenExtra: resumenExtraReport,
         estresGlobal: undefined,
     });
+    const empresaId = reportPayload.empresa?.id || "empresa-actual";
+    const [reportOptions, setReportOptions] = useState(() => (loadOptions(empresaId) || {
+        sections: {
+            portada: true,
+            resumenGlobal: true,
+            intralaboral: true,
+            extralaboral: true,
+            sociodemografia: true,
+            metodologia: true,
+            normativa: true,
+            recomendaciones: true,
+            conclusiones: true,
+        },
+        theme: {
+            primary: "#0F172A",
+            accent: "#475569",
+            logoUrl: reportPayload.empresa.logoUrl || "",
+        },
+        tituloPortada: "",
+    }));
+    useEffect(() => {
+        const loaded = loadOptions(empresaId);
+        if (loaded)
+            setReportOptions(loaded);
+    }, [empresaId]);
+    useEffect(() => {
+        saveOptions(empresaId, reportOptions);
+    }, [empresaId, reportOptions]);
     // Reglas automáticas para recomendaciones y conclusiones
     const dimA = reportPayload.dimensiones.formaA ?? {};
     const dimB = reportPayload.dimensiones.formaB ?? {};
@@ -672,7 +712,7 @@ export default function DashboardResultados({ rol, empresaNombre, soloGenerales,
                                                 ? _jsx("div", { className: "text-[var(--gray-medium)] py-4", children: "No hay datos para dimensiones." })
                                                 : (_jsxs(_Fragment, { children: [_jsx(GraficaBarra, { resumen: promediosDimensionesExtra, titulo: "Promedio de Puntaje Transformado por Dimensi\u00F3n", chartType: chartType }), !soloGenerales && (_jsx(TablaDimensiones, { datos: datosExtra, dimensiones: dimensionesExtra, keyResultado: "resultadoExtralaboral" }))] })) })] }) }), _jsx(TabsContent, { value: "globalExtra", children: _jsxs(Tabs, { value: tabGlobalExtra, onValueChange: setTabGlobalExtra, className: "w-full", children: [_jsxs(TabsList, { className: "mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap", children: [_jsx(TabsTrigger, { className: tabPill, value: "A", children: "Forma A" }), _jsx(TabsTrigger, { className: tabPill, value: "B", children: "Forma B" })] }), _jsx(TabsContent, { value: "A", children: datosGlobalAE.length === 0 ? (_jsx("div", { className: "text-[var(--gray-medium)] py-4", children: "No hay resultados Globales A." })) : (_jsxs(_Fragment, { children: [_jsx(GraficaBarraSimple, { resumen: resumenGlobalAE, titulo: "Niveles Global A + Extra", chartType: chartType }), !soloGenerales && _jsx(TablaIndividual, { datos: datosGlobalAE, tipo: "globalExtra" })] })) }), _jsx(TabsContent, { value: "B", children: datosGlobalBE.length === 0 ? (_jsx("div", { className: "text-[var(--gray-medium)] py-4", children: "No hay resultados Globales B." })) : (_jsxs(_Fragment, { children: [_jsx(GraficaBarraSimple, { resumen: resumenGlobalBE, titulo: "Niveles Global B + Extra", chartType: chartType }), !soloGenerales && _jsx(TablaIndividual, { datos: datosGlobalBE, tipo: "globalExtra" })] })) })] }) }), _jsx(TabsContent, { value: "estres", children: datosEstres.length === 0
                                     ? _jsx("div", { className: "text-[var(--gray-medium)] py-4", children: "No hay resultados de Estr\u00E9s." })
-                                    : (_jsxs(_Fragment, { children: [_jsx(GraficaBarraSimple, { resumen: resumenEstres, titulo: "Niveles de Estr\u00E9s", chartType: chartType }), !soloGenerales && _jsx(TablaIndividual, { datos: datosEstres, tipo: "estres" })] })) }), _jsxs(TabsContent, { value: "informe", children: [_jsxs("div", { className: "flex gap-6", children: [_jsxs("aside", { className: "w-[320px] shrink-0 space-y-3", children: [_jsx("button", { onClick: onGenerarInformePDF, className: "px-4 py-2 rounded-md bg-black text-white w-full", disabled: rendering, children: rendering ? "Generando…" : "Generar PDF" }), rendering && (_jsx("p", { className: "text-xs text-gray-500 mt-2", children: progress }))] }), _jsx("section", { className: "flex-1 bg-white rounded-xl shadow p-6", children: _jsx(ReportePDF, { empresa: {
+                                    : (_jsxs(_Fragment, { children: [_jsx(GraficaBarraSimple, { resumen: resumenEstres, titulo: "Niveles de Estr\u00E9s", chartType: chartType }), !soloGenerales && _jsx(TablaIndividual, { datos: datosEstres, tipo: "estres" })] })) }), _jsxs(TabsContent, { value: "informe", children: [_jsx("div", { className: "max-w-4xl mx-auto", children: _jsxs("section", { className: "bg-white rounded-xl shadow p-6 space-y-6", children: [_jsxs("div", { className: "text-center", children: [_jsx("button", { onClick: onGenerarInformePDF, className: "px-4 py-2 rounded-md bg-black text-white", children: "Generar PDF" }), rendering && (_jsx("p", { className: "text-xs text-gray-500 mt-2", children: progress }))] }), _jsx(ReportePDF, { empresa: {
                                                         nombre: reportPayload.empresa.nombre,
                                                         nit: reportPayload.empresa.nit,
                                                         logoUrl: reportPayload.empresa.logoUrl,
@@ -683,8 +723,8 @@ export default function DashboardResultados({ rol, empresaNombre, soloGenerales,
                                                     }, graficos: {
                                                         formaA: (_jsx(GraficaBarraSimple, { resumen: resumenA, titulo: "Niveles de Forma A", chartType: chartType })),
                                                         formaB: (_jsx(GraficaBarraSimple, { resumen: resumenB, titulo: "Niveles de Forma B", chartType: chartType })),
-                                                        extralaboral: (_jsx(GraficaBarraCategorias, { datos: resumenExtra.map(r => ({ nombre: r.nombre, cantidad: r.cantidad })), titulo: "Niveles Extralaborales", chartType: chartType })),
-                                                    }, recomendaciones: recomendaciones, conclusiones: conclusiones }) })] }), rendering && (_jsx("div", { style: { position: "absolute", left: "-99999px", top: 0, width: "794pt" }, children: _jsx(ReportePDF, { ref: offscreenRef, empresa: {
+                                                        extralaboral: (_jsx(GraficaBarraCategorias, { datos: resumenExtra.map((r) => ({ nombre: r.nombre, cantidad: r.cantidad })), titulo: "Niveles Extralaborales", chartType: chartType })),
+                                                    }, recomendaciones: recomendaciones, conclusiones: conclusiones, options: reportOptions })] }) }), rendering && (_jsx("div", { style: { position: "absolute", left: "-99999px", top: 0, width: "794pt" }, children: _jsx(ReportePDF, { ref: offscreenRef, empresa: {
                                                 nombre: reportPayload.empresa.nombre,
                                                 nit: reportPayload.empresa.nit,
                                                 logoUrl: reportPayload.empresa.logoUrl,
@@ -696,7 +736,7 @@ export default function DashboardResultados({ rol, empresaNombre, soloGenerales,
                                                 formaA: (_jsx(GraficaBarraSimple, { resumen: resumenA, titulo: "Niveles de Forma A", chartType: chartType })),
                                                 formaB: (_jsx(GraficaBarraSimple, { resumen: resumenB, titulo: "Niveles de Forma B", chartType: chartType })),
                                                 extralaboral: (_jsx(GraficaBarraCategorias, { datos: resumenExtra.map((r) => ({ nombre: r.nombre, cantidad: r.cantidad })), titulo: "Niveles Extralaborales", chartType: chartType })),
-                                            }, recomendaciones: recomendaciones, conclusiones: conclusiones }) }))] }), !soloGenerales && (_jsx(TabsContent, { value: "admin", children: datos.length === 0 ? (_jsx("div", { className: "text-[var(--gray-medium)] py-4", children: "No hay encuestas almacenadas." })) : (_jsxs(_Fragment, { children: [_jsxs("div", { className: "flex items-center gap-2 mb-2", children: [_jsx("label", { className: "font-semibold mr-2", children: "Empresa:" }), _jsxs("select", { value: empresaEliminar, onChange: (e) => setEmpresaEliminar(e.target.value), className: "rounded-xl border border-[#B2E2FF] p-2 text-[#265FF2] font-semibold", children: [_jsx("option", { value: "todas", children: "Todas" }), empresasResultados.map((e, idx) => (_jsx("option", { value: e, children: e }, idx)))] }), _jsx("button", { className: "bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-red-700", onClick: eliminarPorEmpresa, children: "Eliminar todo(s)" })] }), _jsx("div", { className: "overflow-x-auto", children: _jsxs("table", { className: "w-full text-xs border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]", children: [_jsx("thead", { className: "bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] text-white font-semibold", children: _jsxs("tr", { children: [_jsx("th", {}), _jsx("th", { children: "#" }), _jsx("th", { children: "Empresa" }), _jsx("th", { children: "Nombre" }), _jsx("th", { children: "Fecha" })] }) }), _jsx("tbody", { children: datosEliminar.map((d, i) => {
+                                            }, recomendaciones: recomendaciones, conclusiones: conclusiones, options: reportOptions }) }))] }), !soloGenerales && (_jsx(TabsContent, { value: "admin", children: datos.length === 0 ? (_jsx("div", { className: "text-[var(--gray-medium)] py-4", children: "No hay encuestas almacenadas." })) : (_jsxs(_Fragment, { children: [_jsxs("div", { className: "flex items-center gap-2 mb-2", children: [_jsx("label", { className: "font-semibold mr-2", children: "Empresa:" }), _jsxs("select", { value: empresaEliminar, onChange: (e) => setEmpresaEliminar(e.target.value), className: "rounded-xl border border-[#B2E2FF] p-2 text-[#265FF2] font-semibold", children: [_jsx("option", { value: "todas", children: "Todas" }), empresasResultados.map((e, idx) => (_jsx("option", { value: e, children: e }, idx)))] }), _jsx("button", { className: "bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-red-700", onClick: eliminarPorEmpresa, children: "Eliminar todo(s)" })] }), _jsx("div", { className: "overflow-x-auto", children: _jsxs("table", { className: "w-full text-xs border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]", children: [_jsx("thead", { className: "bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] text-white font-semibold", children: _jsxs("tr", { children: [_jsx("th", {}), _jsx("th", { children: "#" }), _jsx("th", { children: "Empresa" }), _jsx("th", { children: "Nombre" }), _jsx("th", { children: "Fecha" })] }) }), _jsx("tbody", { children: datosEliminar.map((d, i) => {
                                                             const idxOriginal = datos.indexOf(d);
                                                             return (_jsxs("tr", { className: "border-b", children: [_jsx("td", { className: "px-2 py-1 text-center", children: _jsx("input", { type: "checkbox", checked: seleccionados.includes(idxOriginal), onChange: () => toggleSeleccion(idxOriginal) }) }), _jsx("td", { className: "px-2 py-1", children: i + 1 }), _jsx("td", { className: "px-2 py-1", children: d.ficha?.empresa }), _jsx("td", { className: "px-2 py-1", children: d.ficha?.nombre }), _jsx("td", { className: "px-2 py-1", children: d.fecha ? new Date(d.fecha).toLocaleString() : "" })] }, idxOriginal));
                                                         }) })] }) }), _jsx("button", { className: "bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-red-700 mt-4 disabled:opacity-50", disabled: seleccionados.length === 0, onClick: eliminarSeleccionados, children: "Eliminar seleccionados" })] })) })), !soloGenerales && (_jsx(TabsContent, { value: "empresas", children: _jsx(AdminEmpresas, { credenciales: credenciales, onAgregar: onAgregarEmpresa || (async () => false), onEliminar: onEliminarEmpresa || (async () => false), onEditar: onEditarEmpresa || (async () => false) }) }))] }), _jsxs("div", { className: "flex flex-col md:flex-row justify-between items-center gap-4 mt-4", children: [onBack && (_jsxs("button", { onClick: onBack, className: "flex items-center gap-2 px-6 py-3 bg-gray-100 text-[#172349] font-bold rounded-2xl hover:bg-[#E5EAF6]", children: [_jsx(HomeIcon, { size: 20 }), " Volver al inicio"] })), tab === "informe" && (_jsxs("div", { className: "flex gap-2", children: [_jsxs("button", { onClick: handleExportar, className: "flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90", children: [_jsx(FileDown, { size: 20 }), " Descargar Excel"] }), _jsxs("button", { onClick: handleExportPDF, className: "flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90", children: [_jsx(FileText, { size: 20 }), " Descargar PDF"] })] }))] })] })] }));
