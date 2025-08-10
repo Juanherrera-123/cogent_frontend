@@ -1168,25 +1168,29 @@ export default function DashboardResultados({
           }
         </TabsContent>
         {/* ---- INFORME ---- */}
-        <TabsContent value="informe">
-          <div className="max-w-4xl mx-auto space-y-6">
-            <button
-              onClick={onGenerarInformePDF}
-              className="px-4 py-2 rounded-md bg-black text-white mx-auto block"
-            >
-              Generar PDF
-            </button>
-            {rendering && <p className="text-xs text-gray-500 text-center">{progress}</p>}
-            <section className="bg-white rounded-xl shadow p-6">
-              <ReportePDF
-                empresa={{
-                  nombre: reportPayload.empresa.nombre,
-                  nit: reportPayload.empresa.nit,
-                  logoUrl: reportPayload.empresa.logoUrl,
-                }}
-                fechaInformeISO={reportPayload.fechaInformeISO}
-                global={reportPayload.global}
-                tablas={{
+          <TabsContent value="informe">
+            <div className="max-w-4xl mx-auto">
+              <section className="bg-white rounded-xl shadow p-6 space-y-6">
+                <div className="text-center">
+                  <button
+                    onClick={onGenerarInformePDF}
+                    className="px-4 py-2 rounded-md bg-black text-white"
+                  >
+                    Generar PDF
+                  </button>
+                  {rendering && (
+                    <p className="text-xs text-gray-500 mt-2">{progress}</p>
+                  )}
+                </div>
+                <ReportePDF
+                  empresa={{
+                    nombre: reportPayload.empresa.nombre,
+                    nit: reportPayload.empresa.nit,
+                    logoUrl: reportPayload.empresa.logoUrl,
+                  }}
+                  fechaInformeISO={reportPayload.fechaInformeISO}
+                  global={reportPayload.global}
+                  tablas={{
                   sociodemo: <TablaIndividual datos={datosMostrados} tipo="formaA" />,
                   intralaboral: (
                     <div className="space-y-6">
@@ -1219,7 +1223,7 @@ export default function DashboardResultados({
                   ),
                   extralaboral: (
                     <GraficaBarraCategorias
-                      datos={resumenExtra.map(r => ({ nombre: r.nombre, cantidad: r.cantidad })) as CategoriaConteo[]}
+                      datos={resumenExtra.map((r) => ({ nombre: r.nombre, cantidad: r.cantidad })) as CategoriaConteo[]}
                       titulo="Niveles Extralaborales"
                       chartType={chartType}
                     />
