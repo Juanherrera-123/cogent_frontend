@@ -26,6 +26,7 @@ import { db } from "@/firebaseConfig";
 import { calcularFormaA } from "@/utils/calcularFormaA";
 import { buildReportPayload } from "@/utils/buildReportPayload";
 import { ReportPayload } from "@/types/report";
+import type { ReportOptions } from "@/types/report";
 import { recomendacionesPorResultados, conclusionesSinteticas } from "@/utils/recomendaciones";
 
 const nivelesRiesgo = [
@@ -56,6 +57,18 @@ type Props = {
   ) => Promise<boolean>;
   onBack?: () => void;
 };
+
+const STORAGE_KEY = (empresaId: string) => `cogent_report_options_${empresaId}`;
+function loadOptions(empresaId: string): ReportOptions | null {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY(empresaId)) || "") as ReportOptions;
+  } catch {
+    return null;
+  }
+}
+function saveOptions(empresaId: string, opts: ReportOptions) {
+  localStorage.setItem(STORAGE_KEY(empresaId), JSON.stringify(opts));
+}
 
 // Dominios y dimensiones (adapta los nombres si cambian)
 const dominiosA = [
@@ -728,6 +741,39 @@ export default function DashboardResultados({
     estresGlobal: undefined,
   });
 
+  const empresaId = reportPayload.empresa?.id || "empresa-actual";
+
+  const [reportOptions, setReportOptions] = useState<ReportOptions>(() => (
+    loadOptions(empresaId) || {
+      sections: {
+        portada: true,
+        resumenGlobal: true,
+        intralaboral: true,
+        extralaboral: true,
+        sociodemografia: true,
+        metodologia: true,
+        normativa: true,
+        recomendaciones: true,
+        conclusiones: true,
+      },
+      theme: {
+        primary: "#0F172A",
+        accent: "#475569",
+        logoUrl: reportPayload.empresa.logoUrl || "",
+      },
+      tituloPortada: "",
+    }
+  ));
+
+  useEffect(() => {
+    const loaded = loadOptions(empresaId);
+    if (loaded) setReportOptions(loaded);
+  }, [empresaId]);
+
+  useEffect(() => {
+    saveOptions(empresaId, reportOptions);
+  }, [empresaId, reportOptions]);
+
   // Reglas automáticas para recomendaciones y conclusiones
   const dimA = reportPayload.dimensiones.formaA ?? {};
   const dimB = reportPayload.dimensiones.formaB ?? {};
@@ -1124,17 +1170,85 @@ export default function DashboardResultados({
         {/* ---- INFORME ---- */}
         <TabsContent value="informe">
           <div className="flex gap-6">
-            <aside className="w-[320px] shrink-0 space-y-3">
-              <button
-                onClick={onGenerarInformePDF}
-                className="px-4 py-2 rounded-md bg-black text-white w-full"
-                disabled={rendering}
-              >
-                {rendering ? "Generando…" : "Generar PDF"}
+            <aside className="w-[320px] shrink-0 space-y-4">
+              <div>
+                <h4 className="font-semibold mb-2">Secciones</h4>
+                {Object.entries(reportOptions.sections).map(([k, v]) => (
+                  <label key={k} className="flex items-center gap-2 text-sm mb-1">
+                    <input
+                      type="checkbox"
+                      checked={v}
+                      onChange={e =>
+                        setReportOptions(o => ({
+                          ...o,
+                          sections: { ...o.sections, [k]: e.target.checked },
+                        }))
+                      }
+                    />
+                    <span className="capitalize">{k}</span>
+                  </label>
+                ))}
+              </div>
+
+              <div className="space-y-2">
+                <h4 className="font-semibold">Branding</h4>
+                <label className="text-sm block">Color primario
+                  <input
+                    type="color"
+                    value={reportOptions.theme?.primary ?? "#0F172A"}
+                    onChange={e =>
+                      setReportOptions(o => ({
+                        ...o,
+                        theme: { ...o.theme, primary: e.target.value },
+                      }))
+                    }
+                    className="ml-2 align-middle"
+                  />
+                </label>
+                <label className="text-sm block">Color acento
+                  <input
+                    type="color"
+                    value={reportOptions.theme?.accent ?? "#475569"}
+                    onChange={e =>
+                      setReportOptions(o => ({
+                        ...o,
+                        theme: { ...o.theme, accent: e.target.value },
+                      }))
+                    }
+                    className="ml-2 align-middle"
+                  />
+                </label>
+                <label className="text-sm block">Logo (URL)
+                  <input
+                    type="url"
+                    placeholder="https://..."
+                    value={reportOptions.theme?.logoUrl ?? ""}
+                    onChange={e =>
+                      setReportOptions(o => ({
+                        ...o,
+                        theme: { ...o.theme, logoUrl: e.target.value },
+                      }))
+                    }
+                    className="mt-1 w-full border rounded px-2 py-1"
+                  />
+                </label>
+                <label className="text-sm block">Título de portada
+                  <input
+                    type="text"
+                    placeholder="Informe de Evaluación de Riesgo Psicosocial"
+                    value={reportOptions.tituloPortada ?? ""}
+                    onChange={e =>
+                      setReportOptions(o => ({ ...o, tituloPortada: e.target.value }))
+                    }
+                    className="mt-1 w-full border rounded px-2 py-1"
+                  />
+                </label>
+              </div>
+
+              <button onClick={onGenerarInformePDF} className="px-4 py-2 rounded-md bg-black text-white w-full">
+                Generar PDF
               </button>
-              {rendering && (
-                <p className="text-xs text-gray-500 mt-2">{progress}</p>
-              )}
+              {rendering && <p className="text-xs text-gray-500 mt-2">{progress}</p>}
             </aside>
             <section className="flex-1 bg-white rounded-xl shadow p-6">
               <ReportePDF
@@ -1146,7 +1260,7 @@ export default function DashboardResultados({
                 fechaInformeISO={reportPayload.fechaInformeISO}
                 global={reportPayload.global}
                 tablas={{
-                  sociodemo: <TablaIndividual datos={datosMostrados} tipo="formaA" />, 
+                  sociodemo: <TablaIndividual datos={datosMostrados} tipo="formaA" />,
                   intralaboral: (
                     <div className="space-y-6">
                       <TablaDominios datos={datosA} dominios={dominiosA} keyResultado="resultadoFormaA" />
@@ -1186,6 +1300,7 @@ export default function DashboardResultados({
                 }}
                 recomendaciones={recomendaciones}
                 conclusiones={conclusiones}
+                options={reportOptions}
               />
             </section>
           </div>
@@ -1242,6 +1357,7 @@ export default function DashboardResultados({
                 }}
                 recomendaciones={recomendaciones}
                 conclusiones={conclusiones}
+                options={reportOptions}
               />
             </div>
           )}
