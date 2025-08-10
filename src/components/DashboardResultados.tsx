@@ -1005,7 +1005,9 @@ export default function DashboardResultados({
         <TabsTrigger className={tabPill} value="extralaboral">Extralaboral</TabsTrigger>
         <TabsTrigger className={tabPill} value="globalExtra">Global Extra</TabsTrigger>
         <TabsTrigger className={tabPill} value="estres">Estrés</TabsTrigger>
-        <TabsTrigger className={tabPill} value="informe">Informe</TabsTrigger>
+        {rol === "psicologa" && (
+          <TabsTrigger className={tabPill} value="informe">Informe</TabsTrigger>
+        )}
       </TabsList>
 
         {/* ---- GENERAL ---- */}
@@ -1168,6 +1170,7 @@ export default function DashboardResultados({
           }
         </TabsContent>
         {/* ---- INFORME ---- */}
+        {rol === "psicologa" && (
           <TabsContent value="informe">
             <div className="max-w-4xl mx-auto">
               <section className="bg-white rounded-xl shadow p-6 space-y-6">
@@ -1293,6 +1296,7 @@ export default function DashboardResultados({
             </div>
           )}
         </TabsContent>
+        )}
         {!soloGenerales && (
           <TabsContent value="admin">
             {datos.length === 0 ? (
@@ -1392,7 +1396,7 @@ export default function DashboardResultados({
             <HomeIcon size={20} /> Volver al inicio
           </button>
         )}
-        {tab === "informe" && (
+        {rol === "psicologa" && tab === "informe" && (
           <div className="flex gap-2">
             <button
               onClick={handleExportar}
