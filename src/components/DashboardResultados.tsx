@@ -19,6 +19,7 @@ import AdminEmpresas from "@/components/AdminEmpresas";
 import { CredencialEmpresa, ResultRow, CategoriaConteo } from "@/types";
 import GeneralResultsTabs from "@/components/dashboard/GeneralResultsTabs";
 import FormaTabs from "@/components/dashboard/FormaTabs";
+import InformeTabs from "@/components/dashboard/InformeTabs";
 import LogoCogent from "/logo_forma.png";
 import { FileDown, FileText, Home as HomeIcon } from "lucide-react";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
@@ -1229,57 +1230,7 @@ export default function DashboardResultados({
                     <p className="text-xs text-gray-500 mt-2">{progress}</p>
                   )}
                 </div>
-                <ReportePDF
-                  empresa={{
-                    nombre: reportPayload.empresa.nombre,
-                    nit: reportPayload.empresa.nit,
-                    logoUrl: reportPayload.empresa.logoUrl,
-                  }}
-                  fechaInformeISO={reportPayload.fechaInformeISO}
-                  global={reportPayload.global}
-                  tablas={{
-                  sociodemo: <TablaIndividual datos={datosMostrados} tipo="formaA" />,
-                  intralaboral: (
-                    <div className="space-y-6">
-                      <TablaDominios datos={datosA} dominios={dominiosA} keyResultado="resultadoFormaA" />
-                      <TablaDimensiones datos={datosA} dimensiones={dimensionesA} keyResultado="resultadoFormaA" />
-                    </div>
-                  ),
-                  extralaboral: (
-                    <TablaDimensiones
-                      datos={datosExtra}
-                      dimensiones={dimensionesExtra}
-                      keyResultado="resultadoExtralaboral"
-                    />
-                  ),
-                }}
-                graficos={{
-                  formaA: (
-                    <GraficaBarraSimple
-                      resumen={resumenA}
-                      titulo="Niveles de Forma A"
-                      chartType={chartType}
-                    />
-                  ),
-                  formaB: (
-                    <GraficaBarraSimple
-                      resumen={resumenB}
-                      titulo="Niveles de Forma B"
-                      chartType={chartType}
-                    />
-                  ),
-                  extralaboral: (
-                    <GraficaBarraCategorias
-                      datos={resumenExtra.map((r) => ({ nombre: r.nombre, cantidad: r.cantidad })) as CategoriaConteo[]}
-                      titulo="Niveles Extralaborales"
-                      chartType={chartType}
-                    />
-                  ),
-                }}
-                recomendaciones={recomendaciones}
-                conclusiones={conclusiones}
-                options={reportOptions}
-              />
+                <InformeTabs tabClass={tabPill} />
             </section>
           </div>
 
