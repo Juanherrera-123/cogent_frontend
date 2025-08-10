@@ -1,4 +1,6 @@
-export const introduccion = `Todos los individuos activamente laborales se encuentran expuestos a diferentes
+
+const template = `Todos los individuos activamente laborales se encuentran expuestos a diferentes
+
 factores de Riesgo, entre los que destacamos Físicos, químicos, Biomecánicos,
 condiciones de seguridad, fenómenos naturales, psicosociales entre otros;
 exposiciones que son dadas por la naturaleza del cargo que se ocupa y el contexto en
@@ -13,9 +15,10 @@ acompañamiento, orientación y mejora la calidad de los procesos y sus efectos
 adversos. La resolución 2764 de 2022, nos insta a, ¨ Desarrollar acciones de
 promoción en salud mental, identificar, prevenir, intervenir y canalizar hacia los
 servicios de atención en salud mental, en el marco del acompañamiento y apoyo a los
-empleadores y sus trabajadores afiliados. ¨.,El(La)  ________________________, ha aplicado la batería de riesgos Psicosocial teniendo en cuenta una
-muestra representativa de ____ trabajadores de los cuales ___ hicieron parte de la forma
-A y ___ de la forma B; su aplicación se generó de manera ____________ en _____________________________.
+empleadores y sus trabajadores afiliados. ¨.,El(La) [EMPRESA], ha aplicado la batería de riesgos Psicosocial teniendo en cuenta una
+muestra representativa de [TOTAL] trabajadores de los cuales [FORMA_A] hicieron parte de la forma
+A y [FORMA_B] de la forma B; su aplicación se generó a traves del aplicativo cogent en [CIUDAD].
+
 El instrumento Incluye el consentimiento informado, los cuestionarios Forma A,
 Forma B, ficha de datos generales, Cuestionario de estrés y Factor extralaboral.
 Durante su aplicación se validaron factores intralaborales como recompensas,
@@ -188,3 +191,26 @@ Vigilancia epidemiológica: Es un procedimiento que permite hacer seguimiento a 
 factores psicosociales y sus efectos, para conocer su distribución en la población y las
 variables que influyen en su presentación, bien sea porque intensifiquen o debiliten la
 manifestación del fenómeno.`;
+
+export interface IntroduccionData {
+  empresa: string;
+  total: number;
+  formaA: number;
+  formaB: number;
+  ciudad: string;
+}
+
+export function buildIntroduccion({
+  empresa,
+  total,
+  formaA,
+  formaB,
+  ciudad,
+}: IntroduccionData): string {
+  return template
+    .replace("[EMPRESA]", empresa)
+    .replace("[TOTAL]", String(total))
+    .replace("[FORMA_A]", String(formaA))
+    .replace("[FORMA_B]", String(formaB))
+    .replace("[CIUDAD]", ciudad);
+}

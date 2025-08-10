@@ -1,9 +1,21 @@
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { introduccion } from "@/report/introduccion";
+import {
+  buildIntroduccion,
+  type IntroduccionData,
+} from "@/report/introduccion";
 
-export default function InformeTabs({ tabClass }: { tabClass: string }) {
+interface Props {
+  tabClass: string;
+  introduccionData: IntroduccionData;
+}
+
+export default function InformeTabs({
+  tabClass,
+  introduccionData,
+}: Props) {
   const [value, setValue] = useState("introduccion");
+  const intro = buildIntroduccion(introduccionData);
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -25,7 +37,7 @@ export default function InformeTabs({ tabClass }: { tabClass: string }) {
       </TabsList>
       <TabsContent value="introduccion">
         <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed space-y-4">
-          {introduccion.split("\n\n").map((p, i) => (
+          {intro.split("\n\n").map((p, i) => (
             <p key={i}>{p}</p>
           ))}
         </div>

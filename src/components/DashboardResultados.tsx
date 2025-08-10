@@ -20,6 +20,7 @@ import { CredencialEmpresa, ResultRow, CategoriaConteo } from "@/types";
 import GeneralResultsTabs from "@/components/dashboard/GeneralResultsTabs";
 import FormaTabs from "@/components/dashboard/FormaTabs";
 import InformeTabs from "@/components/dashboard/InformeTabs";
+import type { IntroduccionData } from "@/report/introduccion";
 import LogoCogent from "/logo_forma.png";
 import { FileDown, FileText, Home as HomeIcon } from "lucide-react";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
@@ -390,6 +391,9 @@ export default function DashboardResultados({
   const datosGlobalAE = datosMostrados.filter((d) => d.resultadoGlobalAExtralaboral);
   const datosGlobalBE = datosMostrados.filter((d) => d.resultadoGlobalBExtralaboral);
 
+  const ciudadInforme =
+    datosMostrados.find((d) => d.ficha?.trabajoCiudad)?.ficha?.trabajoCiudad || "";
+
   // ---- Resúmenes para gráficos ----
   const resumenNivel = (datos: ResultRow[], key: string, niveles: string[]) =>
     niveles.map((nivel, idx) => ({
@@ -741,6 +745,14 @@ export default function DashboardResultados({
     resumenExtra: resumenExtraReport,
     estresGlobal: undefined,
   });
+
+  const introData: IntroduccionData = {
+    empresa: reportPayload.empresa.nombre,
+    total: datosMostrados.length,
+    formaA: datosA.length,
+    formaB: datosB.length,
+    ciudad: ciudadInforme,
+  };
 
   const empresaId = reportPayload.empresa?.id || "empresa-actual";
 
@@ -1230,7 +1242,7 @@ export default function DashboardResultados({
                     <p className="text-xs text-gray-500 mt-2">{progress}</p>
                   )}
                 </div>
-                <InformeTabs tabClass={tabPill} />
+                <InformeTabs tabClass={tabPill} introduccionData={introData} />
             </section>
           </div>
 
