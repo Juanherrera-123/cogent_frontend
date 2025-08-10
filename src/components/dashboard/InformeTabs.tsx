@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { introduccion } from "@/report/introduccion";
 
 export default function InformeTabs({ tabClass }: { tabClass: string }) {
   const [value, setValue] = useState("introduccion");
@@ -22,7 +23,13 @@ export default function InformeTabs({ tabClass }: { tabClass: string }) {
           Estrategias
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="introduccion" />
+      <TabsContent value="introduccion">
+        <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed space-y-4">
+          {introduccion.split("\n\n").map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+        </div>
+      </TabsContent>
       <TabsContent value="generalidades" />
       <TabsContent value="metodologia" />
       <TabsContent value="resultados" />
