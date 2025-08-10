@@ -1164,8 +1164,20 @@ export default function DashboardResultados({
                   ),
                 }}
                 graficos={{
-                  formaA: <GraficaBarraSimple resumen={resumenA} titulo="Niveles de Forma A" />, 
-                  formaB: <GraficaBarraSimple resumen={resumenB} titulo="Niveles de Forma B" />, 
+                  formaA: (
+                    <GraficaBarraSimple
+                      resumen={resumenA}
+                      titulo="Niveles de Forma A"
+                      chartType={chartType}
+                    />
+                  ),
+                  formaB: (
+                    <GraficaBarraSimple
+                      resumen={resumenB}
+                      titulo="Niveles de Forma B"
+                      chartType={chartType}
+                    />
+                  ),
                   extralaboral: (
                     <GraficaBarraCategorias
                       datos={resumenExtra.map(r => ({ nombre: r.nombre, cantidad: r.cantidad })) as CategoriaConteo[]}
@@ -1207,8 +1219,20 @@ export default function DashboardResultados({
                   ),
                 }}
                 graficos={{
-                  formaA: <GraficaBarraSimple resumen={resumenA} titulo="Niveles de Forma A" />, 
-                  formaB: <GraficaBarraSimple resumen={resumenB} titulo="Niveles de Forma B" />, 
+                  formaA: (
+                    <GraficaBarraSimple
+                      resumen={resumenA}
+                      titulo="Niveles de Forma A"
+                      chartType={chartType}
+                    />
+                  ),
+                  formaB: (
+                    <GraficaBarraSimple
+                      resumen={resumenB}
+                      titulo="Niveles de Forma B"
+                      chartType={chartType}
+                    />
+                  ),
                   extralaboral: (
                     <GraficaBarraCategorias
                       datos={resumenExtra.map(r => ({ nombre: r.nombre, cantidad: r.cantidad })) as CategoriaConteo[]}
