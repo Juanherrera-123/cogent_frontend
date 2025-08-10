@@ -19,6 +19,7 @@ import { FileDown, FileText, Home as HomeIcon } from "lucide-react";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { calcularFormaA } from "@/utils/calcularFormaA";
+import { buildReportPayload } from "@/utils/buildReportPayload";
 const nivelesRiesgo = [
     "Riesgo muy bajo",
     "Riesgo bajo",
@@ -399,6 +400,17 @@ export default function DashboardResultados({ rol, empresaNombre, soloGenerales,
     const promediosDominiosB = calcularPromedios(datosB, "resultadoFormaB", dominiosB, "dominios", "formaB");
     const promediosDimensionesB = calcularPromedios(datosB, "resultadoFormaB", dimensionesB, "dimensiones", "formaB");
     const promediosDimensionesExtra = calcularPromedios(datosExtra, "resultadoExtralaboral", dimensionesExtra, "dimensiones", "extra");
+    const resumenAReport = useMemo(() => ({
+        dominios: Object.fromEntries(promediosDominiosA.map((d) => [d.nombre, { transformado: d.promedio, nivel: d.nivel }])),
+        dimensiones: Object.fromEntries(promediosDimensionesA.map((d) => [d.nombre, { transformado: d.promedio, nivel: d.nivel }])),
+    }), [promediosDominiosA, promediosDimensionesA]);
+    const resumenBReport = useMemo(() => ({
+        dominios: Object.fromEntries(promediosDominiosB.map((d) => [d.nombre, { transformado: d.promedio, nivel: d.nivel }])),
+        dimensiones: Object.fromEntries(promediosDimensionesB.map((d) => [d.nombre, { transformado: d.promedio, nivel: d.nivel }])),
+    }), [promediosDominiosB, promediosDimensionesB]);
+    const resumenExtraReport = useMemo(() => ({
+        dimensiones: Object.fromEntries(promediosDimensionesExtra.map((d) => [d.nombre, { transformado: d.promedio, nivel: d.nivel }])),
+    }), [promediosDimensionesExtra]);
     function conteosPorFicha(datos, keyFicha) {
         if (keyFicha === "antiguedad") {
             const grupos = Array.from(new Set(datos.map((d) => d.ficha
@@ -488,6 +500,35 @@ export default function DashboardResultados({ rol, empresaNombre, soloGenerales,
         }
         return row;
     }, [datosInforme, allHeaders]);
+    const flat = datosInforme;
+    const empresaSel = empresaSeleccionada;
+    const empresaInfo = {
+        id: typeof empresaSel === "object" && empresaSel && "id" in empresaSel
+            ? empresaSel.id ?? "empresa-actual"
+            : "empresa-actual",
+        nombre: typeof empresaSel === "object" && empresaSel && "nombre" in empresaSel
+            ? empresaSel.nombre ?? "Empresa"
+            : typeof empresaSel === "string"
+                ? empresaSel
+                : "Empresa",
+        nit: typeof empresaSel === "object" && empresaSel && "nit" in empresaSel
+            ? empresaSel.nit ?? ""
+            : "",
+        logoUrl: typeof empresaSel === "object" && empresaSel && "logoUrl" in empresaSel
+            ? empresaSel.logoUrl ?? ""
+            : "",
+    };
+    const reportPayload = buildReportPayload({
+        empresa: empresaInfo,
+        flat,
+        resumenA: resumenAReport,
+        resumenB: resumenBReport,
+        resumenExtra: resumenExtraReport,
+        estresGlobal: undefined,
+    });
+    useEffect(() => {
+        console.log("ReportPayload", reportPayload);
+    }, [reportPayload]);
     // ---- Exportar a Excel ----
     const handleExportar = () => {
         let datosExportar = [];
