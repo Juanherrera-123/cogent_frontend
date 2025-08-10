@@ -63,3 +63,26 @@ export interface ReportPayload {
   };
   sociodemo: Sociodemo;
 }
+
+export interface ReportSections {
+  portada: boolean;
+  resumenGlobal: boolean;
+  intralaboral: boolean;
+  extralaboral: boolean;
+  sociodemografia: boolean;
+  metodologia: boolean;
+  normativa: boolean;
+  recomendaciones: boolean;
+  conclusiones: boolean;
+}
+
+export interface ReportOptions {
+  sections: ReportSections;
+  theme?: {
+    primary?: string;
+    accent?: string;
+    logoUrl?: string;
+  };
+  tituloPortada?: string;
+}
+

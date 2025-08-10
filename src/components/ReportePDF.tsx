@@ -1,4 +1,7 @@
 import React, { forwardRef } from "react";
+import type { ReportOptions } from "@/types/report";
+import { strings } from "@/report/strings";
+import { defaultTheme } from "@/report/theme";
 
 type Props = {
   empresa: { nombre: string; nit?: string; logoUrl?: string };
@@ -21,6 +24,7 @@ type Props = {
   };
   recomendaciones: string[];
   conclusiones: string;
+  options?: ReportOptions;
 };
 
 const ReportePDF = forwardRef<HTMLDivElement, Props>(
@@ -33,125 +37,180 @@ const ReportePDF = forwardRef<HTMLDivElement, Props>(
       graficos,
       recomendaciones,
       conclusiones,
+      options,
     },
     ref
   ) => {
     const fecha = new Date(fechaInformeISO).toLocaleDateString();
 
+    const sections = options?.sections ?? {
+      portada: true,
+      resumenGlobal: true,
+      intralaboral: true,
+      extralaboral: true,
+      sociodemografia: true,
+      metodologia: true,
+      normativa: true,
+      recomendaciones: true,
+      conclusiones: true,
+    };
+    const theme = {
+      ...defaultTheme,
+      ...(options?.theme ?? {}),
+      logoUrl: options?.theme?.logoUrl ?? empresa.logoUrl ?? defaultTheme.logoUrl,
+    };
+    const Title = ({ children }: { children: React.ReactNode }) => (
+      <h2 className="text-2xl font-semibold" style={{ color: theme.primary }}>
+        {children}
+      </h2>
+    );
+
     return (
       <div ref={ref} className="w-[794pt] bg-white text-black text-sm leading-6">
-        {/* Portada */}
-        <section className="min-h-[1123pt] p-16 flex flex-col justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">
-              Informe de Evaluación de Riesgo Psicosocial
-            </h1>
-            <p className="mt-3 text-lg">{empresa?.nombre}</p>
-            {empresa?.nit && <p className="text-gray-600">NIT: {empresa.nit}</p>}
-            <p className="mt-2 text-gray-600">Fecha de emisión: {fecha}</p>
-          </div>
-          {empresa?.logoUrl && (
-            <div className="flex justify-end">
-              <img src={empresa.logoUrl} alt="Logo" className="h-14 object-contain" />
-            </div>
-          )}
-        </section>
-
-        <div className="page-break"></div>
-
-        {/* Resumen Global */}
-        <section className="p-10">
-          <h2 className="text-2xl font-semibold">Resumen Global</h2>
-          <div className="mt-4 grid grid-cols-2 gap-4">
-            {global.formaA && (
-              <div className="border rounded-lg p-4">
-                <h3 className="font-semibold">Intralaboral — Forma A</h3>
-                <p>
-                  Clasificación: <b>{global.formaA.nivel}</b> ({global.formaA.puntaje}% )
-                </p>
+        {sections.portada && (
+          <>
+            <section className="min-h-[1123pt] p-16 flex flex-col justify-between">
+              <div>
+                <h1 className="text-3xl font-bold" style={{ color: theme.primary }}>
+                  {options?.tituloPortada || "Informe de Evaluación de Riesgo Psicosocial"}
+                </h1>
+                <p className="mt-3 text-lg">{empresa?.nombre}</p>
+                {empresa?.nit && <p className="text-gray-600">NIT: {empresa.nit}</p>}
+                <p className="mt-2 text-gray-600">Fecha de emisión: {fecha}</p>
               </div>
-            )}
-            {global.formaB && (
-              <div className="border rounded-lg p-4">
-                <h3 className="font-semibold">Intralaboral — Forma B</h3>
-                <p>
-                  Clasificación: <b>{global.formaB.nivel}</b> ({global.formaB.puntaje}% )
-                </p>
+              {theme.logoUrl && (
+                <div className="flex justify-end">
+                  <img src={theme.logoUrl} alt="Logo" className="h-14 object-contain" />
+                </div>
+              )}
+            </section>
+            <div className="page-break"></div>
+          </>
+        )}
+
+        {sections.resumenGlobal && (
+          <>
+            <section className="p-10">
+              <Title>Resumen Global</Title>
+              <div className="mt-4 grid grid-cols-2 gap-4">
+                {global.formaA && (
+                  <div className="border rounded-lg p-4" style={{ borderColor: theme.accent }}>
+                    <h3 className="font-semibold">Intralaboral — Forma A</h3>
+                    <p>
+                      Clasificación: <b>{global.formaA.nivel}</b> ({global.formaA.puntaje}% )
+                    </p>
+                  </div>
+                )}
+                {global.formaB && (
+                  <div className="border rounded-lg p-4" style={{ borderColor: theme.accent }}>
+                    <h3 className="font-semibold">Intralaboral — Forma B</h3>
+                    <p>
+                      Clasificación: <b>{global.formaB.nivel}</b> ({global.formaB.puntaje}% )
+                    </p>
+                  </div>
+                )}
+                {global.extralaboral && (
+                  <div className="border rounded-lg p-4" style={{ borderColor: theme.accent }}>
+                    <h3 className="font-semibold">Extralaboral</h3>
+                    <p>
+                      Clasificación: <b>{global.extralaboral.nivel}</b> ({global.extralaboral.puntaje}% )
+                    </p>
+                  </div>
+                )}
+                {global.estres && (
+                  <div className="border rounded-lg p-4" style={{ borderColor: theme.accent }}>
+                    <h3 className="font-semibold">Estrés</h3>
+                    <p>
+                      Clasificación: <b>{global.estres.nivel}</b> ({global.estres.puntaje}% )
+                    </p>
+                  </div>
+                )}
               </div>
-            )}
-            {global.extralaboral && (
-              <div className="border rounded-lg p-4">
-                <h3 className="font-semibold">Extralaboral</h3>
-                <p>
-                  Clasificación: <b>{global.extralaboral.nivel}</b> ({global.extralaboral.puntaje}% )
-                </p>
+            </section>
+            <div className="page-break"></div>
+          </>
+        )}
+
+        {sections.intralaboral && (
+          <>
+            <section className="p-10">
+              <Title>Resultados Intralaborales</Title>
+              <div className="mt-6 space-y-6">
+                {graficos.formaA}
+                {graficos.formaB}
+                {tablas.intralaboral}
               </div>
-            )}
-            {global.estres && (
-              <div className="border rounded-lg p-4">
-                <h3 className="font-semibold">Estrés</h3>
-                <p>
-                  Clasificación: <b>{global.estres.nivel}</b> ({global.estres.puntaje}% )
-                </p>
+            </section>
+            <div className="page-break"></div>
+          </>
+        )}
+
+        {sections.extralaboral && (
+          <>
+            <section className="p-10">
+              <Title>Resultados Extralaborales</Title>
+              <div className="mt-6 space-y-6">
+                {graficos.extralaboral}
+                {tablas.extralaboral}
               </div>
-            )}
-          </div>
-        </section>
+            </section>
+            <div className="page-break"></div>
+          </>
+        )}
 
-        <div className="page-break"></div>
+        {sections.sociodemografia && (
+          <>
+            <section className="p-10">
+              <Title>Sociodemografía de la Muestra</Title>
+              <div className="mt-6">{tablas.sociodemo}</div>
+            </section>
+            <div className="page-break"></div>
+          </>
+        )}
 
-        {/* Intralaboral */}
-        <section className="p-10">
-          <h2 className="text-2xl font-semibold">Resultados Intralaborales</h2>
-          <div className="mt-6 space-y-6">
-            {graficos.formaA}
-            {graficos.formaB}
-            {tablas.intralaboral}
-          </div>
-        </section>
+        {sections.metodologia && (
+          <>
+            <section className="p-10">
+              <Title>Metodología</Title>
+              <p className="mt-3">{strings.metodologia}</p>
+            </section>
+            <div className="page-break"></div>
+          </>
+        )}
 
-        <div className="page-break"></div>
+        {sections.normativa && (
+          <>
+            <section className="p-10">
+              <Title>Normativa</Title>
+              <p className="mt-3">{strings.normativa}</p>
+            </section>
+            <div className="page-break"></div>
+          </>
+        )}
 
-        {/* Extralaboral */}
-        <section className="p-10">
-          <h2 className="text-2xl font-semibold">Resultados Extralaborales</h2>
-          <div className="mt-6 space-y-6">
-            {graficos.extralaboral}
-            {tablas.extralaboral}
-          </div>
-        </section>
+        {sections.recomendaciones && (
+          <>
+            <section className="p-10">
+              <Title>Recomendaciones</Title>
+              <ul className="mt-4 list-disc pl-6 space-y-1">
+                {recomendaciones.map((r, i) => (
+                  <li key={i}>{r}</li>
+                ))}
+              </ul>
+            </section>
+            <div className="page-break"></div>
+          </>
+        )}
 
-        <div className="page-break"></div>
-
-        {/* Sociodemografía */}
-        <section className="p-10">
-          <h2 className="text-2xl font-semibold">Sociodemografía de la Muestra</h2>
-          <div className="mt-6">{tablas.sociodemo}</div>
-        </section>
-
-        <div className="page-break"></div>
-
-        {/* Recomendaciones */}
-        <section className="p-10">
-          <h2 className="text-2xl font-semibold">Recomendaciones</h2>
-          <ul className="mt-4 list-disc pl-6 space-y-1">
-            {recomendaciones.map((r, i) => (
-              <li key={i}>{r}</li>
-            ))}
-          </ul>
-        </section>
-
-        <div className="page-break"></div>
-
-        {/* Conclusiones */}
-        <section className="p-10">
-          <h2 className="text-2xl font-semibold">Conclusiones</h2>
-          <p className="mt-3">{conclusiones}</p>
-        </section>
+        {sections.conclusiones && (
+          <section className="p-10">
+            <Title>Conclusiones</Title>
+            <p className="mt-3">{conclusiones}</p>
+          </section>
+        )}
       </div>
     );
   }
 );
 
 export default ReportePDF;
-
