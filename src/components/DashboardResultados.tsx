@@ -8,7 +8,6 @@ import { dimensionesExtralaboral } from "@/data/esquemaExtralaboral";
 import { baremosFormaA } from "@/data/baremosFormaA";
 import { baremosFormaB } from "@/data/baremosFormaB";
 import TablaIndividual from "@/components/TablaIndividual";
-import TablaDominios from "@/components/TablaDominios";
 import TablaDimensiones from "@/components/TablaDimensiones";
 import GraficaBarra from "@/components/GraficaBarra";
 import GraficaBarraSimple from "@/components/GraficaBarraSimple";
@@ -21,6 +20,8 @@ import { FileDown, FileText, Home as HomeIcon } from "lucide-react";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { calcularFormaA } from "@/utils/calcularFormaA";
+import { buildReportPayload } from "@/utils/buildReportPayload";
+import { ReportPayload } from "@/types/report";
 
 const nivelesRiesgo = [
   "Riesgo muy bajo",
@@ -537,6 +538,39 @@ export default function DashboardResultados({
     "extra"
   );
 
+  const resumenAReport = useMemo(
+    () => ({
+      dominios: Object.fromEntries(
+        promediosDominiosA.map((d) => [d.nombre, { transformado: d.promedio, nivel: d.nivel }])
+      ),
+      dimensiones: Object.fromEntries(
+        promediosDimensionesA.map((d) => [d.nombre, { transformado: d.promedio, nivel: d.nivel }])
+      ),
+    }),
+    [promediosDominiosA, promediosDimensionesA]
+  );
+
+  const resumenBReport = useMemo(
+    () => ({
+      dominios: Object.fromEntries(
+        promediosDominiosB.map((d) => [d.nombre, { transformado: d.promedio, nivel: d.nivel }])
+      ),
+      dimensiones: Object.fromEntries(
+        promediosDimensionesB.map((d) => [d.nombre, { transformado: d.promedio, nivel: d.nivel }])
+      ),
+    }),
+    [promediosDominiosB, promediosDimensionesB]
+  );
+
+  const resumenExtraReport = useMemo(
+    () => ({
+      dimensiones: Object.fromEntries(
+        promediosDimensionesExtra.map((d) => [d.nombre, { transformado: d.promedio, nivel: d.nivel }])
+      ),
+    }),
+    [promediosDimensionesExtra]
+  );
+
 
 
   function conteosPorFicha(datos: ResultRow[], keyFicha: string) {
@@ -648,6 +682,49 @@ export default function DashboardResultados({
     }
     return row;
   }, [datosInforme, allHeaders]);
+
+  const flat: FlatResult[] = datosInforme;
+
+  type EmpresaSel =
+    | { id?: string; nombre?: string; nit?: string; logoUrl?: string }
+    | string
+    | undefined;
+
+  const empresaSel = empresaSeleccionada as EmpresaSel;
+
+  const empresaInfo = {
+    id:
+      typeof empresaSel === "object" && empresaSel && "id" in empresaSel
+        ? empresaSel.id ?? "empresa-actual"
+        : "empresa-actual",
+    nombre:
+      typeof empresaSel === "object" && empresaSel && "nombre" in empresaSel
+        ? empresaSel.nombre ?? "Empresa"
+        : typeof empresaSel === "string"
+        ? empresaSel
+        : "Empresa",
+    nit:
+      typeof empresaSel === "object" && empresaSel && "nit" in empresaSel
+        ? empresaSel.nit ?? ""
+        : "",
+    logoUrl:
+      typeof empresaSel === "object" && empresaSel && "logoUrl" in empresaSel
+        ? empresaSel.logoUrl ?? ""
+        : "",
+  };
+
+  const reportPayload: ReportPayload = buildReportPayload({
+    empresa: empresaInfo,
+    flat,
+    resumenA: resumenAReport,
+    resumenB: resumenBReport,
+    resumenExtra: resumenExtraReport,
+    estresGlobal: undefined,
+  });
+
+  useEffect(() => {
+    console.log("ReportPayload", reportPayload);
+  }, [reportPayload]);
 
 
   // ---- Exportar a Excel ----
