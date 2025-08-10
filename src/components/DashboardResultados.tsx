@@ -11,6 +11,9 @@ import TablaIndividual from "@/components/TablaIndividual";
 import TablaDimensiones from "@/components/TablaDimensiones";
 import GraficaBarra from "@/components/GraficaBarra";
 import GraficaBarraSimple from "@/components/GraficaBarraSimple";
+import GraficaBarraCategorias from "@/components/GraficaBarraCategorias";
+import TablaDominios from "@/components/TablaDominios";
+import ReportePDF from "@/components/ReportePDF";
 import AdminEmpresas from "@/components/AdminEmpresas";
 import { CredencialEmpresa, ResultRow, CategoriaConteo } from "@/types";
 import GeneralResultsTabs from "@/components/dashboard/GeneralResultsTabs";
@@ -312,6 +315,8 @@ export default function DashboardResultados({
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
   const [seleccionados, setSeleccionados] = useState<number[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const reportRef = useRef<HTMLDivElement>(null);
+  const [renderReport, setRenderReport] = useState(false);
 
   const saludo = rol === "psicologa" ? "Hola Lilian Navas" : empresaNombre || "";
   const cargo = rol === "psicologa" ? "Psicologist" : "Empresa";
@@ -760,6 +765,17 @@ export default function DashboardResultados({
     console.log("Conclusiones →", conclusiones);
   }, [reportPayload, recomendaciones, conclusiones]);
 
+  async function onGenerarInformePDF() {
+    setRenderReport(true);
+    await new Promise((r) => setTimeout(r, 350));
+    if (reportRef.current) {
+      const fn = `Informe_${reportPayload.empresa.nombre}_${new Date(
+        reportPayload.fechaInformeISO
+      ).toISOString().slice(0, 10)}.pdf`;
+      await exportElementToPDF(reportRef.current, fn);
+    }
+    setRenderReport(false);
+  }
 
   // ---- Exportar a Excel ----
   const handleExportar = () => {
@@ -933,10 +949,6 @@ export default function DashboardResultados({
       <Tabs value={tab} onValueChange={setTab} className="w-full">
 
       <TabsList className="mt-8 mb-2 py-2 px-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
-
-        {rol === "psicologa" && (
-          <TabsTrigger className={tabPill} value="informe">Informe completo</TabsTrigger>
-        )}
         {!soloGenerales && (
           <TabsTrigger className={tabPill} value="admin">Eliminar encuestas</TabsTrigger>
         )}
@@ -952,6 +964,7 @@ export default function DashboardResultados({
         <TabsTrigger className={tabPill} value="extralaboral">Extralaboral</TabsTrigger>
         <TabsTrigger className={tabPill} value="globalExtra">Global Extra</TabsTrigger>
         <TabsTrigger className={tabPill} value="estres">Estrés</TabsTrigger>
+        <TabsTrigger className={tabPill} value="informe">Informe</TabsTrigger>
       </TabsList>
 
         {/* ---- GENERAL ---- */}
@@ -1113,46 +1126,103 @@ export default function DashboardResultados({
             )
           }
         </TabsContent>
-        {/* ---- INFORME COMPLETO ---- */}
-        {rol === "psicologa" && (
-          <TabsContent value="informe">
-            {datosInforme.length === 0 ? (
-              <div className="text-[var(--gray-medium)] py-4">No hay datos para mostrar.</div>
-            ) : (
-              <div className="overflow-auto max-h-96">
-                <table className="w-full text-xs border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]">
-                  <thead className="bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] text-white font-semibold">
-                    <tr>
-                      {allHeaders.map((h, idx) => (
-                        <th key={idx} className="px-2 py-1">
-                          {h}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {datosInforme.map((fila, i) => (
-                      <tr key={i} className="border-b">
-                        {allHeaders.map((h, idx) => (
-                          <td key={idx} className="px-2 py-1">
-                            {fila[h] ?? ""}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                    <tr className="font-semibold bg-gray-100">
-                      {allHeaders.map((h, idx) => (
-                        <td key={idx} className="px-2 py-1">
-                          {promedioInforme[h] ?? ""}
-                        </td>
-                      ))}
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </TabsContent>
-        )}
+        {/* ---- INFORME ---- */}
+        <TabsContent value="informe">
+          <div className="flex gap-6">
+            <aside className="w-[320px] shrink-0 space-y-3">
+              <button
+                onClick={onGenerarInformePDF}
+                className="px-4 py-2 rounded-md bg-black text-white w-full"
+              >
+                Generar PDF
+              </button>
+            </aside>
+            <section className="flex-1 bg-white rounded-xl shadow p-6">
+              <ReportePDF
+                ref={reportRef}
+                empresa={{
+                  nombre: reportPayload.empresa.nombre,
+                  nit: reportPayload.empresa.nit,
+                  logoUrl: reportPayload.empresa.logoUrl,
+                }}
+                fechaInformeISO={reportPayload.fechaInformeISO}
+                global={reportPayload.global}
+                tablas={{
+                  sociodemo: <TablaIndividual datos={datosMostrados} tipo="formaA" />, 
+                  intralaboral: (
+                    <div className="space-y-6">
+                      <TablaDominios datos={datosA} dominios={dominiosA} keyResultado="resultadoFormaA" />
+                      <TablaDimensiones datos={datosA} dimensiones={dimensionesA} keyResultado="resultadoFormaA" />
+                    </div>
+                  ),
+                  extralaboral: (
+                    <TablaDimensiones
+                      datos={datosExtra}
+                      dimensiones={dimensionesExtra}
+                      keyResultado="resultadoExtralaboral"
+                    />
+                  ),
+                }}
+                graficos={{
+                  formaA: <GraficaBarraSimple resumen={resumenA} titulo="Niveles de Forma A" />, 
+                  formaB: <GraficaBarraSimple resumen={resumenB} titulo="Niveles de Forma B" />, 
+                  extralaboral: (
+                    <GraficaBarraCategorias
+                      datos={resumenExtra.map(r => ({ nombre: r.nombre, cantidad: r.cantidad })) as CategoriaConteo[]}
+                      titulo="Niveles Extralaborales"
+                      chartType={chartType}
+                    />
+                  ),
+                }}
+                recomendaciones={recomendaciones}
+                conclusiones={conclusiones}
+              />
+            </section>
+          </div>
+
+          {renderReport && (
+            <div style={{ position: 'absolute', left: '-99999px', top: 0, width: '794pt' }}>
+              <ReportePDF
+                empresa={{
+                  nombre: reportPayload.empresa.nombre,
+                  nit: reportPayload.empresa.nit,
+                  logoUrl: reportPayload.empresa.logoUrl,
+                }}
+                fechaInformeISO={reportPayload.fechaInformeISO}
+                global={reportPayload.global}
+                tablas={{
+                  sociodemo: <TablaIndividual datos={datosMostrados} tipo="formaA" />, 
+                  intralaboral: (
+                    <div className="space-y-6">
+                      <TablaDominios datos={datosA} dominios={dominiosA} keyResultado="resultadoFormaA" />
+                      <TablaDimensiones datos={datosA} dimensiones={dimensionesA} keyResultado="resultadoFormaA" />
+                    </div>
+                  ),
+                  extralaboral: (
+                    <TablaDimensiones
+                      datos={datosExtra}
+                      dimensiones={dimensionesExtra}
+                      keyResultado="resultadoExtralaboral"
+                    />
+                  ),
+                }}
+                graficos={{
+                  formaA: <GraficaBarraSimple resumen={resumenA} titulo="Niveles de Forma A" />, 
+                  formaB: <GraficaBarraSimple resumen={resumenB} titulo="Niveles de Forma B" />, 
+                  extralaboral: (
+                    <GraficaBarraCategorias
+                      datos={resumenExtra.map(r => ({ nombre: r.nombre, cantidad: r.cantidad })) as CategoriaConteo[]}
+                      titulo="Niveles Extralaborales"
+                      chartType={chartType}
+                    />
+                  ),
+                }}
+                recomendaciones={recomendaciones}
+                conclusiones={conclusiones}
+              />
+            </div>
+          )}
+        </TabsContent>
         {!soloGenerales && (
           <TabsContent value="admin">
             {datos.length === 0 ? (

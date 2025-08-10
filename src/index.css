@@ -110,3 +110,6 @@
   }
 }
 
+
+@page { size: A4; margin: 24pt; }
+.page-break { page-break-before: always; }
