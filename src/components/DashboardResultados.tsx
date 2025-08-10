@@ -22,6 +22,7 @@ import { db } from "@/firebaseConfig";
 import { calcularFormaA } from "@/utils/calcularFormaA";
 import { buildReportPayload } from "@/utils/buildReportPayload";
 import { ReportPayload } from "@/types/report";
+import { recomendacionesPorResultados, conclusionesSinteticas } from "@/utils/recomendaciones";
 
 const nivelesRiesgo = [
   "Riesgo muy bajo",
@@ -722,9 +723,42 @@ export default function DashboardResultados({
     estresGlobal: undefined,
   });
 
+  // Reglas automáticas para recomendaciones y conclusiones
+  const dimA = reportPayload.dimensiones.formaA ?? {};
+  const dimB = reportPayload.dimensiones.formaB ?? {};
+  const dimExtra = reportPayload.dimensiones.extralaboral ?? {};
+  const domA = reportPayload.dominios.formaA ?? {};
+  const domB = reportPayload.dominios.formaB ?? {};
+
+  const recomendaciones = [
+    ...recomendacionesPorResultados(dimA, domA),
+    ...recomendacionesPorResultados(dimB, domB),
+    ...recomendacionesPorResultados(dimExtra),
+  ];
+
+  function topHallazgos(
+    dims: Record<string, { transformado?: number; nivel?: string }>,
+    n = 3
+  ) {
+    return Object.entries(dims)
+      .sort((a, b) => (b[1].transformado ?? 0) - (a[1].transformado ?? 0))
+      .slice(0, n)
+      .map(([k]) => k);
+  }
+  const hallazgos = [...topHallazgos(dimA, 2), ...topHallazgos(dimB, 1)];
+
+  const conclusiones = conclusionesSinteticas({
+    globalA: reportPayload.global.formaA,
+    globalB: reportPayload.global.formaB,
+    globalExtra: reportPayload.global.extralaboral,
+    hallazgosClave: hallazgos,
+  });
+
   useEffect(() => {
     console.log("ReportPayload", reportPayload);
-  }, [reportPayload]);
+    console.log("Recomendaciones →", recomendaciones);
+    console.log("Conclusiones →", conclusiones);
+  }, [reportPayload, recomendaciones, conclusiones]);
 
 
   // ---- Exportar a Excel ----
