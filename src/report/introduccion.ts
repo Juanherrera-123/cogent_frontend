@@ -1,4 +1,6 @@
+
 const template = `Todos los individuos activamente laborales se encuentran expuestos a diferentes
+
 factores de Riesgo, entre los que destacamos Físicos, químicos, Biomecánicos,
 condiciones de seguridad, fenómenos naturales, psicosociales entre otros;
 exposiciones que son dadas por la naturaleza del cargo que se ocupa y el contexto en
@@ -16,6 +18,7 @@ servicios de atención en salud mental, en el marco del acompañamiento y apoyo 
 empleadores y sus trabajadores afiliados. ¨.,El(La) [EMPRESA], ha aplicado la batería de riesgos Psicosocial teniendo en cuenta una
 muestra representativa de [TOTAL] trabajadores de los cuales [FORMA_A] hicieron parte de la forma
 A y [FORMA_B] de la forma B; su aplicación se generó a traves del aplicativo cogent en [CIUDAD].
+
 El instrumento Incluye el consentimiento informado, los cuestionarios Forma A,
 Forma B, ficha de datos generales, Cuestionario de estrés y Factor extralaboral.
 Durante su aplicación se validaron factores intralaborales como recompensas,
