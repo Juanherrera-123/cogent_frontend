@@ -249,21 +249,21 @@ const fichaTecnicaHeaders = [
 ];
 
 const formaAHeaders = formaAOrden.flatMap(({ dominio, dimensiones }) => [
+  `DOMINIO: ${dominio} - Forma A (puntaje transformado)`,
+  `DOMINIO: ${dominio} - Forma A (nivel de riesgo)`,
   ...dimensiones.flatMap((k) => [
     `Dimensión: ${k} - Forma A (puntaje transformado)`,
     `Dimensión: ${k} - Forma A (nivel de riesgo)`,
   ]),
-  `DOMINIO: ${dominio} - Forma A (puntaje transformado)`,
-  `DOMINIO: ${dominio} - Forma A (nivel de riesgo)`,
 ]);
 
 const formaBHeaders = formaBOrden.flatMap(({ dominio, dimensiones }) => [
+  `DOMINIO: ${dominio} - Forma B (puntaje transformado)`,
+  `DOMINIO: ${dominio} - Forma B (nivel de riesgo)`,
   ...dimensiones.flatMap((k) => [
     `Dimensión: ${k} - Forma B (puntaje transformado)`,
     `Dimensión: ${k} - Forma B (nivel de riesgo)`,
   ]),
-  `DOMINIO: ${dominio} - Forma B (puntaje transformado)`,
-  `DOMINIO: ${dominio} - Forma B (nivel de riesgo)`,
 ]);
 
 const extralaboralHeaders = extralaboralOrden.flatMap((k) => [
@@ -828,10 +828,11 @@ export default function DashboardResultados({
     else if (tab === "globalExtra") datosExportar =
       tabGlobalExtra === "A" ? datosGlobalAE : datosGlobalBE;
     else if (tab === "estres") datosExportar = datosEstres;
-    else if (tab === "informe") datosExportar = datosInforme;
+    else if (tab === "informe" || tab === "informeCompleto")
+      datosExportar = datosInforme;
 
       const filas =
-        tab === "informe"
+        tab === "informe" || tab === "informeCompleto"
           ? datosInforme
           : (datosExportar as ResultRow[]).map((d, i) => {
               const row = d as ResultRow;
@@ -1006,7 +1007,14 @@ export default function DashboardResultados({
         <TabsTrigger className={tabPill} value="globalExtra">Global Extra</TabsTrigger>
         <TabsTrigger className={tabPill} value="estres">Estrés</TabsTrigger>
         {rol === "psicologa" && (
-          <TabsTrigger className={tabPill} value="informe">Informe</TabsTrigger>
+          <>
+            <TabsTrigger className={tabPill} value="informeCompleto">
+              Informe completo
+            </TabsTrigger>
+            <TabsTrigger className={tabPill} value="informe">
+              Informe
+            </TabsTrigger>
+          </>
         )}
       </TabsList>
 
@@ -1169,6 +1177,42 @@ export default function DashboardResultados({
             )
           }
         </TabsContent>
+        {/* ---- INFORME COMPLETO ---- */}
+        {rol === "psicologa" && (
+          <TabsContent value="informeCompleto">
+            {datosInforme.length === 0 ? (
+              <div className="text-[var(--gray-medium)] py-4">
+                No hay resultados para mostrar.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs border mt-2 rounded-lg overflow-hidden font-montserrat text-[#172349]">
+                  <thead className="bg-gradient-to-r from-[#2EC4FF] to-[#005DFF] text-white font-semibold">
+                    <tr>
+                      {allHeaders.map((h) => (
+                        <th key={h}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {datosInforme.map((fila, i) => (
+                      <tr key={i} className="border-b">
+                        {allHeaders.map((h) => (
+                          <td key={h}>{fila[h] ?? ""}</td>
+                        ))}
+                      </tr>
+                    ))}
+                    <tr className="font-semibold bg-gray-100">
+                      {allHeaders.map((h) => (
+                        <td key={h}>{promedioInforme[h] ?? ""}</td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </TabsContent>
+        )}
         {/* ---- INFORME ---- */}
         {rol === "psicologa" && (
           <TabsContent value="informe">
@@ -1396,22 +1440,23 @@ export default function DashboardResultados({
             <HomeIcon size={20} /> Volver al inicio
           </button>
         )}
-        {rol === "psicologa" && tab === "informe" && (
-          <div className="flex gap-2">
-            <button
-              onClick={handleExportar}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90"
-            >
-              <FileDown size={20} /> Descargar Excel
-            </button>
-            <button
-              onClick={handleExportPDF}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90"
-            >
-              <FileText size={20} /> Descargar PDF
-            </button>
-          </div>
-        )}
+        {rol === "psicologa" &&
+          (tab === "informe" || tab === "informeCompleto") && (
+            <div className="flex gap-2">
+              <button
+                onClick={handleExportar}
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90"
+              >
+                <FileDown size={20} /> Descargar Excel
+              </button>
+              <button
+                onClick={handleExportPDF}
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90"
+              >
+                <FileText size={20} /> Descargar PDF
+              </button>
+            </div>
+          )}
       </div>
       </div>
     </div>
