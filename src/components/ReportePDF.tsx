@@ -10,14 +10,14 @@ type Props = {
     estres?: { puntaje: number; nivel: string };
   };
   tablas: {
-    sociodemo?: JSX.Element;
-    intralaboral?: JSX.Element;
-    extralaboral?: JSX.Element;
+    sociodemo?: React.ReactNode;
+    intralaboral?: React.ReactNode;
+    extralaboral?: React.ReactNode;
   };
   graficos: {
-    formaA?: JSX.Element;
-    formaB?: JSX.Element;
-    extralaboral?: JSX.Element;
+    formaA?: React.ReactNode;
+    formaB?: React.ReactNode;
+    extralaboral?: React.ReactNode;
   };
   recomendaciones: string[];
   conclusiones: string;
