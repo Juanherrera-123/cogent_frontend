@@ -42,7 +42,7 @@ El modelo de análisis de factores psicosociales presentado en la Batería de In
 Factores de Riesgo Psicosocial (Ministerio de Protección Social, 2010) clasifica estos factores en tres categorías de
 condiciones: intralaborales, extralaborales e individuales.`}</p>
       <div className="flex justify-center">
-        <ZoomableImage src={fromPublic("MAPA1.png")} alt="MAPA 1" />
+        <ZoomableImage src={fromPublic("MAPA 1.png")} alt="MAPA 1" />
       </div>
       <p>{`Estas se refieren a las características del trabajo y su organización que impactan en la salud y
 bienestar de los individuos (Ministerio de la Protección Social, 2010). Este concepto surge a
@@ -53,11 +53,11 @@ partir de la revisión de modelos como el de Karasek y Theorell (1990) conocido 
 Las condiciones intralaborales, categorizadas en la batería y evaluadas a través de
 cuestionarios, están agrupadas en cuatro dominios, cada uno con diversa tipología:`}</p>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <ZoomableImage src={fromPublic("MAPA2.png")} alt="MAPA 2" />
-        <ZoomableImage src={fromPublic("MAPA3.png")} alt="MAPA 3" />
-        <ZoomableImage src={fromPublic("MAPA4.png")} alt="MAPA 4" />
-        <ZoomableImage src={fromPublic("MAPA5.png")} alt="MAPA 5" />
-        <ZoomableImage src={fromPublic("MAPA6.png")} alt="MAPA 6" />
+        <ZoomableImage src={fromPublic("MAPA 2.png")} alt="MAPA 2" />
+        <ZoomableImage src={fromPublic("MAPA 3.jpeg")} alt="MAPA 3" />
+        <ZoomableImage src={fromPublic("MAPA 4.jpeg")} alt="MAPA 4" />
+        <ZoomableImage src={fromPublic("MAPA 5.jpeg")} alt="MAPA 5" />
+        <ZoomableImage src={fromPublic("MAPA 6.jpeg")} alt="MAPA 6" />
       </div>
       <h3 className="font-semibold">Condiciones Extralaborales</h3>
       <p>{`Estas condiciones se refieren a los aspectos externos al ámbito laboral y que también ejercen
