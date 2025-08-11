@@ -2,6 +2,7 @@ import React, { forwardRef } from "react";
 import type { ReportOptions } from "@/types/report";
 import { strings } from "@/report/strings";
 import { defaultTheme } from "@/report/theme";
+import Metodologia from "./dashboard/Metodologia";
 
 type Props = {
   empresa: { nombre: string; nit?: string; logoUrl?: string };
@@ -172,7 +173,9 @@ const ReportePDF = forwardRef<HTMLDivElement, Props>(
           <>
             <section className="p-10">
               <Title>Metodología</Title>
-              <p className="mt-3">{strings.metodologia}</p>
+              <div className="mt-3">
+                <Metodologia />
+              </div>
             </section>
             <div className="page-break"></div>
           </>
