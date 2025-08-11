@@ -12,12 +12,12 @@ contexto laboral, el instrumento batería de riesgo psicosocial tiene como final
 reconocer cuales son las condiciones psicosociales que generan riesgo en la
 población trabajadora y que no se tienen identificadas; Su finalidad brindara
 acompañamiento, orientación y mejora la calidad de los procesos y sus efectos
-adversos. La resolución 2764 de 2022, nos insta a, ¨ Desarrollar acciones de
+adversos. La resolución 2764 de 2022, nos insta a,¨Desarrollar acciones de
 promoción en salud mental, identificar, prevenir, intervenir y canalizar hacia los
 servicios de atención en salud mental, en el marco del acompañamiento y apoyo a los
-empleadores y sus trabajadores afiliados. ¨.,El(La) [EMPRESA], ha aplicado la batería de riesgos Psicosocial teniendo en cuenta una
+empleadores y sus trabajadores afiliados.El(La) [EMPRESA], ha aplicado la batería de riesgos Psicosocial teniendo en cuenta una
 muestra representativa de [TOTAL] trabajadores de los cuales [FORMA_A] hicieron parte de la forma
-A y [FORMA_B] de la forma B; su aplicación se generó a traves del aplicativo cogent en [CIUDAD].
+A y [FORMA_B] de la forma B; su aplicación se generó de forma presencial en [CIUDAD].
 
 El instrumento Incluye el consentimiento informado, los cuestionarios Forma A,
 Forma B, ficha de datos generales, Cuestionario de estrés y Factor extralaboral.
@@ -139,8 +139,8 @@ Resolución 0312 de 2019, Deroga a la Resolución 1111 de 2017 dentro de la
 normatividad en seguridad y salud en el trabajo, estableciendo de esta manera los
 nuevos estándares mínimos para el Sistema de Gestión de Seguridad y Salud en el
 Trabajo y la implementación del SGSST de una empresa.
-6. Definiciones
 
+6. Definiciones
 Condiciones De Trabajo: Todos los aspectos intralaborales, extralaborales e individuales
 que están presentes al realizar una labor encaminada a la producción de bienes, servicios
 y/o conocimientos (Res. 2764 de 2022 del Ministerio de la Protección Social).
