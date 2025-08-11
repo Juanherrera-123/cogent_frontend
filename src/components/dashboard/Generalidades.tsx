@@ -63,8 +63,92 @@ cuestionarios, están agrupadas en cuatro dominios, cada uno con diversa tipolog
       <p>{`Estas condiciones se refieren a los aspectos externos al ámbito laboral y que también ejercen
 influencia en el bienestar del trabajador. Esto engloba el entorno familiar, social y económico, así
 como factores como las condiciones del lugar de residencia y la vivienda en sí.`}</p>
-      <p>{`Dentro de la batería de instrumentos, se consideran 7 dimensiones relacionadas con estos aspectos
+        <p>{`Dentro de la batería de instrumentos, se consideran 7 dimensiones relacionadas con estos aspectos
 externos, las cuales se detallan a continuación:`}</p>
-    </div>
-  );
-}
+        <p className="text-green-600 font-semibold text-center">
+          TABLE 1. Description of extra-laboral conditions by dimension
+        </p>
+        <div className="overflow-x-auto">
+          <table className="min-w-full border border-gray-300 text-sm">
+            <thead>
+              <tr>
+                <th className="border border-gray-300 px-4 py-2 text-left">Dimension</th>
+                <th className="border border-gray-300 px-4 py-2 text-left">Definition</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2 font-semibold align-top">
+                  Tiempo fuera del trabajo
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  Se refiere al tiempo que el individuo dedica a actividades diferentes a las
+                  laborales como descansar, compartir con familia y amigos, atender
+                  responsabilidades personales o domésticas, realizar actividades de recreación
+                  y ocio.
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2 font-semibold align-top">
+                  Relaciones Familiares
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  Caracteriza las interacciones del individuo con su núcleo familiar
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2 font-semibold align-top">
+                  Comunicación y Relaciones Interpersonales
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  Cualidades que caracterizan la comunicación e interacciones del individuo
+                  con sus allegados y amigos.
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2 font-semibold align-top">
+                  Situación Económica del grupo familiar
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  Trata de la disponibilidad de medios económicos para que el trabajador y su
+                  grupo familiar atiendan sus gastos básicos
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2 font-semibold align-top">
+                  Características de la vivienda y su entorno
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  Se refiere a las condiciones de infraestructura, ubicación y entorno de las
+                  instalaciones físicas del lugar habitual de residencia del trabajador y su
+                  grupo familiar.
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2 font-semibold align-top">
+                  Influencia del entorno extralaboral en el trabajo
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  Corresponde al influjo de las exigencias de los roles familiares y
+                  personales en el bienestar y la actividad laboral del trabajador.
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2 font-semibold align-top">
+                  Desplazamiento vivienda-trabajo-vivienda
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  Son Condiciones en que se realiza el traslado del trabajador desde su sitio
+                  de vivienda hasta su lugar de trabajo y viceversa. Comprende la facilidad, la
+                  comodidad del transporte y la duración del recorrido.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="italic text-sm mt-2">
+          Source: Batería de riesgo psicosocial (Ministerio de la protección social, 2010)
+        </p>
+      </div>
+    );
+  }
