@@ -184,6 +184,7 @@ externos, las cuales se detallan a continuación:`}</p>
         <p>{`Medio: La presentación de síntomas es indicativa de una respuesta de estrés moderada. Los síntomas más frecuentes y críticos ameritan observación y acciones sistemáticas de intervención para prevenir efectos perjudiciales en la salud además se sugiere identificar los factores de riesgo psicosocial intra y extra laboral que pudieran tener alguna relación con los efectos identificados.`}</p>
         <p>{`Alto: La cantidad de síntomas y su frecuencia de presentación es indicativa de una respuesta de estrés alto. Los síntomas más críticos frecuentes requieren intervención en el marco de un sistema de vigilancia epidemiológico, además es muy importante identificar los factores de riesgo psicosocial intra y extralaboral que pudieran tener alguna relación con los efectos identificados.`}</p>
         <p>{`Muy Alto: La cantidad de síntomas y su frecuencia de presentación es indicativa de una respuesta de estrés severa y perjudicial para la salud, de los síntomas más críticos y frecuentes requiere intervención inmediata en el marco de un sistema de vigilancia epidemiológico; asimismo, es imperativo identificar los factores de riesgo psicosocial intra y extralaboral que pudieran tener relación con los efectos identificados.`}</p>
+
       </div>
     );
   }
