@@ -5,6 +5,7 @@ import {
   type IntroduccionData,
 } from "@/report/introduccion";
 import Generalidades from "./Generalidades";
+import Metodologia from "./Metodologia";
 
 interface Props {
   tabClass: string;
@@ -46,7 +47,9 @@ export default function InformeTabs({
       <TabsContent value="generalidades">
         <Generalidades />
       </TabsContent>
-      <TabsContent value="metodologia" />
+      <TabsContent value="metodologia">
+        <Metodologia />
+      </TabsContent>
       <TabsContent value="resultados" />
       <TabsContent value="estrategias" />
     </Tabs>
