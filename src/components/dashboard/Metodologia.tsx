@@ -1,4 +1,5 @@
 import { useState } from "react";
+import RiskAccordion from "./RiskAccordion";
 
 function ZoomableImage({ src, alt }: { src: string; alt: string }) {
   const [open, setOpen] = useState(false);
@@ -162,6 +163,7 @@ export default function Metodologia() {
       <div className="flex justify-center">
         <ZoomableImage src={fromPublic("FIGURA 2.png")} alt="FIGURA 2" />
       </div>
+      <RiskAccordion />
     </div>
   );
 }
