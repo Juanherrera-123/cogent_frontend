@@ -1,14 +1,22 @@
 import { useState } from "react";
 import RiskAccordion from "./RiskAccordion";
 
-function ZoomableImage({ src, alt }: { src: string; alt: string }) {
+function ZoomableImage({
+  src,
+  alt,
+  className,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+}) {
   const [open, setOpen] = useState(false);
   return (
     <>
       <img
         src={src}
         alt={alt}
-        className="w-48 md:w-64 cursor-pointer mx-auto"
+        className={`${className ?? "w-48 md:w-64"} cursor-pointer mx-auto`}
         onClick={() => setOpen(true)}
       />
       {open && (
@@ -164,6 +172,20 @@ export default function Metodologia() {
         <ZoomableImage src={fromPublic("FIGURA 2.png")} alt="FIGURA 2" />
       </div>
       <RiskAccordion />
+      <p>
+        De igual forma, se ha tenido en cuenta las tablas de baremos (figura 11),
+        que indicaran el nivel de riesgo que representan las puntuaciones
+        transformadas de las dimensiones, de los dominios y del puntaje total.
+        Para definir los criterios para la priorizacion en la prevención o
+        intervención de los factores psico-sociales:
+      </p>
+      <div className="flex justify-center">
+        <ZoomableImage
+          src={fromPublic("FIGURA 3.png")}
+          alt="FIGURA 3"
+          className="w-full max-w-3xl"
+        />
+      </div>
     </div>
   );
 }
