@@ -18,6 +18,7 @@ import HomePage from "./components/HomePage";
 import PoliticaPrivacidad from "./components/PoliticaPrivacidad";
 import TerminosCondiciones from "./components/TerminosCondiciones";
 import RhomboidBackground from "./components/RhomboidBackground";
+import { handleError } from "./utils/handleError";
 import {
   CredencialEmpresa,
   FichaDatosGenerales as FichaDatos,
@@ -82,20 +83,28 @@ export default function App() {
 
   useEffect(() => {
     const cargarCreds = async () => {
-      const snap = await getDocs(collection(db, "credencialesCogent"));
-      const extras = snap.docs.map((d) => ({
-        id: d.id,
-        ...(d.data() as CredencialEmpresa & { rol: string }),
-      }));
-      setCredenciales((prev) => {
-        const merged = [...prev];
-        extras.forEach((c) => {
-          if (!merged.some((m) => m.usuario === c.usuario)) {
-            merged.push(c);
-          }
+      try {
+        const snap = await getDocs(collection(db, "credencialesCogent"));
+        const extras = snap.docs.map((d) => ({
+          id: d.id,
+          ...(d.data() as CredencialEmpresa & { rol: string }),
+        }));
+        setCredenciales((prev) => {
+          const merged = [...prev];
+          extras.forEach((c) => {
+            if (!merged.some((m) => m.usuario === c.usuario)) {
+              merged.push(c);
+            }
+          });
+          return merged;
         });
-        return merged;
-      });
+      } catch (err) {
+        handleError(
+          err,
+          "Error al cargar credenciales",
+          "No se pudieron cargar las credenciales"
+        );
+      }
     };
     cargarCreds();
   }, []);
@@ -143,8 +152,11 @@ export default function App() {
       ]);
       return true;
     } catch (err) {
-      console.error("Error al agregar empresa", err);
-      alert("No se pudo agregar la empresa");
+      handleError(
+        err,
+        "Error al agregar empresa",
+        "No se pudo agregar la empresa"
+      );
       return false;
     }
   };
@@ -157,8 +169,11 @@ export default function App() {
       setCredenciales((prev) => prev.filter((c) => c.usuario !== usuario));
       return true;
     } catch (err) {
-      console.error("Error al eliminar empresa", err);
-      alert("No se pudo eliminar la empresa");
+      handleError(
+        err,
+        "Error al eliminar empresa",
+        "No se pudo eliminar la empresa"
+      );
       return false;
     }
   };
@@ -186,8 +201,11 @@ export default function App() {
       );
       return true;
     } catch (err) {
-      console.error("Error al editar empresa", err);
-      alert("No se pudo editar la empresa");
+      handleError(
+        err,
+        "Error al editar empresa",
+        "No se pudo editar la empresa"
+      );
       return false;
     }
   };
@@ -249,8 +267,11 @@ export default function App() {
         try {
           await addDoc(collection(db, "resultadosCogent"), cleanData);
         } catch (err) {
-          console.error("Error al guardar resultados", err);
-          alert("No se pudieron guardar los resultados");
+          handleError(
+            err,
+            "Error al guardar resultados",
+            "No se pudieron guardar los resultados"
+          );
         }
       }
     };
