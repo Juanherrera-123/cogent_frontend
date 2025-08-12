@@ -30,6 +30,8 @@ import { buildReportPayload } from "@/utils/buildReportPayload";
 import { ReportPayload } from "@/types/report";
 import type { ReportOptions } from "@/types/report";
 import { recomendacionesPorResultados, conclusionesSinteticas } from "@/utils/recomendaciones";
+import { buildNarrativaContext } from "@/utils/narrativeMapper";
+import { getNarrativaSociodemo } from "@/services/narrativa";
 
 const nivelesRiesgo = [
   "Riesgo muy bajo",
@@ -754,6 +756,9 @@ export default function DashboardResultados({
     ciudad: ciudadInforme,
   };
 
+  const narrativaCtx = buildNarrativaContext(reportPayload);
+  const narrativaSociodemo = getNarrativaSociodemo(narrativaCtx);
+
   const empresaId = reportPayload.empresa?.id || "empresa-actual";
 
   const [reportOptions, setReportOptions] = useState<ReportOptions>(() => (
@@ -1242,7 +1247,11 @@ export default function DashboardResultados({
                     <p className="text-xs text-gray-500 mt-2">{progress}</p>
                   )}
                 </div>
-                <InformeTabs tabClass={tabPill} introduccionData={introData} />
+                <InformeTabs
+                  tabClass={tabPill}
+                  introduccionData={introData}
+                  narrativaSociodemo={narrativaSociodemo}
+                />
             </section>
           </div>
 
@@ -1299,6 +1308,7 @@ export default function DashboardResultados({
                 recomendaciones={recomendaciones}
                 conclusiones={conclusiones}
                 options={reportOptions}
+                narrativaSociodemo={narrativaSociodemo}
               />
             </div>
           )}

@@ -26,6 +26,7 @@ type Props = {
   recomendaciones: string[];
   conclusiones: string;
   options?: ReportOptions;
+  narrativaSociodemo?: string;
 };
 
 const ReportePDF = forwardRef<HTMLDivElement, Props>(
@@ -39,6 +40,7 @@ const ReportePDF = forwardRef<HTMLDivElement, Props>(
       recomendaciones,
       conclusiones,
       options,
+      narrativaSociodemo,
     },
     ref
   ) => {
@@ -163,6 +165,7 @@ const ReportePDF = forwardRef<HTMLDivElement, Props>(
           <>
             <section className="p-10">
               <Title>Sociodemografía de la Muestra</Title>
+              {narrativaSociodemo && <p className="mt-4 text-justify">{narrativaSociodemo}</p>}
               <div className="mt-6">{tablas.sociodemo}</div>
             </section>
             <div className="page-break"></div>
