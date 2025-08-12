@@ -181,7 +181,7 @@ export default function Metodologia() {
       </p>
       <div className="flex justify-center">
         <ZoomableImage
-          src={fromPublic("FIGURA 3.png")}
+          src={fromPublic("FIGURA_3.png")}
           alt="FIGURA 3"
           className="w-full max-w-3xl"
         />
