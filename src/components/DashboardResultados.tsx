@@ -1254,6 +1254,7 @@ export default function DashboardResultados({
                   introduccionData={introData}
                   narrativaSociodemo={narrativaSociodemo}
                   recomendacionesSociodemo={recomendacionesSociodemo}
+                  payload={reportPayload}
                 />
             </section>
           </div>
