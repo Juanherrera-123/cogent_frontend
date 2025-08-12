@@ -32,6 +32,7 @@ import type { ReportOptions } from "@/types/report";
 import { recomendacionesPorResultados, conclusionesSinteticas } from "@/utils/recomendaciones";
 import { buildNarrativaContext } from "@/utils/narrativeMapper";
 import { getNarrativaSociodemo } from "@/services/narrativa";
+import { getRecomendacionSociodemo } from "@/services/recomendacionSociodemo";
 
 const nivelesRiesgo = [
   "Riesgo muy bajo",
@@ -758,6 +759,7 @@ export default function DashboardResultados({
 
   const narrativaCtx = buildNarrativaContext(reportPayload);
   const narrativaSociodemo = getNarrativaSociodemo(narrativaCtx);
+  const recomendacionesSociodemo = getRecomendacionSociodemo(reportPayload.sociodemo);
 
   const empresaId = reportPayload.empresa?.id || "empresa-actual";
 
@@ -1251,6 +1253,7 @@ export default function DashboardResultados({
                   tabClass={tabPill}
                   introduccionData={introData}
                   narrativaSociodemo={narrativaSociodemo}
+                  recomendacionesSociodemo={recomendacionesSociodemo}
                 />
             </section>
           </div>
@@ -1309,6 +1312,7 @@ export default function DashboardResultados({
                 conclusiones={conclusiones}
                 options={reportOptions}
                 narrativaSociodemo={narrativaSociodemo}
+                recomendacionesSociodemo={recomendacionesSociodemo}
               />
             </div>
           )}

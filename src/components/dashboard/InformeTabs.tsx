@@ -11,12 +11,14 @@ interface Props {
   tabClass: string;
   introduccionData: IntroduccionData;
   narrativaSociodemo?: string;
+  recomendacionesSociodemo?: string;
 }
 
 export default function InformeTabs({
   tabClass,
   introduccionData,
   narrativaSociodemo,
+  recomendacionesSociodemo,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -57,6 +59,7 @@ export default function InformeTabs({
           <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed space-y-4">
             <h3 className="text-lg font-semibold">Descripción sociodemográfica</h3>
             <p>{narrativaSociodemo}</p>
+            {recomendacionesSociodemo && <p>{recomendacionesSociodemo}</p>}
           </div>
         )}
       </TabsContent>
