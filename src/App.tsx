@@ -1,36 +1,33 @@
 import { useState, useEffect } from "react";
+import { addDoc, collection } from "firebase/firestore";
+
 import RhomboidBackground from "./components/RhomboidBackground";
 import HomePage from "./components/HomePage";
 import PoliticaPrivacidad from "./components/PoliticaPrivacidad";
 import TerminosCondiciones from "./components/TerminosCondiciones";
-import RhomboidBackground from "./components/RhomboidBackground";
+import Login from "./components/Login";
+import DashboardResultados from "./components/DashboardResultados";
+import Consentimiento from "./components/Consentimiento";
+import SelectorScreen from "./components/SelectorScreen";
+import FichaScreen from "./components/FichaScreen";
+import BloquesScreen from "./components/BloquesScreen";
+import ExtralaboralScreen from "./components/ExtralaboralScreen";
+import EstresScreen from "./components/EstresScreen";
+import FinalScreen from "./components/FinalScreen";
+
 import { handleError } from "./utils/handleError";
-import {
-  CredencialEmpresa,
-  FichaDatosGenerales as FichaDatos,
-  SurveyResponses,
-  IntralaboralResultado,
-  ExtralaboralResultado,
-  EstresResultado,
-  GlobalResultado,
-} from "./types";
-import {
-  bloquesFormaA,
-  bloquesFormaB,
-  preguntasA,
-  preguntasB,
-  preguntasExtralaboral,
-  preguntasEstres,
-  bloqueExtralaboral,
-  bloqueEstres
-} from "./data/preguntas";
-import { calcularEstres } from "./utils/calcularEstres";
-import { calcularExtralaboral } from "./utils/calcularExtralaboral";
+import { IntralaboralResultado, GlobalResultado } from "./types";
+import { preguntasA, preguntasB } from "./data/preguntas";
 import { calcularFormaA } from "./utils/calcularFormaA";
 import { calcularFormaB } from "./utils/calcularFormaB";
-import { calcularGlobalAExtrala, calcularGlobalBExtrala } from "./utils/calcularGlobalA";
+import {
+  calcularGlobalAExtrala,
+  calcularGlobalBExtrala,
+} from "./utils/calcularGlobalA";
 import removeUndefined from "./utils/removeUndefined";
-import { demoCredencialesConst } from "./data/demoCredenciales";
+import useCredenciales from "./hooks/useCredenciales";
+import useSurveySteps from "./hooks/useSurveySteps";
+import { db } from "./firebaseConfig";
 
 type RolUsuario = "ninguno" | "psicologa" | "dueno";
 
@@ -58,172 +55,43 @@ export default function App() {
     resultadoExtralaboral,
   } = useSurveySteps();
 
-  useEffect(() => {
-    const cargarCreds = async () => {
-      try {
-        const snap = await getDocs(collection(db, "credencialesCogent"));
-        const extras = snap.docs.map((d) => ({
-          id: d.id,
-          ...(d.data() as CredencialEmpresa & { rol: string }),
-        }));
-        setCredenciales((prev) => {
-          const merged = [...prev];
-          extras.forEach((c) => {
-            if (!merged.some((m) => m.usuario === c.usuario)) {
-              merged.push(c);
-            }
-          });
-          return merged;
-        });
-      } catch (err) {
-        handleError(
-          err,
-          "Error al cargar credenciales",
-          "No se pudieron cargar las credenciales"
-        );
-      }
-    };
-    cargarCreds();
-  }, []);
-
-  useEffect(() => {
-    const empresas = Array.from(
-      new Set(
-        credenciales
-          .filter((c) => c.rol === "dueno" && c.empresa)
-          .map((c) => c.empresa as string)
-      )
-    );
-    setEmpresasIniciales(empresas);
-  }, [credenciales]);
-
-  // Para guardar todas las respuestas por sección
-  const [respuestas, setRespuestas] = useState<SurveyResponses>({});
-  // Para guardar los resultados de cada test
-  const [resultadoEstres, setResultadoEstres] = useState<EstresResultado | null>(null);
-  const [resultadoExtralaboral, setResultadoExtralaboral] = useState<ExtralaboralResultado | null>(null);
-  const [resultadoFormaA, setResultadoFormaA] = useState<IntralaboralResultado | null>(null);
-  const [resultadoFormaB, setResultadoFormaB] = useState<IntralaboralResultado | null>(null);
-  const [resultadoGlobalAExtra, setResultadoGlobalAExtra] = useState<GlobalResultado | null>(null);
-  const [resultadoGlobalBExtra, setResultadoGlobalBExtra] = useState<GlobalResultado | null>(null);
-
-  // Manejo de login (muy básico)
+  // Manejo de login
   const [rol, setRol] = useState<RolUsuario>("ninguno");
   const [empresaActual, setEmpresaActual] = useState<string | null>(null);
 
-  const agregarEmpresa = async (
-    nombre: string,
-    usuario: string,
-    password: string
-  ): Promise<boolean> => {
-    try {
-      const docRef = await addDoc(collection(db, "credencialesCogent"), {
-        usuario,
-        password,
-        rol: "dueno",
-        empresa: nombre,
-      });
-      setCredenciales((prev) => [
-        ...prev,
-        { id: docRef.id, usuario, password, rol: "dueno", empresa: nombre },
-      ]);
-      return true;
-    } catch (err) {
-      handleError(
-        err,
-        "Error al agregar empresa",
-        "No se pudo agregar la empresa"
-      );
-      return false;
-    }
-  };
-
-  const eliminarEmpresa = async (usuario: string): Promise<boolean> => {
-    const cred = credenciales.find((c) => c.usuario === usuario);
-    if (!cred?.id) return false;
-    try {
-      await deleteDoc(doc(db, "credencialesCogent", cred.id));
-      setCredenciales((prev) => prev.filter((c) => c.usuario !== usuario));
-      return true;
-    } catch (err) {
-      handleError(
-        err,
-        "Error al eliminar empresa",
-        "No se pudo eliminar la empresa"
-      );
-      return false;
-    }
-  };
-
-  const editarEmpresa = async (
-    originalUsuario: string,
-    nombre: string,
-    usuario: string,
-    password: string
-  ): Promise<boolean> => {
-    const cred = credenciales.find((c) => c.usuario === originalUsuario);
-    if (!cred?.id) return false;
-    try {
-      await updateDoc(doc(db, "credencialesCogent", cred.id), {
-        usuario,
-        password,
-        empresa: nombre,
-      });
-      setCredenciales((prev) =>
-        prev.map((c) =>
-          c.usuario === originalUsuario
-            ? { ...c, usuario, password, empresa: nombre }
-            : c
-        )
-      );
-      return true;
-    } catch (err) {
-      handleError(
-        err,
-        "Error al editar empresa",
-        "No se pudo editar la empresa"
-      );
-      return false;
-    }
-  };
-
-  // Cuando finaliza la encuesta (luego del bloque de estrés)
+  // Cuando finaliza la encuesta se calculan los resultados y se guardan
   useEffect(() => {
     const guardar = async () => {
       if (step === "final") {
-        // Calcula resultados por formulario
-        let resultadoForma = null;
-        let resultadoGlobal = null;
-      if (formType === "A" && respuestas.bloques) {
-        const arr = Array.from({ length: preguntasA.length }, (_, i) =>
-          respuestas.bloques?.[i] ?? ""
-        );
-        resultadoForma = calcularFormaA(arr);
-        setResultadoFormaA(resultadoForma);
-        if (resultadoExtralaboral) {
-          resultadoGlobal = calcularGlobalAExtrala(
-            resultadoForma?.total?.suma ?? 0,
-            resultadoExtralaboral.puntajeBrutoTotal ?? 0
+        let resultadoForma: IntralaboralResultado | null = null;
+        let resultadoGlobal: GlobalResultado | null = null;
+        if (formType === "A" && respuestas.bloques) {
+          const arr = Array.from(
+            { length: preguntasA.length },
+            (_, i) => respuestas.bloques?.[i] ?? ""
           );
-          setResultadoGlobalAExtra(resultadoGlobal);
-        }
-      } else if (formType === "B" && respuestas.bloques) {
-        const arr = Array.from({ length: preguntasB.length }, (_, i) =>
-          respuestas.bloques?.[i] ?? ""
-        );
-        resultadoForma = calcularFormaB(arr);
-        setResultadoFormaB(resultadoForma);
-        if (resultadoExtralaboral) {
-          resultadoGlobal = calcularGlobalBExtrala(
-            resultadoForma?.total?.suma ?? 0,
-            resultadoExtralaboral.puntajeBrutoTotal ?? 0
+          resultadoForma = calcularFormaA(arr);
+          if (resultadoExtralaboral) {
+            resultadoGlobal = calcularGlobalAExtrala(
+              resultadoForma?.total?.suma ?? 0,
+              resultadoExtralaboral.puntajeBrutoTotal ?? 0
+            );
+          }
+        } else if (formType === "B" && respuestas.bloques) {
+          const arr = Array.from(
+            { length: preguntasB.length },
+            (_, i) => respuestas.bloques?.[i] ?? ""
           );
-          setResultadoGlobalBExtra(resultadoGlobal);
+          resultadoForma = calcularFormaB(arr);
+          if (resultadoExtralaboral) {
+            resultadoGlobal = calcularGlobalBExtrala(
+              resultadoForma?.total?.suma ?? 0,
+              resultadoExtralaboral.puntajeBrutoTotal ?? 0
+            );
+          }
         }
-      }
 
-        // Guarda todo lo que quieras conservar
-        const data: any = {
+        const data: Record<string, unknown> = {
           ficha,
           respuestas,
           resultadoEstres,
@@ -239,7 +107,7 @@ export default function App() {
           data.resultadoFormaB = resultadoForma;
           data.resultadoGlobalBExtralaboral = resultadoGlobal;
         }
-        // Limpia datos y guarda en Firestore
+
         const cleanData = removeUndefined(data);
         try {
           await addDoc(collection(db, "resultadosCogent"), cleanData);
@@ -336,3 +204,4 @@ export default function App() {
     </>
   );
 }
+
