@@ -56,7 +56,6 @@ export async function exportElementToPDF(
     bottom = 24,
     left = 24,
   } = opts;
-  void bottom;
 
   onProgress?.("Preparando contenido…");
   await waitForImages(element);
@@ -64,6 +63,8 @@ export async function exportElementToPDF(
   await idle(100);
 
   const doc = new jsPDF({ orientation: "p", unit: "pt", format: "a4" });
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
 
   onProgress?.("Renderizando a PDF…");
   await doc.html(element, {
@@ -71,11 +72,13 @@ export async function exportElementToPDF(
     y: top,
     html2canvas: { scale },
     autoPaging: "text",
-    width: 595.28 - left - right, // A4 width en pt
+    width: pageWidth - left - right,
+    height: pageHeight - top - bottom,
     windowWidth: 1123,
     callback: () => {
       onProgress?.("Descargando…");
       doc.save(fileName || "informe.pdf");
     },
-  });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any);
 }
