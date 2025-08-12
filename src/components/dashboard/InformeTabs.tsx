@@ -10,11 +10,13 @@ import Metodologia from "./Metodologia";
 interface Props {
   tabClass: string;
   introduccionData: IntroduccionData;
+  narrativaSociodemo?: string;
 }
 
 export default function InformeTabs({
   tabClass,
   introduccionData,
+  narrativaSociodemo,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -50,7 +52,14 @@ export default function InformeTabs({
       <TabsContent value="metodologia">
         <Metodologia />
       </TabsContent>
-      <TabsContent value="resultados" />
+      <TabsContent value="resultados">
+        {narrativaSociodemo && (
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed space-y-4">
+            <h3 className="text-lg font-semibold">Descripción sociodemográfica</h3>
+            <p>{narrativaSociodemo}</p>
+          </div>
+        )}
+      </TabsContent>
       <TabsContent value="estrategias" />
     </Tabs>
   );

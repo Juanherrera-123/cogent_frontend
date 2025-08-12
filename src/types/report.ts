@@ -35,6 +35,7 @@ export interface Sociodemo {
   escolaridad?: SociodemoDistribucion;
   estrato?: SociodemoDistribucion;
   vivienda?: SociodemoDistribucion;
+  personasACargo?: SociodemoDistribucion;
   antiguedad?: SociodemoDistribucion;
   tipoCargo?: SociodemoDistribucion;
   tipoContrato?: SociodemoDistribucion;
