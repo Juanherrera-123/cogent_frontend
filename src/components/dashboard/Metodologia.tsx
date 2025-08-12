@@ -166,10 +166,18 @@ export default function Metodologia() {
         </li>
       </ol>
       <div className="flex justify-center">
-        <ZoomableImage src={fromPublic("FIGURA 1.png")} alt="FIGURA 1" />
+        <ZoomableImage
+          src={fromPublic("FIGURA 1.png")}
+          alt="FIGURA 1"
+          className="w-full max-w-3xl"
+        />
       </div>
       <div className="flex justify-center">
-        <ZoomableImage src={fromPublic("FIGURA 2.png")} alt="FIGURA 2" />
+        <ZoomableImage
+          src={fromPublic("FIGURA 2.png")}
+          alt="FIGURA 2"
+          className="w-full max-w-3xl"
+        />
       </div>
       <RiskAccordion />
       <p>
