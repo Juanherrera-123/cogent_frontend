@@ -18,7 +18,12 @@ type Pregunta = {
 type Props = {
   bloques: Bloque[];
   preguntas: Pregunta[];
-  onFinish: (respuestas: Record<number, string>) => void;
+  /**
+   * Devuelve todas las respuestas en el orden correcto.
+   * El array resultante tendrá la misma longitud que el total
+   * de preguntas recibidas por el componente.
+   */
+  onFinish: (respuestas: string[]) => void;
 };
 
 export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Props) {
@@ -40,17 +45,6 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
     bloque.preguntas[0],
     bloque.preguntas[1] + 1
   );
-
-  // Validar: solo las obligatorias, excepto si es filtro (tipo yesno y filtro==true siempre cuenta)
-  const preguntasFaltantes = preguntasBloque
-    .map((preg, i) => ({
-      idx: bloque.preguntas[0] + i,
-      obligatoria: bloque.obligatorio || preg.filtro, // Si bloque es obligatorio o la pregunta es filtro
-      tipo: preg.tipo,
-    }))
-    .filter(q =>
-      q.obligatoria && (respuestas[q.idx] === undefined || respuestas[q.idx] === "")
-    );
 
   // Cambiar la respuesta
   const handleChange = (idx: number, valor: string) => {
@@ -81,7 +75,11 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
     if (next < bloques.length) {
       setBloqueActual(next);
     } else {
-      onFinish(respuestas);
+      const ordered = Array.from(
+        { length: preguntas.length },
+        (_, i) => respuestas[i] ?? ""
+      );
+      onFinish(ordered);
     }
   };
 
@@ -117,59 +115,68 @@ export default function BloquesDePreguntas({ bloques, preguntas, onFinish }: Pro
         <h3 className="font-bold text-[#132045] text-xl md:text-2xl mb-2 text-center font-montserrat">
           {bloque.enunciado}
         </h3>
-      {preguntasBloque.map((preg, i) => {
-  const idx = bloque.preguntas[0] + i;
-  return (
-    <div key={idx} className="mb-4">
-      <label
-        className={cn(
-          "font-semibold block mb-1",
-          faltantes.includes(idx) && "text-red-500"
-        )}
-      >
-        {`${idx + 1}. ${preg.texto.replace(/^\d+\.?\s*/, "")}`}
-      </label>
-      {preg.tipo === "likert" && (
-        <select
-          className={cn("input", faltantes.includes(idx) && "border-red-500")}
-          value={respuestas[idx] || ""}
-          onChange={e => handleChange(idx, e.target.value)}
-        >
-          <option value="">Seleccione una opción</option>
-          <option value="siempre">Siempre</option>
-          <option value="casi siempre">Casi siempre</option>
-          <option value="algunas veces">Algunas veces</option>
-          <option value="casi nunca">Casi nunca</option>
-          <option value="nunca">Nunca</option>
-        </select>
-      )}
-      {preg.tipo === "estres" && (
-        <select
-          className={cn("input", faltantes.includes(idx) && "border-red-500")}
-          value={respuestas[idx] || ""}
-          onChange={e => handleChange(idx, e.target.value)}
-        >
-          <option value="">Seleccione una opción</option>
-          <option value="siempre">Siempre</option>
-          <option value="casi siempre">Casi siempre</option>
-          <option value="a veces">A veces</option>
-          <option value="nunca">Nunca</option>
-        </select>
-      )}
-      {preg.tipo === "yesno" && (
-        <select
-          className={cn("input", faltantes.includes(idx) && "border-red-500")}
-          value={respuestas[idx] || ""}
-          onChange={e => handleChange(idx, e.target.value)}
-        >
-          <option value="">Seleccione una opción</option>
-          <option value="sí">Sí</option>
-          <option value="no">No</option>
-        </select>
-        )}
-       </div>
-      );
-      })}
+        {preguntasBloque.map((preg, i) => {
+          const idx = bloque.preguntas[0] + i;
+          return (
+            <div key={idx} className="mb-4">
+              <label
+                className={cn(
+                  "font-semibold block mb-1",
+                  faltantes.includes(idx) && "text-red-500"
+                )}
+              >
+                {`${idx + 1}. ${preg.texto.replace(/^\d+\.?\s*/, "")}`}
+              </label>
+              {preg.tipo === "likert" && (
+                <select
+                  className={cn(
+                    "input",
+                    faltantes.includes(idx) && "border-red-500"
+                  )}
+                  value={respuestas[idx] || ""}
+                  onChange={(e) => handleChange(idx, e.target.value)}
+                >
+                  <option value="">Seleccione una opción</option>
+                  <option value="siempre">Siempre</option>
+                  <option value="casi siempre">Casi siempre</option>
+                  <option value="algunas veces">Algunas veces</option>
+                  <option value="casi nunca">Casi nunca</option>
+                  <option value="nunca">Nunca</option>
+                </select>
+              )}
+              {preg.tipo === "estres" && (
+                <select
+                  className={cn(
+                    "input",
+                    faltantes.includes(idx) && "border-red-500"
+                  )}
+                  value={respuestas[idx] || ""}
+                  onChange={(e) => handleChange(idx, e.target.value)}
+                >
+                  <option value="">Seleccione una opción</option>
+                  <option value="siempre">Siempre</option>
+                  <option value="casi siempre">Casi siempre</option>
+                  <option value="a veces">A veces</option>
+                  <option value="nunca">Nunca</option>
+                </select>
+              )}
+              {preg.tipo === "yesno" && (
+                <select
+                  className={cn(
+                    "input",
+                    faltantes.includes(idx) && "border-red-500"
+                  )}
+                  value={respuestas[idx] || ""}
+                  onChange={(e) => handleChange(idx, e.target.value)}
+                >
+                  <option value="">Seleccione una opción</option>
+                  <option value="sí">Sí</option>
+                  <option value="no">No</option>
+                </select>
+              )}
+            </div>
+          );
+        })}
       {faltantes.length > 0 && (
         <div className="text-red-600 font-bold text-center">
           Responde las preguntas marcadas en rojo.
