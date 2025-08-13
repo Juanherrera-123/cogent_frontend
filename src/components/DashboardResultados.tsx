@@ -330,8 +330,6 @@ export default function DashboardResultados({
   const [tabIntra, setTabIntra] = useState("global"); // Para sub-tabs de formaA/B
 
   const [tabExtra, setTabExtra] = useState("global");
-  const [tabGlobalExtra, setTabGlobalExtra] = useState("A"); // Para sub-tabs global extra
-
 
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
   const [seleccionados, setSeleccionados] = useState<number[]>([]);
@@ -393,8 +391,6 @@ export default function DashboardResultados({
   const datosEstres = datosMostrados.filter(
     (d) => d.resultadoEstres && d.resultadoEstres.valido !== false
   );
-  const datosGlobalAE = datosMostrados.filter((d) => d.resultadoGlobalAExtralaboral);
-  const datosGlobalBE = datosMostrados.filter((d) => d.resultadoGlobalBExtralaboral);
 
   const levelsOrder = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto"];
   const liderazgoData: RiskDistributionData = useMemo(() => {
@@ -459,8 +455,6 @@ export default function DashboardResultados({
   const resumenB = resumenNivel(datosB, "resultadoFormaB", nivelesForma);
   const resumenExtra = resumenNivel(datosExtra, "resultadoExtralaboral", nivelesExtra);
   const resumenEstres = resumenNivel(datosEstres, "resultadoEstres", nivelesEstres);
-  const resumenGlobalAE = resumenNivel(datosGlobalAE, "resultadoGlobalAExtralaboral", nivelesForma);
-  const resumenGlobalBE = resumenNivel(datosGlobalBE, "resultadoGlobalBExtralaboral", nivelesForma);
 
   // ---- Promedios por dominio/dimensión ----
 
@@ -886,8 +880,6 @@ export default function DashboardResultados({
     else if (tab === "formaA") datosExportar = datosA;
     else if (tab === "formaB") datosExportar = datosB;
     else if (tab === "extralaboral") datosExportar = datosExtra;
-    else if (tab === "globalExtra") datosExportar =
-      tabGlobalExtra === "A" ? datosGlobalAE : datosGlobalBE;
     else if (tab === "estres") datosExportar = datosEstres;
     else if (tab === "informe" || tab === "informeCompleto")
       datosExportar = datosInforme;
@@ -924,16 +916,6 @@ export default function DashboardResultados({
               "Puntaje Extralaboral":
                 d.resultadoExtralaboral?.puntajeTransformadoTotal ?? "",
               "Nivel Extralaboral": d.resultadoExtralaboral?.nivelGlobal ?? "",
-            }),
-            ...(tab === "globalExtra" && {
-              "Puntaje Global A+Extra":
-                d.resultadoGlobalAExtralaboral?.puntajeGlobal ??
-                d.resultadoGlobalBExtralaboral?.puntajeGlobal ??
-                "",
-              "Nivel Global":
-                d.resultadoGlobalAExtralaboral?.nivelGlobal ??
-                d.resultadoGlobalBExtralaboral?.nivelGlobal ??
-                "",
             }),
             ...(tab === "estres" && {
               "Puntaje Estrés": d.resultadoEstres?.puntajeTransformado ?? "",
@@ -1065,7 +1047,6 @@ export default function DashboardResultados({
         <TabsTrigger className={tabPill} value="formaA">Forma A (Intralaboral)</TabsTrigger>
         <TabsTrigger className={tabPill} value="formaB">Forma B (Intralaboral)</TabsTrigger>
         <TabsTrigger className={tabPill} value="extralaboral">Extralaboral</TabsTrigger>
-        <TabsTrigger className={tabPill} value="globalExtra">Global Extra</TabsTrigger>
         <TabsTrigger className={tabPill} value="estres">Estrés</TabsTrigger>
         {rol === "psicologa" && (
           <>
@@ -1179,49 +1160,6 @@ export default function DashboardResultados({
                     )}
                   </>
                 )}
-            </TabsContent>
-          </Tabs>
-        </TabsContent>
-
-        {/* ---- GLOBAL EXTRA ---- */}
-        <TabsContent value="globalExtra">
-          <Tabs
-            value={tabGlobalExtra}
-            onValueChange={setTabGlobalExtra}
-            className="w-full"
-          >
-            <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
-
-              <TabsTrigger className={tabPill} value="A">Forma A</TabsTrigger>
-              <TabsTrigger className={tabPill} value="B">Forma B</TabsTrigger>
-            </TabsList>
-            <TabsContent value="A">
-              {datosGlobalAE.length === 0 ? (
-                <div className="text-[var(--gray-medium)] py-4">No hay resultados Globales A.</div>
-              ) : (
-                <>
-                  <GraficaBarraSimple
-                    resumen={resumenGlobalAE}
-                    titulo="Niveles Global A + Extra"
-                    chartType={chartType}
-                  />
-                  {!soloGenerales && <TablaIndividual datos={datosGlobalAE} tipo="globalExtra" />}
-                </>
-              )}
-            </TabsContent>
-            <TabsContent value="B">
-              {datosGlobalBE.length === 0 ? (
-                <div className="text-[var(--gray-medium)] py-4">No hay resultados Globales B.</div>
-              ) : (
-                <>
-                  <GraficaBarraSimple
-                    resumen={resumenGlobalBE}
-                    titulo="Niveles Global B + Extra"
-                    chartType={chartType}
-                  />
-                  {!soloGenerales && <TablaIndividual datos={datosGlobalBE} tipo="globalExtra" />}
-                </>
-              )}
             </TabsContent>
           </Tabs>
         </TabsContent>

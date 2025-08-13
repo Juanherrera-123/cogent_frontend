@@ -72,6 +72,8 @@ export default function InformeTabs({
             </div>
           )}
           <TablaSociodemo payload={payload} />
+        </TabsContent>
+        <TabsContent value="graficas">
           <RiskDistributionChart
             title="Caracteristicas del liderazgo Forma A y B"
             data={liderazgoData}
