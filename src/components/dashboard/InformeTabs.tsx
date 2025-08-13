@@ -46,6 +46,9 @@ export default function InformeTabs({
         <TabsTrigger className={tabClass} value="sociodemografia">
           Sociodemografía
         </TabsTrigger>
+        <TabsTrigger className={tabClass} value="graficas">
+          Gráficas
+        </TabsTrigger>
         <TabsTrigger className={tabClass} value="estrategias">
           Estrategias
         </TabsTrigger>
