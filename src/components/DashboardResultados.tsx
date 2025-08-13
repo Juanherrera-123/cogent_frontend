@@ -33,6 +33,7 @@ import { recomendacionesPorResultados, conclusionesSinteticas } from "@/utils/re
 import { buildNarrativaContext } from "@/utils/narrativeMapper";
 import { getNarrativaSociodemo } from "@/services/narrativa";
 import { getRecomendacionSociodemo } from "@/services/recomendacionSociodemo";
+import type { RiskDistributionData } from "@/components/RiskDistributionChart";
 
 const nivelesRiesgo = [
   "Riesgo muy bajo",
@@ -393,6 +394,45 @@ export default function DashboardResultados({
   );
   const datosGlobalAE = datosMostrados.filter((d) => d.resultadoGlobalAExtralaboral);
   const datosGlobalBE = datosMostrados.filter((d) => d.resultadoGlobalBExtralaboral);
+
+  const levelsOrder = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto"];
+  const liderazgoData: RiskDistributionData = useMemo(() => {
+    const counts: Record<string, number> = {};
+    levelsOrder.forEach((lvl) => (counts[lvl] = 0));
+    let invalid = 0;
+    let total = 0;
+    const nombre = "Características del liderazgo";
+    [...datosA, ...datosB].forEach((d) => {
+      let seccion: any =
+        d.resultadoFormaA?.dimensiones?.[nombre] ||
+        d.resultadoFormaB?.dimensiones?.[nombre];
+      if (!seccion && Array.isArray(d.resultadoFormaA?.dimensiones)) {
+        seccion = d.resultadoFormaA.dimensiones.find(
+          (x: any) => x.nombre === nombre
+        );
+      }
+      if (!seccion && Array.isArray(d.resultadoFormaB?.dimensiones)) {
+        seccion = d.resultadoFormaB.dimensiones.find(
+          (x: any) => x.nombre === nombre
+        );
+      }
+      const nivel = seccion?.nivel;
+      if (nivel) {
+        total++;
+        const base =
+          nivel === "Sin riesgo" ? "Muy bajo" : nivel.replace("Riesgo ", "");
+        if (counts[base] !== undefined) counts[base] += 1;
+        else invalid++;
+      }
+    });
+    const data: RiskDistributionData = {
+      total,
+      counts,
+      levelsOrder: [...levelsOrder],
+    };
+    if (invalid > 0) data.invalid = invalid;
+    return data;
+  }, [datosA, datosB]);
 
   const ciudadInforme =
     datosMostrados.find((d) => d.ficha?.trabajoCiudad)?.ficha?.trabajoCiudad || "";
@@ -1255,6 +1295,7 @@ export default function DashboardResultados({
                   narrativaSociodemo={narrativaSociodemo}
                   recomendacionesSociodemo={recomendacionesSociodemo}
                   payload={reportPayload}
+                  liderazgoData={liderazgoData}
                 />
             </section>
           </div>

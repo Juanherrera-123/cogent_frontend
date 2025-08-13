@@ -5,6 +5,9 @@ import {
   type IntroduccionData,
 } from "@/report/introduccion";
 import TablaSociodemo from "@/components/TablaSociodemo";
+import RiskDistributionChart, {
+  type RiskDistributionData,
+} from "@/components/RiskDistributionChart";
 import { ReportPayload } from "@/types/report";
 import Generalidades from "./Generalidades";
 import Metodologia from "./Metodologia";
@@ -15,6 +18,7 @@ interface Props {
   narrativaSociodemo?: string;
   recomendacionesSociodemo?: string;
   payload: ReportPayload;
+  liderazgoData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -23,6 +27,7 @@ export default function InformeTabs({
   narrativaSociodemo,
   recomendacionesSociodemo,
   payload,
+  liderazgoData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -45,31 +50,35 @@ export default function InformeTabs({
           Estrategias
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="introduccion">
-        <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed space-y-4">
-          {intro.split("\n\n").map((p, i) => (
-            <p key={i}>{p}</p>
-          ))}
-        </div>
-      </TabsContent>
-      <TabsContent value="generalidades">
-        <Generalidades />
-      </TabsContent>
-      <TabsContent value="metodologia">
-        <Metodologia />
-      </TabsContent>
-      <TabsContent value="resultados">
-        {narrativaSociodemo && (
-          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed space-y-4 mb-6">
-            <h3 className="text-lg font-semibold">Descripción sociodemográfica</h3>
-            <p>{narrativaSociodemo}</p>
-            {recomendacionesSociodemo && <p>{recomendacionesSociodemo}</p>}
+        <TabsContent value="introduccion">
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed space-y-4">
+            {intro.split("\n\n").map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
           </div>
-        )}
-        <TablaSociodemo payload={payload} />
-      </TabsContent>
-      <TabsContent value="estrategias" />
-    </Tabs>
-  );
-}
+        </TabsContent>
+        <TabsContent value="generalidades">
+          <Generalidades />
+        </TabsContent>
+        <TabsContent value="metodologia">
+          <Metodologia />
+        </TabsContent>
+        <TabsContent value="resultados">
+          {narrativaSociodemo && (
+            <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed space-y-4 mb-6">
+              <h3 className="text-lg font-semibold">Descripción sociodemográfica</h3>
+              <p>{narrativaSociodemo}</p>
+              {recomendacionesSociodemo && <p>{recomendacionesSociodemo}</p>}
+            </div>
+          )}
+          <TablaSociodemo payload={payload} />
+          <RiskDistributionChart
+            title="Caracteristicas del liderazgo Forma A y B"
+            data={liderazgoData}
+          />
+        </TabsContent>
+        <TabsContent value="estrategias" />
+      </Tabs>
+    );
+  }
 
