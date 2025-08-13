@@ -43,8 +43,11 @@ export default function InformeTabs({
         <TabsTrigger className={tabClass} value="metodologia">
           Metodología
         </TabsTrigger>
-        <TabsTrigger className={tabClass} value="resultados">
-          Resultados
+        <TabsTrigger className={tabClass} value="sociodemografia">
+          Sociodemografía
+        </TabsTrigger>
+        <TabsTrigger className={tabClass} value="graficas">
+          Gráficas
         </TabsTrigger>
         <TabsTrigger className={tabClass} value="estrategias">
           Estrategias
@@ -63,7 +66,7 @@ export default function InformeTabs({
         <TabsContent value="metodologia">
           <Metodologia />
         </TabsContent>
-        <TabsContent value="resultados">
+        <TabsContent value="sociodemografia">
           {narrativaSociodemo && (
             <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed space-y-4 mb-6">
               <h3 className="text-lg font-semibold">Descripción sociodemográfica</h3>
@@ -72,6 +75,8 @@ export default function InformeTabs({
             </div>
           )}
           <TablaSociodemo payload={payload} />
+        </TabsContent>
+        <TabsContent value="graficas">
           <RiskDistributionChart
             title="Caracteristicas del liderazgo Forma A y B"
             data={liderazgoData}
