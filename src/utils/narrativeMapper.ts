@@ -55,17 +55,18 @@ export function buildNarrativaContext(payload: ReportPayload): NarrativaContext 
   const viviendaTipoTop = vivTop.label || "arrendada";
   const percVivienda = vivTop.percent;
 
-  // Personas a cargo
-  const pac = payload.sociodemo["personasACargo"] as Dist | undefined;
-  const pacTotal = pac ? Object.values(pac).reduce((a,b)=>a+b,0) : 0;
-  const pacYes = pac ? (pac["Sí"] ?? pac["Si"] ?? 0) : 0;
-  const percPersonasACargo = fmt.percent(pacTotal ? (pacYes/pacTotal)*100 : 0);
+  // Personas a cargo → TIPO DE CARGO: "Jefatura - tiene personal a cargo"
+  const tc = payload.sociodemo.tipoCargo ?? {};
+  const tcTotal = Object.values(tc).reduce((a, b) => a + b, 0);
+  const tcJefes = tc["Jefatura - tiene personal a cargo"] ?? 0;
+  const percPersonasACargo = fmt.percent(tcTotal ? (tcJefes / tcTotal) * 100 : 0);
 
-  // Antigüedad
+  // Antigüedad → quienes no marcaron "Menos de un año"
   const antig = payload.sociodemo.antiguedad ?? {};
-  const percAntigMas1 = percentOf(antig, "Más de 1 año");
+  const antigTotal = Object.values(antig).reduce((a, b) => a + b, 0);
+  const masDeUno = antigTotal - (antig["Menos de un año"] ?? 0);
+  const percAntiguedad = fmt.percent(antigTotal ? (masDeUno / antigTotal) * 100 : 0);
   const antiguedadLabel = "más de (1) año en la empresa";
-  const percAntiguedad = percAntigMas1;
 
   // Contrato (top)
   const contTop = topLabel(payload.sociodemo.tipoContrato);
