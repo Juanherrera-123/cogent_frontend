@@ -4,6 +4,7 @@ import * as XLSX from "xlsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { gatherFlatResults, FlatResult } from "@/utils/gatherResults";
 import { exportElementToPDF } from "@/utils/pdfExport";
+import { shortNivelRiesgo } from "@/utils/shortNivelRiesgo";
 import { usePdfExport } from "@/hooks/usePdfExport";
 import { dimensionesExtralaboral } from "@/data/esquemaExtralaboral";
 import { baremosFormaA } from "@/data/baremosFormaA";
@@ -420,7 +421,7 @@ export default function DashboardResultados({
       if (nivel) {
         total++;
         const base =
-          nivel === "Sin riesgo" ? "Muy bajo" : nivel.replace("Riesgo ", "");
+          nivel === "Sin riesgo" ? "Muy bajo" : shortNivelRiesgo(nivel);
         if (counts[base] !== undefined) counts[base] += 1;
         else invalid++;
       }
