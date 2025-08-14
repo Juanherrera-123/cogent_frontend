@@ -18,6 +18,12 @@ const stageLabels: Record<Stage, string> = {
   terciario: "Terciario",
 };
 
+const stageColors: Record<Stage, string> = {
+  primario: "#16a34a",
+  secundario: "#facc15",
+  terciario: "#dc2626",
+};
+
 export default function SemaphoreDial({ stage }: Props) {
   const [angle, setAngle] = useState(0);
 
@@ -29,9 +35,13 @@ export default function SemaphoreDial({ stage }: Props) {
   }, [stage]);
 
   const labelAngle = stageAngles[stage];
+  const labelRadius = 65;
+  const angleRad = ((labelAngle - 90) * Math.PI) / 180;
+  const labelX = 50 + labelRadius * Math.cos(angleRad);
+  const labelY = 50 + labelRadius * Math.sin(angleRad);
 
   return (
-    <div className="relative m-4 w-28 sm:w-32 aspect-square overflow-visible">
+    <div className="relative m-4 w-56 sm:w-64 aspect-square overflow-visible">
       <div
         className="absolute inset-0 rounded-full"
         style={{
@@ -39,7 +49,10 @@ export default function SemaphoreDial({ stage }: Props) {
             "conic-gradient(#16a34a 0deg 120deg, #facc15 120deg 240deg, #dc2626 240deg 360deg)",
         }}
       />
-      <div className="absolute inset-[12%] bg-white rounded-full" />
+      <div
+        className="absolute inset-[12%] rounded-full"
+        style={{ backgroundColor: stageColors[stage] }}
+      />
       <div
         className="absolute left-1/2 top-1/2 w-0 h-0"
         style={{ transform: "translate(-50%, -50%)" }}
@@ -53,17 +66,14 @@ export default function SemaphoreDial({ stage }: Props) {
         />
       </div>
       <div
-        className="absolute left-1/2 top-1/2"
+        className="absolute text-sm font-semibold text-center"
         style={{
-          transform: `translate(-50%, -50%) rotate(${labelAngle}deg)`,
+          left: `${labelX}%`,
+          top: `${labelY}%`,
+          transform: "translate(-50%, -50%)",
         }}
       >
-        <div
-          className="translate-y-[-135%] text-xs font-semibold text-center"
-          style={{ transform: `rotate(-${labelAngle}deg)` }}
-        >
-          {stageLabels[stage]}
-        </div>
+        {stageLabels[stage]}
       </div>
     </div>
   );
