@@ -28,8 +28,10 @@ export default function SemaphoreDial({ stage }: Props) {
     return () => clearTimeout(id);
   }, [stage]);
 
+  const labelAngle = stageAngles[stage];
+
   return (
-    <div className="relative w-24 h-24">
+    <div className="relative m-4 w-28 sm:w-32 aspect-square overflow-visible">
       <div
         className="absolute inset-0 rounded-full"
         style={{
@@ -43,12 +45,25 @@ export default function SemaphoreDial({ stage }: Props) {
         style={{ transform: "translate(-50%, -50%)" }}
       >
         <div
-          className="origin-bottom w-0.5 h-10 bg-black transition-transform duration-700"
-          style={{ transform: `translateX(-50%) rotate(${angle}deg)` }}
+          className="origin-bottom w-0.5 bg-black transition-transform duration-700"
+          style={{
+            height: "42%",
+            transform: `translateX(-50%) rotate(${angle}deg)`,
+          }}
         />
       </div>
-      <div className="absolute inset-0 flex items-center justify-center text-xs font-semibold">
-        {stageLabels[stage]}
+      <div
+        className="absolute left-1/2 top-1/2"
+        style={{
+          transform: `translate(-50%, -50%) rotate(${labelAngle}deg)`,
+        }}
+      >
+        <div
+          className="translate-y-[-135%] text-xs font-semibold text-center"
+          style={{ transform: `rotate(-${labelAngle}deg)` }}
+        >
+          {stageLabels[stage]}
+        </div>
       </div>
     </div>
   );
