@@ -33,7 +33,6 @@ export default function SemaphoreDial({ stage }: Props) {
     }, 100);
     return () => clearTimeout(id);
   }, [stage]);
-
   const labelRadius = 60;
   const rad = ((stageAngles[stage] - 90) * Math.PI) / 180;
   const labelStyle = {
