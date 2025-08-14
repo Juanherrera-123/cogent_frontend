@@ -43,20 +43,27 @@ export default function InformeTabs({
     totalB: liderazgoDominioData.totalB || 0,
   });
 
-  const counts = liderazgoDominioData.counts;
-  const stageCounts = { primario: 0, secundario: 0, terciario: 0 };
-  Object.entries(counts).forEach(([level, count]) => {
-    if (level === "Muy bajo" || level === "Bajo") stageCounts.primario += count;
-    else if (level === "Medio") stageCounts.secundario += count;
-    else if (level === "Alto" || level === "Muy alto") stageCounts.terciario += count;
-  });
-  let stage: "primario" | "secundario" | "terciario" = "primario";
-  if (
-    stageCounts.terciario >= stageCounts.secundario &&
-    stageCounts.terciario >= stageCounts.primario
-  )
-    stage = "terciario";
-  else if (stageCounts.secundario >= stageCounts.primario) stage = "secundario";
+  type Stage = "primario" | "secundario" | "terciario";
+
+  const calcStage = (counts: Record<string, number>): Stage => {
+    const stageCounts = { primario: 0, secundario: 0, terciario: 0 };
+    Object.entries(counts).forEach(([level, count]) => {
+      if (level === "Muy bajo" || level === "Bajo") stageCounts.primario += count;
+      else if (level === "Medio") stageCounts.secundario += count;
+      else if (level === "Alto" || level === "Muy alto") stageCounts.terciario += count;
+    });
+    if (
+      stageCounts.terciario >= stageCounts.secundario &&
+      stageCounts.terciario >= stageCounts.primario
+    )
+      return "terciario";
+    if (stageCounts.secundario >= stageCounts.primario) return "secundario";
+    return "primario";
+  };
+
+  const stage = calcStage(liderazgoDominioData.counts);
+  const stageA = calcStage(liderazgoDominioData.countsA || {});
+  const stageB = calcStage(liderazgoDominioData.countsB || {});
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -114,7 +121,16 @@ export default function InformeTabs({
           {dominioSentence}
         </p>
         <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
-          <SemaphoreDial stage={stage} />
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageB} />
+            </div>
+          </div>
           <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
             {stage === "primario" ? (
               <p>
