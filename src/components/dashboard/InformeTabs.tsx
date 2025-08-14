@@ -18,6 +18,7 @@ interface Props {
   narrativaSociodemo?: string;
   recomendacionesSociodemo?: string;
   payload: ReportPayload;
+  liderazgoDominioData: RiskDistributionData;
   liderazgoData: RiskDistributionData;
 }
 
@@ -27,6 +28,7 @@ export default function InformeTabs({
   narrativaSociodemo,
   recomendacionesSociodemo,
   payload,
+  liderazgoDominioData,
   liderazgoData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
@@ -72,6 +74,10 @@ export default function InformeTabs({
             </div>
           )}
           <TablaSociodemo payload={payload} />
+          <RiskDistributionChart
+            title="DOMINIO LIDERAZGO Y RELACIONES SOCIALES EN EL TRABAJO FORMA A Y FORMA B"
+            data={liderazgoDominioData}
+          />
           <RiskDistributionChart
             title="Caracteristicas del liderazgo Forma A y B"
             data={liderazgoData}

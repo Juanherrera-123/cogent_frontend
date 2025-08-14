@@ -397,6 +397,43 @@ export default function DashboardResultados({
   const datosGlobalBE = datosMostrados.filter((d) => d.resultadoGlobalBExtralaboral);
 
   const levelsOrder = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto"];
+  const liderazgoDominioData: RiskDistributionData = useMemo(() => {
+    const counts: Record<string, number> = {};
+    levelsOrder.forEach((lvl) => (counts[lvl] = 0));
+    let invalid = 0;
+    let total = 0;
+    const nombre = "Liderazgo y relaciones sociales en el trabajo";
+    [...datosA, ...datosB].forEach((d) => {
+      let seccion: any =
+        d.resultadoFormaA?.dominios?.[nombre] ||
+        d.resultadoFormaB?.dominios?.[nombre];
+      if (!seccion && Array.isArray(d.resultadoFormaA?.dominios)) {
+        seccion = (d.resultadoFormaA.dominios as any).find(
+          (x: any) => x.nombre === nombre
+        );
+      }
+      if (!seccion && Array.isArray(d.resultadoFormaB?.dominios)) {
+        seccion = (d.resultadoFormaB.dominios as any).find(
+          (x: any) => x.nombre === nombre
+        );
+      }
+      const nivel = seccion?.nivel;
+      if (nivel) {
+        total++;
+        const base =
+          nivel === "Sin riesgo" ? "Muy bajo" : shortNivelRiesgo(nivel);
+        if (counts[base] !== undefined) counts[base] += 1;
+        else invalid++;
+      }
+    });
+    const data: RiskDistributionData = {
+      total,
+      counts,
+      levelsOrder: [...levelsOrder],
+    };
+    if (invalid > 0) data.invalid = invalid;
+    return data;
+  }, [datosA, datosB]);
   const liderazgoData: RiskDistributionData = useMemo(() => {
     const counts: Record<string, number> = {};
     levelsOrder.forEach((lvl) => (counts[lvl] = 0));
@@ -1296,6 +1333,7 @@ export default function DashboardResultados({
                   narrativaSociodemo={narrativaSociodemo}
                   recomendacionesSociodemo={recomendacionesSociodemo}
                   payload={reportPayload}
+                  liderazgoDominioData={liderazgoDominioData}
                   liderazgoData={liderazgoData}
                 />
             </section>
