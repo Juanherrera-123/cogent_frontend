@@ -18,6 +18,10 @@ export type RiskDistributionData = {
   counts: Record<string, number>;
   levelsOrder: string[];
   invalid?: number;
+  countsA?: Record<string, number>;
+  countsB?: Record<string, number>;
+  totalA?: number;
+  totalB?: number;
 };
 
 interface Props {

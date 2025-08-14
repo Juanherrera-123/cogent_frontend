@@ -11,6 +11,7 @@ import RiskDistributionChart, {
 import { ReportPayload } from "@/types/report";
 import Generalidades from "./Generalidades";
 import Metodologia from "./Metodologia";
+import { buildRiskSentence } from "@/utils/riskSentence";
 
 interface Props {
   tabClass: string;
@@ -33,6 +34,13 @@ export default function InformeTabs({
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
+  const dominioSentence = buildRiskSentence({
+    levelsOrder: liderazgoDominioData.levelsOrder,
+    countsA: liderazgoDominioData.countsA || {},
+    countsB: liderazgoDominioData.countsB || {},
+    totalA: liderazgoDominioData.totalA || 0,
+    totalB: liderazgoDominioData.totalB || 0,
+  });
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -83,6 +91,12 @@ export default function InformeTabs({
             title="DOMINIO LIDERAZGO Y RELACIONES SOCIALES EN EL TRABAJO FORMA A Y FORMA B"
             data={liderazgoDominioData}
           />
+          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            Este dominio evalúa la calidad de la interacción con los superiores y compañeros, así como el apoyo social percibido en el entorno laboral. Un liderazgo deficiente y relaciones sociales conflictivas pueden ser fuentes importantes de riesgo psicosocial.
+          </p>
+          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {dominioSentence}
+          </p>
           <RiskDistributionChart
             title="Caracteristicas del liderazgo Forma A y B"
             data={liderazgoData}
