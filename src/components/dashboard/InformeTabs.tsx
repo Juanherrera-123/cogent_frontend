@@ -61,9 +61,9 @@ export default function InformeTabs({
     return "primario";
   };
 
-  const stage = calcStage(liderazgoDominioData.counts);
   const stageA = calcStage(liderazgoDominioData.countsA || {});
   const stageB = calcStage(liderazgoDominioData.countsB || {});
+  const showSuggestions = stageA !== "primario" || stageB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -132,11 +132,7 @@ export default function InformeTabs({
             </div>
           </div>
           <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
-            {stage === "primario" ? (
-              <p>
-                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
-              </p>
-            ) : (
+            {showSuggestions ? (
               <>
                 <p>
                   El  Dominio Liderazgo y Relaciones Sociales en el Trabajo:  refiere la Calidad de las interacciones entre compañeros, cohesión del equipo y disponibilidad de apoyo social.<br />
@@ -158,6 +154,10 @@ export default function InformeTabs({
                   </li>
                 </ol>
               </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
             )}
           </div>
         </div>
