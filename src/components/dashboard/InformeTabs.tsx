@@ -44,13 +44,19 @@ export default function InformeTabs({
   });
 
   const counts = liderazgoDominioData.counts;
-  const modalLevel = Object.keys(counts).reduce((max, key) =>
-    counts[key] > (counts[max] || 0) ? key : max,
-  "");
+  const stageCounts = { primario: 0, secundario: 0, terciario: 0 };
+  Object.entries(counts).forEach(([level, count]) => {
+    if (level === "Muy bajo" || level === "Bajo") stageCounts.primario += count;
+    else if (level === "Medio") stageCounts.secundario += count;
+    else if (level === "Alto" || level === "Muy alto") stageCounts.terciario += count;
+  });
   let stage: "primario" | "secundario" | "terciario" = "primario";
-  if (modalLevel === "Medio") stage = "secundario";
-  else if (modalLevel === "Alto" || modalLevel === "Muy alto")
+  if (
+    stageCounts.terciario >= stageCounts.secundario &&
+    stageCounts.terciario >= stageCounts.primario
+  )
     stage = "terciario";
+  else if (stageCounts.secundario >= stageCounts.primario) stage = "secundario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
