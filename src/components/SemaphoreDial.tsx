@@ -33,17 +33,8 @@ export default function SemaphoreDial({ stage }: Props) {
     }, 100);
     return () => clearTimeout(id);
   }, [stage]);
-  const labelRadius = 60;
-  const rad = ((stageAngles[stage] - 90) * Math.PI) / 180;
-  const labelStyle = {
-    color: stageColors[stage],
-    left: `${50 + labelRadius * Math.cos(rad)}%`,
-    top: `${50 + labelRadius * Math.sin(rad)}%`,
-    transform: "translate(-50%, -50%)",
-  } as React.CSSProperties;
-
   return (
-    <div className="m-4 w-56 sm:w-64">
+    <div className="m-4 w-56 sm:w-64 flex flex-col items-center">
       <div className="relative w-full aspect-square overflow-visible">
         <div
           className="absolute inset-0 rounded-full"
@@ -68,12 +59,12 @@ export default function SemaphoreDial({ stage }: Props) {
             }}
           />
         </div>
-        <div
-          className="absolute text-sm font-semibold whitespace-nowrap"
-          style={labelStyle}
-        >
-          {stageLabels[stage]}
-        </div>
+      </div>
+      <div
+        className="mt-2 text-sm font-semibold whitespace-nowrap"
+        style={{ color: stageColors[stage] }}
+      >
+        {stageLabels[stage]}
       </div>
     </div>
   );
