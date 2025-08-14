@@ -2,7 +2,6 @@ import React from "react";
 import {
   ComposedChart,
   Bar,
-  Cell,
   Line,
   XAxis,
   YAxis,
@@ -29,22 +28,22 @@ interface Props {
   data: RiskDistributionData;
 }
 
-const levelColors: Record<string, string> = {
-  "Muy bajo": "#16a34a", // green
-  "Bajo": "#86efac", // light green
-  "Medio": "#facc15", // yellow
-  "Alto": "#fb923c", // orange
-  "Muy alto": "#dc2626", // red
-  Invalid: "#9ca3af", // gray
-};
 
 export default function RiskDistributionChart({ title, data }: Props) {
-  const { total, counts, levelsOrder, invalid } = data;
+  const {
+    countsA = {},
+    countsB = {},
+    levelsOrder,
+    invalid,
+    totalA = 0,
+    totalB = 0,
+  } = data;
   const formatter = new Intl.NumberFormat("es-CO", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 
+  const total = totalA + totalB;
   if (!total) {
     return (
       <div className="rounded-2xl shadow-sm bg-white p-4 md:p-6 font-montserrat text-[#172349]">
@@ -61,17 +60,25 @@ export default function RiskDistributionChart({ title, data }: Props) {
   }
 
   const chartData = levels.map((level) => {
-    const count = level === invalidLabel ? invalid || 0 : counts[level] || 0;
-    const percentage = total ? (count / total) * 100 : 0;
+    const countA = level === invalidLabel ? 0 : countsA[level] || 0;
+    const countB = level === invalidLabel ? 0 : countsB[level] || 0;
+    const percentageA = totalA ? (countA / totalA) * 100 : 0;
+    const percentageB = totalB ? (countB / totalB) * 100 : 0;
     return {
       level,
-      count,
-      countLabel: `${count}`,
-      percentage,
-      pctLabel: `${formatter.format(percentage)} %`,
-      fill: levelColors[level] || levelColors.Invalid,
+      countA,
+      countLabelA: `${countA}`,
+      percentageA,
+      pctLabelA: `${formatter.format(percentageA)} %`,
+      countB,
+      countLabelB: `${countB}`,
+      percentageB,
+      pctLabelB: `${formatter.format(percentageB)} %`,
     };
   });
+
+  const colorA = "#2563eb"; // blue
+  const colorB = "#f97316"; // orange
 
   return (
     <div className="rounded-2xl shadow-sm bg-white p-4 md:p-6 font-montserrat text-[#172349] mt-6">
@@ -94,35 +101,51 @@ export default function RiskDistributionChart({ title, data }: Props) {
           <Tooltip
             labelFormatter={(label) => `Nivel: ${label}`}
             formatter={(value: any, name: any) => {
-              if (name === "% (Barras)") {
-                return [`${formatter.format(value as number)} %`, "%"];
+              if (typeof name === "string" && name.includes("%")) {
+                return [`${formatter.format(value as number)} %`, name];
               }
-              if (name === "# (Línea)") {
-                return [value, "#"];
+              if (typeof name === "string" && name.includes("#")) {
+                return [value, name];
               }
               return [value, name];
             }}
           />
           <Legend />
           <Bar
-            dataKey="percentage"
-            name="% (Barras)"
+            dataKey="percentageA"
+            name="% Forma A"
             yAxisId="right"
-            barSize={40}
+            barSize={20}
+            fill={colorA}
           >
-            <LabelList dataKey="pctLabel" position="top" />
-            {chartData.map((d) => (
-              <Cell key={d.level} fill={d.fill} />
-            ))}
+            <LabelList dataKey="pctLabelA" position="top" />
+          </Bar>
+          <Bar
+            dataKey="percentageB"
+            name="% Forma B"
+            yAxisId="right"
+            barSize={20}
+            fill={colorB}
+          >
+            <LabelList dataKey="pctLabelB" position="top" />
           </Bar>
           <Line
             type="linear"
-            dataKey="count"
-            name="# (Línea)"
+            dataKey="countA"
+            name="# Forma A"
             yAxisId="left"
-            stroke="#172349"
+            stroke={colorA}
           >
-            <LabelList dataKey="countLabel" position="top" />
+            <LabelList dataKey="countLabelA" position="top" />
+          </Line>
+          <Line
+            type="linear"
+            dataKey="countB"
+            name="# Forma B"
+            yAxisId="left"
+            stroke={colorB}
+          >
+            <LabelList dataKey="countLabelB" position="top" />
           </Line>
         </ComposedChart>
       </ResponsiveContainer>
@@ -140,18 +163,34 @@ export default function RiskDistributionChart({ title, data }: Props) {
           </thead>
           <tbody>
             <tr>
-              <td className="font-semibold text-left">#</td>
+              <td className="font-semibold text-left"># A</td>
               {chartData.map((d) => (
                 <td key={d.level} className="text-center">
-                  {d.count}
+                  {d.countA}
                 </td>
               ))}
             </tr>
             <tr>
-              <td className="font-semibold text-left">%</td>
+              <td className="font-semibold text-left">% A</td>
               {chartData.map((d) => (
                 <td key={d.level} className="text-center">
-                  {`${formatter.format(d.percentage)}%`}
+                  {`${formatter.format(d.percentageA)}%`}
+                </td>
+              ))}
+            </tr>
+            <tr>
+              <td className="font-semibold text-left"># B</td>
+              {chartData.map((d) => (
+                <td key={d.level} className="text-center">
+                  {d.countB}
+                </td>
+              ))}
+            </tr>
+            <tr>
+              <td className="font-semibold text-left">% B</td>
+              {chartData.map((d) => (
+                <td key={d.level} className="text-center">
+                  {`${formatter.format(d.percentageB)}%`}
                 </td>
               ))}
             </tr>

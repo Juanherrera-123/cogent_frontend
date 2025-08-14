@@ -454,9 +454,17 @@ export default function DashboardResultados({
   }, [datosA, datosB]);
   const liderazgoData: RiskDistributionData = useMemo(() => {
     const counts: Record<string, number> = {};
-    levelsOrder.forEach((lvl) => (counts[lvl] = 0));
+    const countsA: Record<string, number> = {};
+    const countsB: Record<string, number> = {};
+    levelsOrder.forEach((lvl) => {
+      counts[lvl] = 0;
+      countsA[lvl] = 0;
+      countsB[lvl] = 0;
+    });
     let invalid = 0;
     let total = 0;
+    let totalA = 0;
+    let totalB = 0;
     const nombre = "Características del liderazgo";
     [...datosA, ...datosB].forEach((d) => {
       let seccion: any =
@@ -474,17 +482,31 @@ export default function DashboardResultados({
       }
       const nivel = seccion?.nivel;
       if (nivel) {
-        total++;
         const base =
           nivel === "Sin riesgo" ? "Muy bajo" : shortNivelRiesgo(nivel);
-        if (counts[base] !== undefined) counts[base] += 1;
-        else invalid++;
+        if (counts[base] !== undefined) {
+          counts[base] += 1;
+          if (d.tipo === "A") {
+            countsA[base] += 1;
+            totalA++;
+          } else {
+            countsB[base] += 1;
+            totalB++;
+          }
+          total++;
+        } else {
+          invalid++;
+        }
       }
     });
     const data: RiskDistributionData = {
       total,
       counts,
       levelsOrder: [...levelsOrder],
+      countsA,
+      countsB,
+      totalA,
+      totalB,
     };
     if (invalid > 0) data.invalid = invalid;
     return data;
