@@ -28,7 +28,6 @@ interface Props {
   claridadData: RiskDistributionData;
   capacitacionData: RiskDistributionData;
   controlDominioData: RiskDistributionData;
-  claridadData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -45,7 +44,6 @@ export default function InformeTabs({
   claridadData,
   capacitacionData,
   controlDominioData,
-  claridadData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -175,14 +173,6 @@ export default function InformeTabs({
     : "primario";
   const showSuggestionsControl =
     stageControlA !== "primario" || stageControlB !== "primario";
-  const stageClaridadA = claridadData.totalA
-    ? calcStage(claridadData.countsA || {})
-    : "primario";
-  const stageClaridadB = claridadData.totalB
-    ? calcStage(claridadData.countsB || {})
-    : "primario";
-  const showSuggestionsClaridad =
-    stageClaridadA !== "primario" || stageClaridadB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
