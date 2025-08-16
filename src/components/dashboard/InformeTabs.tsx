@@ -27,6 +27,7 @@ interface Props {
   colaboradoresData: RiskDistributionData;
   claridadData: RiskDistributionData;
   capacitacionData: RiskDistributionData;
+  participacionData: RiskDistributionData;
   controlDominioData: RiskDistributionData;
 }
 
@@ -43,6 +44,7 @@ export default function InformeTabs({
   colaboradoresData,
   claridadData,
   capacitacionData,
+  participacionData,
   controlDominioData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
@@ -95,6 +97,13 @@ export default function InformeTabs({
     countsB: capacitacionData.countsB || {},
     totalA: capacitacionData.totalA || 0,
     totalB: capacitacionData.totalB || 0,
+  });
+  const participacionSentence = buildRiskSentence({
+    levelsOrder: participacionData.levelsOrder,
+    countsA: participacionData.countsA || {},
+    countsB: participacionData.countsB || {},
+    totalA: participacionData.totalA || 0,
+    totalB: participacionData.totalB || 0,
   });
   const controlSentence = buildRiskSentence({
     levelsOrder: controlDominioData.levelsOrder,
@@ -165,6 +174,14 @@ export default function InformeTabs({
     : "primario";
   const showSuggestionsCapacitacion =
     stageCapacitacionA !== "primario" || stageCapacitacionB !== "primario";
+  const stageParticipacionA = participacionData.totalA
+    ? calcStage(participacionData.countsA || {})
+    : "primario";
+  const stageParticipacionB = participacionData.totalB
+    ? calcStage(participacionData.countsB || {})
+    : "primario";
+  const showSuggestionsParticipacion =
+    stageParticipacionA !== "primario" || stageParticipacionB !== "primario";
   const stageControlA = controlDominioData.totalA
     ? calcStage(controlDominioData.countsA || {})
     : "primario";
@@ -692,6 +709,72 @@ export default function InformeTabs({
                 fortaleciendo las prácticas actuales para mantener estos
                 resultados. ¡Felicitaciones por destacar en esta área y seguir
                 siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Participación y manejo del cambio Forma A y B"
+          data={participacionData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Genera la posibilidad de influir en los cambios organizacionales y en la
+          forma en que se implementan.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {participacionSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageParticipacionA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageParticipacionB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsParticipacion ? (
+              <>
+                <p>
+                  La Dimensión Participación y manejo del cambio: Genera la
+                  posibilidad de influir en los cambios organizacionales y en la
+                  forma en que se implementan.
+                  <br />
+                  Ejemplo: Cambios organizacionales implementados sin consulta o
+                  explicación adecuada, generando incertidumbre y resistencia.
+                </p>
+                <p className="font-semibold mt-2">
+                  Acciones de Intervención Sugeridas:
+                </p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Comunicación Transparente: Comunicar de forma clara y
+                    oportuna los motivos y el impacto de los cambios
+                    organizacionales.
+                  </li>
+                  <li>
+                    Canales de Participación: Establecer canales para que los
+                    empleados puedan expresar sus opiniones y sugerencias
+                    respecto a los cambios.
+                  </li>
+                  <li>
+                    Gestión del Cambio Participativa: Involucrar a los
+                    trabajadores en el diseño e implementación de los cambios,
+                    donde sea posible.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin
+                presencia significativa de riesgo. No se requieren acciones
+                adicionales ni planes de mejora inmediatos; sin embargo, es
+                importante continuar fortaleciendo las prácticas actuales para
+                mantener estos resultados. ¡Felicitaciones por destacar en esta
+                área y seguir siendo un ejemplo de excelencia!
               </p>
             )}
           </div>
