@@ -22,6 +22,8 @@ interface Props {
   payload: ReportPayload;
   liderazgoDominioData: RiskDistributionData;
   liderazgoData: RiskDistributionData;
+  relacionesData: RiskDistributionData;
+  retroalimentacionData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -32,6 +34,8 @@ export default function InformeTabs({
   payload,
   liderazgoDominioData,
   liderazgoData,
+  relacionesData,
+  retroalimentacionData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -48,6 +52,20 @@ export default function InformeTabs({
     countsB: liderazgoData.countsB || {},
     totalA: liderazgoData.totalA || 0,
     totalB: liderazgoData.totalB || 0,
+  });
+  const relacionesSentence = buildRiskSentence({
+    levelsOrder: relacionesData.levelsOrder,
+    countsA: relacionesData.countsA || {},
+    countsB: relacionesData.countsB || {},
+    totalA: relacionesData.totalA || 0,
+    totalB: relacionesData.totalB || 0,
+  });
+  const retroalimentacionSentence = buildRiskSentence({
+    levelsOrder: retroalimentacionData.levelsOrder,
+    countsA: retroalimentacionData.countsA || {},
+    countsB: retroalimentacionData.countsB || {},
+    totalA: retroalimentacionData.totalA || 0,
+    totalB: retroalimentacionData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -75,6 +93,18 @@ export default function InformeTabs({
   const stageLiderazgoB = calcStage(liderazgoData.countsB || {});
   const showSuggestionsLiderazgo =
     stageLiderazgoA !== "primario" || stageLiderazgoB !== "primario";
+  const stageRelacionesA = calcStage(relacionesData.countsA || {});
+  const stageRelacionesB = calcStage(relacionesData.countsB || {});
+  const showSuggestionsRelaciones =
+    stageRelacionesA !== "primario" || stageRelacionesB !== "primario";
+  const stageRetroalimentacionA = calcStage(
+    retroalimentacionData.countsA || {}
+  );
+  const stageRetroalimentacionB = calcStage(
+    retroalimentacionData.countsB || {}
+  );
+  const showSuggestionsRetroalimentacion =
+    stageRetroalimentacionA !== "primario" || stageRetroalimentacionB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -238,6 +268,105 @@ export default function InformeTabs({
                 fortaleciendo las prácticas actuales para mantener estos resultados.
                 ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo
                 de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Relaciones sociales en el trabajo Forma A y B"
+          data={relacionesData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Esta Dimension, refiere la Calidad de interacciones entre compañeros, cohesión del equipo y disponibilidad de apoyo social
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {relacionesSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageRelacionesA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageRelacionesB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsRelaciones ? (
+              <>
+                <p>
+                  La Dimensión Relaciones Sociales en el Trabajo: refiere la Calidad de interacciones entre compañeros, cohesión del equipo y disponibilidad de apoyo social.<br />
+                  Ejemplo: Conflictos interpersonales, falta de apoyo entre compañeros, aislamiento social, acoso laboral.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Actividades de Integración y Construcción de Equipo (Team Building): Organizar eventos y actividades que fomenten la cohesión, el compañerismo y la integración entre los miembros del equipo.
+                  </li>
+                  <li>
+                    Mediación de Conflictos: Contar con un proceso formal de mediación para resolver conflictos interpersonales de manera constructiva.
+                  </li>
+                  <li>
+                    Fomentar la Colaboración y el Apoyo Mutuo: Crear un ambiente que valore la colaboración, el intercambio de conocimientos y el apoyo entre compañeros.
+                  </li>
+                  <li>
+                    Políticas de Cero Tolerancia al Acoso: Implementar y comunicar claramente políticas de prevención e intervención del acoso laboral.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Retroalimentación del desempeño Forma A y B"
+          data={retroalimentacionData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Esta Dimension, refiere la Frecuencia, claridad y utilidad de la información que los trabajadores reciben sobre su rendimiento.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {retroalimentacionSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageRetroalimentacionA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageRetroalimentacionB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsRetroalimentacion ? (
+              <>
+                <p>
+                  La Dimensión Retroalimentación del Desempeño: refiere la Frecuencia, claridad y utilidad de la información que los trabajadores reciben sobre su rendimiento.<br />
+                  Ejemplo: Falta de feedback sobre el desempeño, feedback poco claro o inconsistente, feedback centrado solo en lo negativo.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Cultura de Feedback Constante: Promover una cultura de feedback continuo y constructivo, no solo durante las evaluaciones formales.
+                  </li>
+                  <li>
+                    Capacitación en Habilidades de Feedback: Capacitar a líderes y empleados en cómo dar y recibir feedback de manera efectiva.
+                  </li>
+                  <li>
+                    Sistemas de Evaluación de Desempeño Claros: Implementar sistemas de evaluación de desempeño que sean transparentes, justos y orientados al desarrollo.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
               </p>
             )}
           </div>
