@@ -24,6 +24,7 @@ interface Props {
   liderazgoData: RiskDistributionData;
   relacionesData: RiskDistributionData;
   retroalimentacionData: RiskDistributionData;
+  colaboradoresData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -36,6 +37,7 @@ export default function InformeTabs({
   liderazgoData,
   relacionesData,
   retroalimentacionData,
+  colaboradoresData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -66,6 +68,13 @@ export default function InformeTabs({
     countsB: retroalimentacionData.countsB || {},
     totalA: retroalimentacionData.totalA || 0,
     totalB: retroalimentacionData.totalB || 0,
+  });
+  const colaboradoresSentence = buildRiskSentence({
+    levelsOrder: colaboradoresData.levelsOrder,
+    countsA: colaboradoresData.countsA || {},
+    countsB: colaboradoresData.countsB || {},
+    totalA: colaboradoresData.totalA || 0,
+    totalB: colaboradoresData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -105,6 +114,14 @@ export default function InformeTabs({
   );
   const showSuggestionsRetroalimentacion =
     stageRetroalimentacionA !== "primario" || stageRetroalimentacionB !== "primario";
+  const stageColaboradoresA = colaboradoresData.totalA
+    ? calcStage(colaboradoresData.countsA || {})
+    : "primario";
+  const stageColaboradoresB = colaboradoresData.totalB
+    ? calcStage(colaboradoresData.countsB || {})
+    : "primario";
+  const showSuggestionsColaboradores =
+    stageColaboradoresA !== "primario" || stageColaboradoresB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -367,6 +384,91 @@ export default function InformeTabs({
             ) : (
               <p>
                 El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Relación con los colaboradores Forma A y B"
+          data={colaboradoresData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Esta Dimensión refiere a la forma en que se gestionan las interacciones y
+          conexiones entre los empleados dentro de una organización. Implica aspectos
+          como la comunicación, la colaboración, el apoyo mutuo, el liderazgo y la
+          creación de un ambiente de trabajo positivo.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {colaboradoresSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageColaboradoresA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageColaboradoresB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsColaboradores ? (
+              <>
+                <p>
+                  La Dimensión Relación con los Colaboradores: Refiere a la forma en
+                  que se gestionan las interacciones y conexiones entre los empleados
+                  dentro de una organización.<br />
+                  Ejemplo: Falta de colaboración, problemas de comunicación, ausencia
+                  de apoyo mutuo, liderazgo poco participativo, ambiente laboral tenso.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Comunicación abierta y transparente: La comunicación efectiva y
+                    honesta fomenta la confianza y la comprensión entre los
+                    empleados y la dirección.
+                  </li>
+                  <li>
+                    Colaboración y trabajo en equipo: Promover la colaboración y el
+                    trabajo en equipo facilita el intercambio de ideas, el apoyo
+                    mutuo y la resolución de problemas.
+                  </li>
+                  <li>
+                    Apoyo y reconocimiento: Brindar apoyo emocional y reconocer los
+                    logros de los empleados fortalece su sentido de pertenencia y
+                    motivación.
+                  </li>
+                  <li>
+                    Estilo de liderazgo: Un liderazgo eficaz que inspire, motive y
+                    brinde orientación es fundamental para las relaciones positivas
+                    entre líderes y colaboradores.
+                  </li>
+                  <li>
+                    Bienestar laboral: Crear un entorno de trabajo saludable y
+                    seguro, que promueva el bienestar físico y mental de los
+                    empleados, es esencial para su satisfacción y productividad.
+                  </li>
+                  <li>
+                    Resolución de conflictos: Contar con mecanismos efectivos para la
+                    resolución de conflictos evita que las tensiones escalen y
+                    perjudiquen las relaciones laborales.
+                  </li>
+                  <li>
+                    Sentido de pertenencia: Fomentar un sentido de pertenencia a la
+                    organización, donde los empleados se sientan valorados y parte de
+                    un equipo, es crucial para su compromiso y lealtad.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia
+                significativa de riesgo. No se requieren acciones adicionales ni
+                planes de mejora inmediatos; sin embargo, es importante continuar
+                fortaleciendo las prácticas actuales para mantener estos resultados.
+                ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo
+                de excelencia!
               </p>
             )}
           </div>
