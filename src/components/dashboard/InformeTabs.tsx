@@ -28,6 +28,7 @@ interface Props {
   claridadData: RiskDistributionData;
   capacitacionData: RiskDistributionData;
   participacionData: RiskDistributionData;
+  oportunidadesData: RiskDistributionData;
   controlDominioData: RiskDistributionData;
 }
 
@@ -45,6 +46,7 @@ export default function InformeTabs({
   claridadData,
   capacitacionData,
   participacionData,
+  oportunidadesData,
   controlDominioData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
@@ -104,6 +106,13 @@ export default function InformeTabs({
     countsB: participacionData.countsB || {},
     totalA: participacionData.totalA || 0,
     totalB: participacionData.totalB || 0,
+  });
+  const oportunidadesSentence = buildRiskSentence({
+    levelsOrder: oportunidadesData.levelsOrder,
+    countsA: oportunidadesData.countsA || {},
+    countsB: oportunidadesData.countsB || {},
+    totalA: oportunidadesData.totalA || 0,
+    totalB: oportunidadesData.totalB || 0,
   });
   const controlSentence = buildRiskSentence({
     levelsOrder: controlDominioData.levelsOrder,
@@ -182,6 +191,14 @@ export default function InformeTabs({
     : "primario";
   const showSuggestionsParticipacion =
     stageParticipacionA !== "primario" || stageParticipacionB !== "primario";
+  const stageOportunidadesA = oportunidadesData.totalA
+    ? calcStage(oportunidadesData.countsA || {})
+    : "primario";
+  const stageOportunidadesB = oportunidadesData.totalB
+    ? calcStage(oportunidadesData.countsB || {})
+    : "primario";
+  const showSuggestionsOportunidades =
+    stageOportunidadesA !== "primario" || stageOportunidadesB !== "primario";
   const stageControlA = controlDominioData.totalA
     ? calcStage(controlDominioData.countsA || {})
     : "primario";
@@ -764,6 +781,74 @@ export default function InformeTabs({
                     Gestión del Cambio Participativa: Involucrar a los
                     trabajadores en el diseño e implementación de los cambios,
                     donde sea posible.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin
+                presencia significativa de riesgo. No se requieren acciones
+                adicionales ni planes de mejora inmediatos; sin embargo, es
+                importante continuar fortaleciendo las prácticas actuales para
+                mantener estos resultados. ¡Felicitaciones por destacar en esta
+                área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Oportunidades para el uso y desarrollo de habilidades y conocimientos Forma A y B"
+          data={oportunidadesData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Refiere todas las Oportunidades que ofrece el puesto para utilizar y
+          desarrollar las habilidades existentes y adquirir nuevos
+          conocimientos.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {oportunidadesSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageOportunidadesA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageOportunidadesB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsOportunidades ? (
+              <>
+                <p>
+                  La Dimensión Oportunidades para el uso y desarrollo de
+                  habilidades y conocimientos: Refiere todas las Oportunidades
+                  que ofrece el puesto para utilizar y desarrollar las
+                  habilidades existentes y adquirir nuevos conocimientos.
+                  <br />
+                  Ejemplo: Realización de tareas repetitivas que no exigen el
+                  uso de habilidades complejas, falta de oportunidades de
+                  aprendizaje o crecimiento.
+                </p>
+                <p className="font-semibold mt-2">
+                  Acciones de Intervención Sugeridas:
+                </p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Planes de Desarrollo Profesional: Diseñar planes de carrera
+                    y ofrecer oportunidades de capacitación y desarrollo que
+                    permitan a los trabajadores ampliar sus habilidades.
+                  </li>
+                  <li>
+                    Asignación de Proyectos Desafiantes: Asignar proyectos que
+                    requieran el uso y desarrollo de nuevas habilidades.
+                  </li>
+                  <li>
+                    Mentorías y Coaching: Implementar programas de mentoría o
+                    coaching para facilitar el aprendizaje y la transferencia de
+                    conocimientos.
                   </li>
                 </ol>
               </>
