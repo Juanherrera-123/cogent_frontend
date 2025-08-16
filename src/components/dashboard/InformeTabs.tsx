@@ -25,6 +25,7 @@ interface Props {
   relacionesData: RiskDistributionData;
   retroalimentacionData: RiskDistributionData;
   colaboradoresData: RiskDistributionData;
+  autonomiaData: RiskDistributionData;
   claridadData: RiskDistributionData;
   capacitacionData: RiskDistributionData;
   participacionData: RiskDistributionData;
@@ -43,6 +44,7 @@ export default function InformeTabs({
   relacionesData,
   retroalimentacionData,
   colaboradoresData,
+  autonomiaData,
   claridadData,
   capacitacionData,
   participacionData,
@@ -85,6 +87,13 @@ export default function InformeTabs({
     countsB: colaboradoresData.countsB || {},
     totalA: colaboradoresData.totalA || 0,
     totalB: colaboradoresData.totalB || 0,
+  });
+  const autonomiaSentence = buildRiskSentence({
+    levelsOrder: autonomiaData.levelsOrder,
+    countsA: autonomiaData.countsA || {},
+    countsB: autonomiaData.countsB || {},
+    totalA: autonomiaData.totalA || 0,
+    totalB: autonomiaData.totalB || 0,
   });
   const claridadSentence = buildRiskSentence({
     levelsOrder: claridadData.levelsOrder,
@@ -167,6 +176,14 @@ export default function InformeTabs({
     : "primario";
   const showSuggestionsColaboradores =
     stageColaboradoresA !== "primario" || stageColaboradoresB !== "primario";
+  const stageAutonomiaA = autonomiaData.totalA
+    ? calcStage(autonomiaData.countsA || {})
+    : "primario";
+  const stageAutonomiaB = autonomiaData.totalB
+    ? calcStage(autonomiaData.countsB || {})
+    : "primario";
+  const showSuggestionsAutonomia =
+    stageAutonomiaA !== "primario" || stageAutonomiaB !== "primario";
   const stageClaridadA = claridadData.totalA
     ? calcStage(claridadData.countsA || {})
     : "primario";
@@ -597,6 +614,60 @@ export default function InformeTabs({
                   <li>
                     Fomentar la Proactividad: Crear un ambiente que valore la iniciativa y la propuesta de mejoras por parte de los empleados.
                   </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Control y autonomía sobre el trabajo Forma A y B"
+          data={autonomiaData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Refiere el margen de decisión y autonomía sobre la cantidad, ritmo y orden del trabajo.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {autonomiaSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageAutonomiaA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageAutonomiaB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsAutonomia ? (
+              <>
+                <p>
+                  La Dimensión Control y autonomía sobre el trabajo: Refiere el margen de decisión y autonomía sobre la cantidad, ritmo y orden del trabajo.<br />
+                  Ejemplo: Escasa autonomía para organizar las tareas, ritmo impuesto sin posibilidad de ajuste.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Formación en organización del tiempo, resolución de problemas y toma de decisiones. Coaching o mentoría para fortalecer la autonomía.
+                  </li>
+                  <li>Inclusión en la planificación del trabajo.</li>
+                  <li>
+                    Involucrar a los colaboradores en la definición de objetivos, tiempos y prioridades.
+                  </li>
+                  <li>
+                    Permitir que propongan mejoras o ajustes a su forma de trabajar.
+                  </li>
+                  <li>
+                    Fomento de una cultura de confianza y responsabilidad.
+                  </li>
+                  <li>Reconocer la autonomía como un valor organizacional.</li>
+                  <li>Premiar la iniciativa y la toma de decisiones acertadas.</li>
                 </ol>
               </>
             ) : (
