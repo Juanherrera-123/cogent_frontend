@@ -42,6 +42,13 @@ export default function InformeTabs({
     totalA: liderazgoDominioData.totalA || 0,
     totalB: liderazgoDominioData.totalB || 0,
   });
+  const liderazgoSentence = buildRiskSentence({
+    levelsOrder: liderazgoData.levelsOrder,
+    countsA: liderazgoData.countsA || {},
+    countsB: liderazgoData.countsB || {},
+    totalA: liderazgoData.totalA || 0,
+    totalB: liderazgoData.totalB || 0,
+  });
 
   type Stage = "primario" | "secundario" | "terciario";
 
@@ -64,6 +71,10 @@ export default function InformeTabs({
   const stageA = calcStage(liderazgoDominioData.countsA || {});
   const stageB = calcStage(liderazgoDominioData.countsB || {});
   const showSuggestions = stageA !== "primario" || stageB !== "primario";
+  const stageLiderazgoA = calcStage(liderazgoData.countsA || {});
+  const stageLiderazgoB = calcStage(liderazgoData.countsB || {});
+  const showSuggestionsLiderazgo =
+    stageLiderazgoA !== "primario" || stageLiderazgoB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -165,6 +176,72 @@ export default function InformeTabs({
           title="Caracteristicas del liderazgo Forma A y B"
           data={liderazgoData}
         />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Esta dimensión refiere los atributos de la gestión de los jefes inmediatos en
+          relación con la planificación, asignación del trabajo, consecución de
+          resultados, solución de conflictos, motivación, apoyo y comunicación.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {liderazgoSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageLiderazgoA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageLiderazgoB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsLiderazgo ? (
+              <>
+                <p>
+                  La Dimensión Características del Liderazgo: refiere los atributos de la
+                  gestión de los jefes inmediatos en relación con la planificación,
+                  asignación del trabajo, consecución de resultados, solución de
+                  conflictos, motivación, apoyo y comunicación.<br />
+                  Ejemplo: Liderazgo autoritario, falta de apoyo, comunicación
+                  deficiente, favoritismos, micro gestión, falta de reconocimiento
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Programas de Desarrollo de Liderazgo: Implementar programas de
+                    capacitación para líderes y gerentes en habilidades como
+                    comunicación efectiva, feedback constructivo, inteligencia
+                    emocional, manejo de equipos y resolución de conflictos.
+                  </li>
+                  <li>
+                    Evaluación 360° de Liderazgo: Realizar evaluaciones periódicas del
+                    desempeño de los líderes, incluyendo feedback de sus equipos.
+                  </li>
+                  <li>
+                    Fomentar el Liderazgo Transformacional: Promover un estilo de
+                    liderazgo que inspire, motive y desarrolle el potencial de los
+                    empleados.
+                  </li>
+                  <li>
+                    Canales de Comunicación Abierta: Establecer canales para que los
+                    empleados puedan expresar inquietudes sobre el liderazgo de manera
+                    confidencial.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia
+                significativa de riesgo. No se requieren acciones adicionales ni
+                planes de mejora inmediatos; sin embargo, es importante continuar
+                fortaleciendo las prácticas actuales para mantener estos resultados.
+                ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo
+                de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
       </TabsContent>
         <TabsContent value="estrategias" />
       </Tabs>
