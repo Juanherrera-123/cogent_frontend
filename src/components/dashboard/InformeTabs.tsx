@@ -26,6 +26,7 @@ interface Props {
   retroalimentacionData: RiskDistributionData;
   colaboradoresData: RiskDistributionData;
   controlDominioData: RiskDistributionData;
+  claridadData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -40,6 +41,7 @@ export default function InformeTabs({
   retroalimentacionData,
   colaboradoresData,
   controlDominioData,
+  claridadData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -77,6 +79,13 @@ export default function InformeTabs({
     countsB: colaboradoresData.countsB || {},
     totalA: colaboradoresData.totalA || 0,
     totalB: colaboradoresData.totalB || 0,
+  });
+  const claridadSentence = buildRiskSentence({
+    levelsOrder: claridadData.levelsOrder,
+    countsA: claridadData.countsA || {},
+    countsB: claridadData.countsB || {},
+    totalA: claridadData.totalA || 0,
+    totalB: claridadData.totalB || 0,
   });
   const controlSentence = buildRiskSentence({
     levelsOrder: controlDominioData.levelsOrder,
@@ -139,6 +148,14 @@ export default function InformeTabs({
     : "primario";
   const showSuggestionsControl =
     stageControlA !== "primario" || stageControlB !== "primario";
+  const stageClaridadA = claridadData.totalA
+    ? calcStage(claridadData.countsA || {})
+    : "primario";
+  const stageClaridadB = claridadData.totalB
+    ? calcStage(claridadData.countsB || {})
+    : "primario";
+  const showSuggestionsClaridad =
+    stageClaridadA !== "primario" || stageClaridadB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -528,6 +545,57 @@ export default function InformeTabs({
                   </li>
                   <li>
                     Fomentar la Proactividad: Crear un ambiente que valore la iniciativa y la propuesta de mejoras por parte de los empleados.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Claridad del rol Forma A y B"
+          data={claridadData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          La organización ha proporcionado al trabajador información clara y suficiente sobre los objetivos, las funciones, el margen de autonomía, los resultados y el impacto que tiene el ejercicio del cargo en la empresa.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {claridadSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageClaridadA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageClaridadB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsClaridad ? (
+              <>
+                <p>
+                  La Dimensión Claridad del Rol: Refiere a la información clara y suficiente que la organización brinda sobre objetivos, funciones, margen de autonomía, resultados e impacto del cargo.<br />
+                  Ejemplo: Ambigüedad en las funciones, roles poco definidos, expectativas contradictorias o falta de información sobre las responsabilidades.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Descripciones de Puesto Claras y Actualizadas: Asegurar que las descripciones de puesto sean precisas, claras y estén actualizadas.
+                  </li>
+                  <li>
+                    Inducción y Capacitación: Proporcionar una inducción completa y capacitaciones regulares para asegurar que los empleados comprendan sus roles.
+                  </li>
+                  <li>
+                    Revisión Periódica de Roles: Realizar revisiones periódicas de los roles y responsabilidades para ajustarlos a las necesidades cambiantes.
+                  </li>
+                  <li>
+                    Establecer Metas y Objetivos Claros: Definir objetivos claros y medibles para cada puesto, en línea con los objetivos de la organización.
                   </li>
                 </ol>
               </>
