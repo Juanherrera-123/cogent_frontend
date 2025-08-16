@@ -631,7 +631,6 @@ export default function DashboardResultados({
     if (invalid > 0) data.invalid = invalid;
     return data;
   }, [datosA, datosB]);
-
   const ciudadInforme =
     datosMostrados.find((d) => d.ficha?.trabajoCiudad)?.ficha?.trabajoCiudad || "";
 
