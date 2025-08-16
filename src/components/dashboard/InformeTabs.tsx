@@ -25,6 +25,8 @@ interface Props {
   relacionesData: RiskDistributionData;
   retroalimentacionData: RiskDistributionData;
   colaboradoresData: RiskDistributionData;
+  claridadData: RiskDistributionData;
+  capacitacionData: RiskDistributionData;
   controlDominioData: RiskDistributionData;
   claridadData: RiskDistributionData;
 }
@@ -40,6 +42,8 @@ export default function InformeTabs({
   relacionesData,
   retroalimentacionData,
   colaboradoresData,
+  claridadData,
+  capacitacionData,
   controlDominioData,
   claridadData,
 }: Props) {
@@ -86,6 +90,13 @@ export default function InformeTabs({
     countsB: claridadData.countsB || {},
     totalA: claridadData.totalA || 0,
     totalB: claridadData.totalB || 0,
+  });
+  const capacitacionSentence = buildRiskSentence({
+    levelsOrder: capacitacionData.levelsOrder,
+    countsA: capacitacionData.countsA || {},
+    countsB: capacitacionData.countsB || {},
+    totalA: capacitacionData.totalA || 0,
+    totalB: capacitacionData.totalB || 0,
   });
   const controlSentence = buildRiskSentence({
     levelsOrder: controlDominioData.levelsOrder,
@@ -140,6 +151,22 @@ export default function InformeTabs({
     : "primario";
   const showSuggestionsColaboradores =
     stageColaboradoresA !== "primario" || stageColaboradoresB !== "primario";
+  const stageClaridadA = claridadData.totalA
+    ? calcStage(claridadData.countsA || {})
+    : "primario";
+  const stageClaridadB = claridadData.totalB
+    ? calcStage(claridadData.countsB || {})
+    : "primario";
+  const showSuggestionsClaridad =
+    stageClaridadA !== "primario" || stageClaridadB !== "primario";
+  const stageCapacitacionA = capacitacionData.totalA
+    ? calcStage(capacitacionData.countsA || {})
+    : "primario";
+  const stageCapacitacionB = capacitacionData.totalB
+    ? calcStage(capacitacionData.countsB || {})
+    : "primario";
+  const showSuggestionsCapacitacion =
+    stageCapacitacionA !== "primario" || stageCapacitacionB !== "primario";
   const stageControlA = controlDominioData.totalA
     ? calcStage(controlDominioData.countsA || {})
     : "primario";
@@ -556,11 +583,12 @@ export default function InformeTabs({
           </div>
         </div>
         <RiskDistributionChart
-          title="Claridad del rol Forma A y B"
+          title="Claridad de rol Forma A y B"
           data={claridadData}
         />
         <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
-          La organización ha proporcionado al trabajador información clara y suficiente sobre los objetivos, las funciones, el margen de autonomía, los resultados y el impacto que tiene el ejercicio del cargo en la empresa.
+          Refiere al grado en que las funciones, responsabilidades y objetivos del
+          puesto están claramente definidos y comunicados.
         </p>
         <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
           {claridadSentence}
@@ -580,28 +608,100 @@ export default function InformeTabs({
             {showSuggestionsClaridad ? (
               <>
                 <p>
-                  La Dimensión Claridad del Rol: Refiere a la información clara y suficiente que la organización brinda sobre objetivos, funciones, margen de autonomía, resultados e impacto del cargo.<br />
-                  Ejemplo: Ambigüedad en las funciones, roles poco definidos, expectativas contradictorias o falta de información sobre las responsabilidades.
+                  La Dimensión Claridad de rol: refiere al grado en que las
+                  responsabilidades y funciones están definidas y comunicadas.<br />
+                  Ejemplo: Falta de información sobre las tareas y expectativas,
+                  roles ambiguos o conflictivos.
                 </p>
                 <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
                 <ol className="list-decimal ml-5 space-y-1">
                   <li>
-                    Descripciones de Puesto Claras y Actualizadas: Asegurar que las descripciones de puesto sean precisas, claras y estén actualizadas.
+                    Definición Clara de Roles y Responsabilidades: Establecer y
+                    documentar funciones, tareas y autoridad para cada puesto.
                   </li>
                   <li>
-                    Inducción y Capacitación: Proporcionar una inducción completa y capacitaciones regulares para asegurar que los empleados comprendan sus roles.
+                    Comunicación de Expectativas: Informar de manera permanente sobre
+                    objetivos, cambios en las funciones y criterios de desempeño.
                   </li>
                   <li>
-                    Revisión Periódica de Roles: Realizar revisiones periódicas de los roles y responsabilidades para ajustarlos a las necesidades cambiantes.
-                  </li>
-                  <li>
-                    Establecer Metas y Objetivos Claros: Definir objetivos claros y medibles para cada puesto, en línea con los objetivos de la organización.
+                    Retroalimentación y Acompañamiento: Brindar orientación y
+                    feedback para resolver dudas sobre el rol y mejorar el
+                    desempeño.
                   </li>
                 </ol>
               </>
             ) : (
               <p>
-                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia
+                significativa de riesgo. No se requieren acciones adicionales ni
+                planes de mejora inmediatos; sin embargo, es importante continuar
+                fortaleciendo las prácticas actuales para mantener estos resultados.
+                ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo
+                de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Capacitación Forma A y B"
+          data={capacitacionData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Refiere las oportunidades de formación para adquirir nuevas habilidades o
+          mejorar las existentes, necesarias para el desempeño del trabajo.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {capacitacionSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageCapacitacionA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageCapacitacionB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsCapacitacion ? (
+              <>
+                <p>
+                  La Dimensión Capacitación: refiere las oportunidades de formación
+                  para adquirir nuevas habilidades o mejorar las existentes,
+                  necesarias para el desempeño del trabajo.<br />
+                  Ejemplo: Falta de formación para desempeñar nuevas tareas,
+                  tecnología o procesos, lo que genera inseguridad y estrés.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Diagnóstico de Necesidades de Capacitación: Realizar un
+                    diagnóstico sistemático de las necesidades de capacitación de
+                    los empleados.
+                  </li>
+                  <li>
+                    Plan de Capacitación Anual: Desarrollar un plan de capacitación
+                    anual que incluya temas relevantes para el desarrollo
+                    profesional y las necesidades del puesto.
+                  </li>
+                  <li>
+                    Diversificación de Métodos de Capacitación: Ofrecer diferentes
+                    modalidades de capacitación (presencial, virtual, talleres,
+                    e-learning) para adaptarse a las preferencias y
+                    disponibilidades de los empleados.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia
+                significativa de riesgo. No se requieren acciones adicionales ni
+                planes de mejora inmediatos; sin embargo, es importante continuar
+                fortaleciendo las prácticas actuales para mantener estos
+                resultados. ¡Felicitaciones por destacar en esta área y seguir
+                siendo un ejemplo de excelencia!
               </p>
             )}
           </div>
