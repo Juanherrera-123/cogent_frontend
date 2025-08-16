@@ -25,6 +25,7 @@ interface Props {
   relacionesData: RiskDistributionData;
   retroalimentacionData: RiskDistributionData;
   colaboradoresData: RiskDistributionData;
+  controlDominioData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -38,6 +39,7 @@ export default function InformeTabs({
   relacionesData,
   retroalimentacionData,
   colaboradoresData,
+  controlDominioData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -75,6 +77,13 @@ export default function InformeTabs({
     countsB: colaboradoresData.countsB || {},
     totalA: colaboradoresData.totalA || 0,
     totalB: colaboradoresData.totalB || 0,
+  });
+  const controlSentence = buildRiskSentence({
+    levelsOrder: controlDominioData.levelsOrder,
+    countsA: controlDominioData.countsA || {},
+    countsB: controlDominioData.countsB || {},
+    totalA: controlDominioData.totalA || 0,
+    totalB: controlDominioData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -122,6 +131,14 @@ export default function InformeTabs({
     : "primario";
   const showSuggestionsColaboradores =
     stageColaboradoresA !== "primario" || stageColaboradoresB !== "primario";
+  const stageControlA = controlDominioData.totalA
+    ? calcStage(controlDominioData.countsA || {})
+    : "primario";
+  const stageControlB = controlDominioData.totalB
+    ? calcStage(controlDominioData.countsB || {})
+    : "primario";
+  const showSuggestionsControl =
+    stageControlA !== "primario" || stageControlB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -469,6 +486,54 @@ export default function InformeTabs({
                 fortaleciendo las prácticas actuales para mantener estos resultados.
                 ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo
                 de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="DOMINIO CONTROL SOBRE EL TRABAJO FORMA A Y FORMA B"
+          data={controlDominioData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Posibilidad que el trabajo ofrece al individuo para influir y tomar decisiones sobre los diversos aspectos que intervienen en su realización. La iniciativa y autonomía, el uso y desarrollo de habilidades y conocimientos, la participación y manejo del cambio, la claridad de rol y la capacitación son aspectos que le dan al individuo la posibilidad de influir sobre su trabajo (Ministerio de la Protección Social y Pontificia Universidad Javeriana, 2010). Un mayor control suele asociarse con menor estrés y mayor satisfacción.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {controlSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageControlA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageControlB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsControl ? (
+              <>
+                <p>
+                  Genere mayor Iniciativa y Autonomía: Grado de libertad y capacidad del trabajador para tomar decisiones sobre cómo realizar su trabajo, el orden de las tareas y el ritmo.<br />
+                  Ejemplo: Escasa participación en la planificación del trabajo, poca libertad para tomar decisiones, tareas estrictamente supervisadas.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Empoderamiento y Delegación: Delegar responsabilidades y permitir a los empleados tomar decisiones sobre aspectos de su trabajo, dentro de marcos definidos.
+                  </li>
+                  <li>
+                    Participación en la Toma de Decisiones: Involucrar a los trabajadores en la toma de decisiones que les afectan directamente.
+                  </li>
+                  <li>
+                    Fomentar la Proactividad: Crear un ambiente que valore la iniciativa y la propuesta de mejoras por parte de los empleados.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
               </p>
             )}
           </div>
