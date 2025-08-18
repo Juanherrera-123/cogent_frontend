@@ -652,6 +652,8 @@ export default function InformeTabs({
                   Ejemplo: Escasa autonomía para organizar las tareas, ritmo impuesto sin posibilidad de ajuste.
                 </p>
                 <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <p className="mt-1 font-semibold">Capacitación para la autogestión</p>
+
                 <ol className="list-decimal ml-5 space-y-1">
                   <li>
                     Formación en organización del tiempo, resolución de problemas y toma de decisiones. Coaching o mentoría para fortalecer la autonomía.
@@ -663,9 +665,10 @@ export default function InformeTabs({
                   <li>
                     Permitir que propongan mejoras o ajustes a su forma de trabajar.
                   </li>
-                  <li>
-                    Fomento de una cultura de confianza y responsabilidad.
-                  </li>
+                </ol>
+                <p className="mt-2 font-semibold">Cultura Organizacional</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>Fomento de una cultura de confianza y responsabilidad.</li>
                   <li>Reconocer la autonomía como un valor organizacional.</li>
                   <li>Premiar la iniciativa y la toma de decisiones acertadas.</li>
                 </ol>
