@@ -32,6 +32,7 @@ interface Props {
   oportunidadesData: RiskDistributionData;
   controlDominioData: RiskDistributionData;
   demandasDominioData: RiskDistributionData;
+  demandasAmbientalesData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -52,6 +53,7 @@ export default function InformeTabs({
   oportunidadesData,
   controlDominioData,
   demandasDominioData,
+  demandasAmbientalesData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -138,6 +140,13 @@ export default function InformeTabs({
     countsB: demandasDominioData.countsB || {},
     totalA: demandasDominioData.totalA || 0,
     totalB: demandasDominioData.totalB || 0,
+  });
+  const demandasAmbientalesSentence = buildRiskSentence({
+    levelsOrder: demandasAmbientalesData.levelsOrder,
+    countsA: demandasAmbientalesData.countsA || {},
+    countsB: demandasAmbientalesData.countsB || {},
+    totalA: demandasAmbientalesData.totalA || 0,
+    totalB: demandasAmbientalesData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -241,6 +250,15 @@ export default function InformeTabs({
     : "primario";
   const showSuggestionsDemandas =
     stageDemandasA !== "primario" || stageDemandasB !== "primario";
+  const stageDemandasAmbientalesA = demandasAmbientalesData.totalA
+    ? calcStage(demandasAmbientalesData.countsA || {})
+    : "primario";
+  const stageDemandasAmbientalesB = demandasAmbientalesData.totalB
+    ? calcStage(demandasAmbientalesData.countsB || {})
+    : "primario";
+  const showSuggestionsDemandasAmbientales =
+    stageDemandasAmbientalesA !== "primario" ||
+    stageDemandasAmbientalesB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -1003,6 +1021,56 @@ export default function InformeTabs({
                 fortaleciendo las prácticas actuales para mantener estos resultados.
                 ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo
                 de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Demandas ambientales y de esfuerzo físico Forma A y B"
+          data={demandasAmbientalesData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Refiere, las Exigencias impuestas por las condiciones físicas del lugar de trabajo, como ruido, temperatura, iluminación, ergonomía.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {demandasAmbientalesSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageDemandasAmbientalesA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageDemandasAmbientalesB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsDemandasAmbientales ? (
+              <>
+                <p>
+                  Ejemplo: Exposición a ambientes ruidosos, temperaturas extremas, mala iluminación, diseño ergonómico deficiente, riesgos de seguridad física.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Mejoras Ergonómicas: Realizar evaluaciones ergonómicas de los puestos de trabajo y realizar los ajustes necesarios (sillas, escritorios, herramientas en todas las áreas)
+                  </li>
+                  <li>
+                    Control de Agentes Físicos: Implementar medidas para controlar el ruido, la temperatura, la iluminación y la calidad del aire.
+                  </li>
+                  <li>
+                    Mantenimiento de Instalaciones: Asegurar el mantenimiento adecuado de las instalaciones y equipos para garantizar un ambiente seguro y funcional.
+                  </li>
+                  <li>
+                    Programas de Seguridad y Salud en el Trabajo: Reforzar los programas de seguridad industrial y salud ocupacional para prevenir accidentes y enfermedades laborales.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
               </p>
             )}
           </div>
