@@ -1782,7 +1782,7 @@ export default function InformeTabs({
         </TabsContent>
         <TabsContent value="graficas-extralaboral">
           <RiskDistributionChart
-            title="Factor extralaboral Forma A y B"
+            title="RESULTADO GENERAL FACTOR EXTRALABORAL FORMA A Y B"
             data={extralaboralData}
           />
           <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
