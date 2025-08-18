@@ -33,6 +33,7 @@ interface Props {
   controlDominioData: RiskDistributionData;
   demandasDominioData: RiskDistributionData;
   demandasAmbientalesData: RiskDistributionData;
+  demandasCuantitativasData: RiskDistributionData;
   influenciaTrabajoData: RiskDistributionData;
   exigenciasResponsabilidadData: RiskDistributionData;
   demandasCargaMentalData: RiskDistributionData;
@@ -59,6 +60,7 @@ export default function InformeTabs({
   controlDominioData,
   demandasDominioData,
   demandasAmbientalesData,
+  demandasCuantitativasData,
   influenciaTrabajoData,
   exigenciasResponsabilidadData,
   demandasCargaMentalData,
@@ -171,6 +173,13 @@ export default function InformeTabs({
     countsB: exigenciasResponsabilidadData.countsB || {},
     totalA: exigenciasResponsabilidadData.totalA || 0,
     totalB: exigenciasResponsabilidadData.totalB || 0,
+  });
+  const demandasCuantitativasSentence = buildRiskSentence({
+    levelsOrder: demandasCuantitativasData.levelsOrder,
+    countsA: demandasCuantitativasData.countsA || {},
+    countsB: demandasCuantitativasData.countsB || {},
+    totalA: demandasCuantitativasData.totalA || 0,
+    totalB: demandasCuantitativasData.totalB || 0,
   });
   const demandasCargaMentalSentence = buildRiskSentence({
     levelsOrder: demandasCargaMentalData.levelsOrder,
@@ -351,6 +360,15 @@ export default function InformeTabs({
   const showSuggestionsExigenciasResponsabilidad =
     stageExigenciasResponsabilidadA !== "primario" ||
     stageExigenciasResponsabilidadB !== "primario";
+  const stageDemandasCuantitativasA = demandasCuantitativasData.totalA
+    ? calcStage(demandasCuantitativasData.countsA || {})
+    : "primario";
+  const stageDemandasCuantitativasB = demandasCuantitativasData.totalB
+    ? calcStage(demandasCuantitativasData.countsB || {})
+    : "primario";
+  const showSuggestionsDemandasCuantitativas =
+    stageDemandasCuantitativasA !== "primario" ||
+    stageDemandasCuantitativasB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -1409,6 +1427,56 @@ export default function InformeTabs({
                   <li>Flexibilice horarios o implemente trabajo remoto en casa.</li>
                   <li>Evite llamadas, mensajes o correos fuera del horario laboral salvo emergencias.</li>
                   <li>Establezca políticas claras de desconexión digital.</li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Demandas cuantitativas Forma A y B"
+          data={demandasCuantitativasData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Refieren la cantidad de trabajo que se debe realizar en relación con el tiempo disponible. Una alta demanda cuantitativa puede llevar a sobrecarga de trabajo y jornadas laborales extensas.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {demandasCuantitativasSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageDemandasCuantitativasA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageDemandasCuantitativasB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsDemandasCuantitativas ? (
+              <>
+                <p>
+                  Ejemplo: Presión por cumplir plazos ajustados, gran volumen de tareas, necesidad de trabajar horas extras.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Optimización de Cargas de Trabajo: Realizar estudios de carga laboral para asegurar una distribución equitativa y realista de las tareas.
+                  </li>
+                  <li>
+                    Gestión del Tiempo: Ofrecer capacitaciones en técnicas de gestión del tiempo y priorización de tareas.
+                  </li>
+                  <li>
+                    Dotación de Personal Suficiente: Evaluar la necesidad de contratar más personal o redistribuir responsabilidades para evitar la sobrecarga crónica.
+                  </li>
+                  <li>
+                    Definición Clara de Expectativas: Asegurar que los colaboradores comprendan las expectativas de desempeño y los plazos, fomentando la comunicación bidireccional.
+                  </li>
                 </ol>
               </>
             ) : (
