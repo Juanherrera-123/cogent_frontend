@@ -41,6 +41,7 @@ interface Props {
   demandasJornadaData: RiskDistributionData;
   consistenciaRolData: RiskDistributionData;
   recompensasDominioData: RiskDistributionData;
+  recompensasPertenenciaData: RiskDistributionData;
   reconocimientoCompensacionData: RiskDistributionData;
 }
 
@@ -71,6 +72,7 @@ export default function InformeTabs({
   demandasJornadaData,
   consistenciaRolData,
   recompensasDominioData,
+  recompensasPertenenciaData,
   reconocimientoCompensacionData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
@@ -215,20 +217,27 @@ export default function InformeTabs({
     totalA: consistenciaRolData.totalA || 0,
     totalB: consistenciaRolData.totalB || 0,
   });
-    const recompensasSentence = buildRiskSentence({
-      levelsOrder: recompensasDominioData.levelsOrder,
-      countsA: recompensasDominioData.countsA || {},
-      countsB: recompensasDominioData.countsB || {},
-      totalA: recompensasDominioData.totalA || 0,
-      totalB: recompensasDominioData.totalB || 0,
-    });
-    const reconocimientoCompensacionSentence = buildRiskSentence({
-      levelsOrder: reconocimientoCompensacionData.levelsOrder,
-      countsA: reconocimientoCompensacionData.countsA || {},
-      countsB: reconocimientoCompensacionData.countsB || {},
-      totalA: reconocimientoCompensacionData.totalA || 0,
-      totalB: reconocimientoCompensacionData.totalB || 0,
-    });
+  const recompensasSentence = buildRiskSentence({
+    levelsOrder: recompensasDominioData.levelsOrder,
+    countsA: recompensasDominioData.countsA || {},
+    countsB: recompensasDominioData.countsB || {},
+    totalA: recompensasDominioData.totalA || 0,
+    totalB: recompensasDominioData.totalB || 0,
+  });
+  const recompensasPertenenciaSentence = buildRiskSentence({
+    levelsOrder: recompensasPertenenciaData.levelsOrder,
+    countsA: recompensasPertenenciaData.countsA || {},
+    countsB: recompensasPertenenciaData.countsB || {},
+    totalA: recompensasPertenenciaData.totalA || 0,
+    totalB: recompensasPertenenciaData.totalB || 0,
+  });
+  const reconocimientoCompensacionSentence = buildRiskSentence({
+    levelsOrder: reconocimientoCompensacionData.levelsOrder,
+    countsA: reconocimientoCompensacionData.countsA || {},
+    countsB: reconocimientoCompensacionData.countsB || {},
+    totalA: reconocimientoCompensacionData.totalA || 0,
+    totalB: reconocimientoCompensacionData.totalB || 0,
+  });
 
   type Stage = "primario" | "secundario" | "terciario";
 
@@ -413,6 +422,15 @@ export default function InformeTabs({
     : "primario";
   const showSuggestionsRecompensas =
     stageRecompensasA !== "primario" || stageRecompensasB !== "primario";
+  const stageRecompensasPertenenciaA = recompensasPertenenciaData.totalA
+    ? calcStage(recompensasPertenenciaData.countsA || {})
+    : "primario";
+  const stageRecompensasPertenenciaB = recompensasPertenenciaData.totalB
+    ? calcStage(recompensasPertenenciaData.countsB || {})
+    : "primario";
+  const showSuggestionsRecompensasPertenencia =
+    stageRecompensasPertenenciaA !== "primario" ||
+    stageRecompensasPertenenciaB !== "primario";
   const stageReconocimientoCompensacionA =
     reconocimientoCompensacionData.totalA
       ? calcStage(reconocimientoCompensacionData.countsA || {})
@@ -1685,9 +1703,56 @@ export default function InformeTabs({
                 <p>
                   El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
                 </p>
-              )}
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Recompensas derivadas de la pertenencia a la organización Forma A y B"
+          data={recompensasPertenenciaData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          La compensación psicológica, que comprende el reconocimiento del grupo social y el trato justo en el trabajo
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {recompensasPertenenciaSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageRecompensasPertenenciaA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageRecompensasPertenenciaB} />
             </div>
           </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsRecompensasPertenencia ? (
+              <>
+                <p>
+                  Ejemplo: Falta de reconocimiento por el esfuerzo o los logros, trato injusto o discriminación, falta de valoración por parte de superiores o compañeros.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Programas de Reconocimiento: Implementar programas formales e informales de reconocimiento de logros y buen desempeño (ej. empleado del mes, menciones en reuniones, cartas de agradecimiento).
+                  </li>
+                  <li>
+                    Fomentar una Cultura de Agradecimiento: Promover que los líderes y compañeros expresen aprecio por el trabajo de los demás.
+                  </li>
+                  <li>
+                    Políticas de Equidad y Trato Justo: Establecer políticas claras contra la discriminación y el trato injusto, y asegurar su cumplimiento.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
         </TabsContent>
           <TabsContent value="estrategias" />
         </Tabs>
