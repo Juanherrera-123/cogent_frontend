@@ -43,6 +43,7 @@ interface Props {
   recompensasDominioData: RiskDistributionData;
   recompensasPertenenciaData: RiskDistributionData;
   reconocimientoCompensacionData: RiskDistributionData;
+  extralaboralData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -74,6 +75,7 @@ export default function InformeTabs({
   recompensasDominioData,
   recompensasPertenenciaData,
   reconocimientoCompensacionData,
+  extralaboralData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -237,6 +239,13 @@ export default function InformeTabs({
     countsB: reconocimientoCompensacionData.countsB || {},
     totalA: reconocimientoCompensacionData.totalA || 0,
     totalB: reconocimientoCompensacionData.totalB || 0,
+  });
+  const extralaboralSentence = buildRiskSentence({
+    levelsOrder: extralaboralData.levelsOrder,
+    countsA: extralaboralData.countsA || {},
+    countsB: extralaboralData.countsB || {},
+    totalA: extralaboralData.totalA || 0,
+    totalB: extralaboralData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -442,6 +451,14 @@ export default function InformeTabs({
   const showSuggestionsReconocimientoCompensacion =
     stageReconocimientoCompensacionA !== "primario" ||
     stageReconocimientoCompensacionB !== "primario";
+  const stageExtralaboralA = extralaboralData.totalA
+    ? calcStage(extralaboralData.countsA || {})
+    : "primario";
+  const stageExtralaboralB = extralaboralData.totalB
+    ? calcStage(extralaboralData.countsB || {})
+    : "primario";
+  const showSuggestionsExtralaboral =
+    stageExtralaboralA !== "primario" || stageExtralaboralB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -1764,9 +1781,47 @@ export default function InformeTabs({
         </div>
         </TabsContent>
         <TabsContent value="graficas-extralaboral">
-          <p className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
-            Aquí se mostrarán las gráficas extralaborales.
+          <RiskDistributionChart
+            title="RESULTADO GENERAL FACTOR EXTRALABORAL FORMA A Y B"
+            data={extralaboralData}
+          />
+          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            Los resultados de los factores de riesgo psicosocial Extralaboral se presentan en esta sección, utilizando el instrumento específico diseñado para esta evaluación. Se abarcan diversos aspectos del entorno del trabajador, que incluyen elementos familiares, sociales y económicos. Además, se consideran las condiciones de vivienda, ya que estas pueden ejercer influencia sobre el bienestar y la salud del individuo.
           </p>
+          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {extralaboralSentence}
+          </p>
+          <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-col items-center">
+                <p className="font-semibold">Forma A</p>
+                <SemaphoreDial stage={stageExtralaboralA} />
+              </div>
+              <div className="flex flex-col items-center">
+                <p className="font-semibold">Forma B</p>
+                <SemaphoreDial stage={stageExtralaboralB} />
+              </div>
+            </div>
+            <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+              {showSuggestionsExtralaboral ? (
+                <>
+                  <p>
+                    Ejemplo: dificultades familiares, sociales o económicas que impactan el bienestar del trabajador.
+                  </p>
+                  <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                  <ol className="list-decimal ml-5 space-y-1">
+                    <li>Programas que promuevan el equilibrio vida-trabajo y horarios flexibles.</li>
+                    <li>Fortalecimiento de redes de apoyo familiar y comunitario.</li>
+                    <li>Asesoría financiera y facilidades para mejorar condiciones de vivienda.</li>
+                  </ol>
+                </>
+              ) : (
+                <p>
+                  El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+                </p>
+              )}
+            </div>
+          </div>
         </TabsContent>
         <TabsContent value="graficas-estres">
           <p className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
