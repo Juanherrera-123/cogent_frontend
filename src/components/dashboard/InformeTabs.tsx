@@ -45,6 +45,7 @@ interface Props {
   reconocimientoCompensacionData: RiskDistributionData;
   extralaboralData: RiskDistributionData;
   tiempoFueraTrabajoData: RiskDistributionData;
+  relacionesFamiliaresData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -78,6 +79,7 @@ export default function InformeTabs({
   reconocimientoCompensacionData,
   extralaboralData,
   tiempoFueraTrabajoData,
+  relacionesFamiliaresData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -255,6 +257,13 @@ export default function InformeTabs({
     countsB: tiempoFueraTrabajoData.countsB || {},
     totalA: tiempoFueraTrabajoData.totalA || 0,
     totalB: tiempoFueraTrabajoData.totalB || 0,
+  });
+  const relacionesFamiliaresSentence = buildRiskSentence({
+    levelsOrder: relacionesFamiliaresData.levelsOrder,
+    countsA: relacionesFamiliaresData.countsA || {},
+    countsB: relacionesFamiliaresData.countsB || {},
+    totalA: relacionesFamiliaresData.totalA || 0,
+    totalB: relacionesFamiliaresData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -477,6 +486,15 @@ export default function InformeTabs({
   const showSuggestionsTiempoFueraTrabajo =
     stageTiempoFueraTrabajoA !== "primario" ||
     stageTiempoFueraTrabajoB !== "primario";
+  const stageRelacionesFamiliaresA = relacionesFamiliaresData.totalA
+    ? calcStage(relacionesFamiliaresData.countsA || {})
+    : "primario";
+  const stageRelacionesFamiliaresB = relacionesFamiliaresData.totalB
+    ? calcStage(relacionesFamiliaresData.countsB || {})
+    : "primario";
+  const showSuggestionsRelacionesFamiliares =
+    stageRelacionesFamiliaresA !== "primario" ||
+    stageRelacionesFamiliaresB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -1888,8 +1906,55 @@ export default function InformeTabs({
                   El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
                 </p>
               )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Relaciones familiares Forma A y B"
+          data={relacionesFamiliaresData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Refiere la Calidad del apoyo y las interacciones dentro del entorno familiar del trabajador.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {relacionesFamiliaresSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageRelacionesFamiliaresA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageRelacionesFamiliaresB} />
             </div>
           </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsRelacionesFamiliares ? (
+              <>
+                <p>
+                  Ejemplo: Conflictos familiares, falta de apoyo de la pareja o hijos, responsabilidades de cuidado de familiares que generan carga adicional.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Programas de Conciliación Familiar: Ofrecer beneficios o programas que faciliten la conciliación, como permisos especiales para eventos familiares o apoyo para el cuidado de niños o adultos mayores.
+                  </li>
+                  <li>
+                    Espacios de Sensibilización: Realizar talleres o charlas sobre manejo del estrés familiar, comunicación efectiva en el hogar o crianza positiva, para equipar a los empleados con herramientas.
+                  </li>
+                  <li>
+                    Canales de Apoyo Confidencial: Brindar acceso a orientación psicológica o comunicacional que pueda abordar situaciones de conflicto o dificultad en el ámbito familiar.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
         </TabsContent>
         <TabsContent value="graficas-estres">
           <p className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
