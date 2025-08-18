@@ -41,6 +41,7 @@ interface Props {
   demandasJornadaData: RiskDistributionData;
   consistenciaRolData: RiskDistributionData;
   recompensasDominioData: RiskDistributionData;
+  reconocimientoCompensacionData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -70,6 +71,7 @@ export default function InformeTabs({
   demandasJornadaData,
   consistenciaRolData,
   recompensasDominioData,
+  reconocimientoCompensacionData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -213,13 +215,20 @@ export default function InformeTabs({
     totalA: consistenciaRolData.totalA || 0,
     totalB: consistenciaRolData.totalB || 0,
   });
-  const recompensasSentence = buildRiskSentence({
-    levelsOrder: recompensasDominioData.levelsOrder,
-    countsA: recompensasDominioData.countsA || {},
-    countsB: recompensasDominioData.countsB || {},
-    totalA: recompensasDominioData.totalA || 0,
-    totalB: recompensasDominioData.totalB || 0,
-  });
+    const recompensasSentence = buildRiskSentence({
+      levelsOrder: recompensasDominioData.levelsOrder,
+      countsA: recompensasDominioData.countsA || {},
+      countsB: recompensasDominioData.countsB || {},
+      totalA: recompensasDominioData.totalA || 0,
+      totalB: recompensasDominioData.totalB || 0,
+    });
+    const reconocimientoCompensacionSentence = buildRiskSentence({
+      levelsOrder: reconocimientoCompensacionData.levelsOrder,
+      countsA: reconocimientoCompensacionData.countsA || {},
+      countsB: reconocimientoCompensacionData.countsB || {},
+      totalA: reconocimientoCompensacionData.totalA || 0,
+      totalB: reconocimientoCompensacionData.totalB || 0,
+    });
 
   type Stage = "primario" | "secundario" | "terciario";
 
@@ -404,6 +413,17 @@ export default function InformeTabs({
     : "primario";
   const showSuggestionsRecompensas =
     stageRecompensasA !== "primario" || stageRecompensasB !== "primario";
+  const stageReconocimientoCompensacionA =
+    reconocimientoCompensacionData.totalA
+      ? calcStage(reconocimientoCompensacionData.countsA || {})
+      : "primario";
+  const stageReconocimientoCompensacionB =
+    reconocimientoCompensacionData.totalB
+      ? calcStage(reconocimientoCompensacionData.countsB || {})
+      : "primario";
+  const showSuggestionsReconocimientoCompensacion =
+    stageReconocimientoCompensacionA !== "primario" ||
+    stageReconocimientoCompensacionB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -1616,11 +1636,61 @@ export default function InformeTabs({
                 El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
               </p>
             )}
+            </div>
           </div>
-        </div>
-      </TabsContent>
-        <TabsContent value="estrategias" />
-      </Tabs>
-    );
+          <RiskDistributionChart
+            title="Reconocimiento y compensación Forma A y B"
+            data={reconocimientoCompensacionData}
+          />
+          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            Que se hace de la contribución del trabajador corresponde con sus esfuerzos y logros. El salario se da teniendo en cuenta los acuerdos entre el trabajador y la organización. Sin embargo, se deben tener en cuenta las posibilidades de Promoción y Seguridad en el Trabajo: Oportunidades de ascenso, desarrollo de carrera y estabilidad laboral.
+          </p>
+          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {reconocimientoCompensacionSentence}
+          </p>
+          <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-col items-center">
+                <p className="font-semibold">Forma A</p>
+                <SemaphoreDial stage={stageReconocimientoCompensacionA} />
+              </div>
+              <div className="flex flex-col items-center">
+                <p className="font-semibold">Forma B</p>
+                <SemaphoreDial stage={stageReconocimientoCompensacionB} />
+              </div>
+            </div>
+            <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+              {showSuggestionsReconocimientoCompensacion ? (
+                <>
+                  <p>
+                    Ejemplo: Falta de oportunidades de ascenso, estancamiento profesional, percepción de inestabilidad laboral, despidos injustificados.
+                  </p>
+                  <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                  <ol className="list-decimal ml-5 space-y-1">
+                    <li>
+                      Planes de Carrera y Promoción Interna: Diseñar planes de carrera claros y promover la movilidad interna y las oportunidades de ascenso.
+                    </li>
+                    <li>
+                      Programas de Retención de Talento: Implementar estrategias para retener a los empleados valiosos, ofreciéndoles perspectivas de crecimiento.
+                    </li>
+                    <li>
+                      Comunicación sobre Estabilidad Laboral: Proporcionar información clara y transparente sobre la situación de la empresa y la seguridad en el empleo.
+                    </li>
+                    <li>
+                      Desarrollo de Habilidades Transversales: Ofrecer capacitaciones en habilidades transferibles que aumenten la empleabilidad de los trabajadores.
+                    </li>
+                  </ol>
+                </>
+              ) : (
+                <p>
+                  El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+                </p>
+              )}
+            </div>
+          </div>
+        </TabsContent>
+          <TabsContent value="estrategias" />
+        </Tabs>
+      );
   }
 
