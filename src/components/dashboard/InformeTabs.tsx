@@ -33,6 +33,7 @@ interface Props {
   controlDominioData: RiskDistributionData;
   demandasDominioData: RiskDistributionData;
   demandasAmbientalesData: RiskDistributionData;
+  exigenciasResponsabilidadData: RiskDistributionData;
   demandasCargaMentalData: RiskDistributionData;
   demandasJornadaData: RiskDistributionData;
   consistenciaRolData: RiskDistributionData;
@@ -57,6 +58,7 @@ export default function InformeTabs({
   controlDominioData,
   demandasDominioData,
   demandasAmbientalesData,
+  exigenciasResponsabilidadData,
   demandasCargaMentalData,
   demandasJornadaData,
   consistenciaRolData,
@@ -153,6 +155,13 @@ export default function InformeTabs({
     countsB: demandasAmbientalesData.countsB || {},
     totalA: demandasAmbientalesData.totalA || 0,
     totalB: demandasAmbientalesData.totalB || 0,
+  });
+  const exigenciasResponsabilidadSentence = buildRiskSentence({
+    levelsOrder: exigenciasResponsabilidadData.levelsOrder,
+    countsA: exigenciasResponsabilidadData.countsA || {},
+    countsB: exigenciasResponsabilidadData.countsB || {},
+    totalA: exigenciasResponsabilidadData.totalA || 0,
+    totalB: exigenciasResponsabilidadData.totalB || 0,
   });
   const demandasCargaMentalSentence = buildRiskSentence({
     levelsOrder: demandasCargaMentalData.levelsOrder,
@@ -313,6 +322,17 @@ export default function InformeTabs({
   const showSuggestionsConsistenciaRol =
     stageConsistenciaRolA !== "primario" ||
     stageConsistenciaRolB !== "primario";
+  const stageExigenciasResponsabilidadA =
+    exigenciasResponsabilidadData.totalA
+      ? calcStage(exigenciasResponsabilidadData.countsA || {})
+      : "primario";
+  const stageExigenciasResponsabilidadB =
+    exigenciasResponsabilidadData.totalB
+      ? calcStage(exigenciasResponsabilidadData.countsB || {})
+      : "primario";
+  const showSuggestionsExigenciasResponsabilidad =
+    stageExigenciasResponsabilidadA !== "primario" ||
+    stageExigenciasResponsabilidadB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -1281,6 +1301,56 @@ export default function InformeTabs({
                   </li>
                   <li>
                     Capacitación en Manejo del Estrés: Ofrecer talleres sobre técnicas de relajación, mindfulness y afrontamiento del estrés para mejorar la resiliencia mental.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Exigencias de responsabilidad del cargo Forma A y B"
+          data={exigenciasResponsabilidadData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Refiere el nivel de responsabilidad asociado al cargo, incluyendo la seguridad de otros, el manejo de recursos o la toma de decisiones críticas
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {exigenciasResponsabilidadSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageExigenciasResponsabilidadA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageExigenciasResponsabilidadB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsExigenciasResponsabilidad ? (
+              <>
+                <p>
+                  Ejemplo: Puestos que conllevan una alta responsabilidad por la vida o seguridad de otros, por grandes cantidades de dinero, o por decisiones que tienen un impacto significativo en la organización.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Claridad en las Funciones y Límites de Responsabilidad: Asegurar una descripción clara del puesto y los límites de la responsabilidad.
+                  </li>
+                  <li>
+                    Sistemas de Apoyo y Consulta: Establecer mecanismos para que los trabajadores puedan consultar y recibir apoyo en la toma de decisiones críticas.
+                  </li>
+                  <li>
+                    Capacitación en Liderazgo y Toma de Decisiones: Desarrollar habilidades de liderazgo y toma de decisiones para manejar eficazmente la responsabilidad.
+                  </li>
+                  <li>
+                    Reconocimiento y Valoración: Implementar sistemas de reconocimiento para el manejo exitoso de responsabilidades, validando el esfuerzo y la presión.
                   </li>
                 </ol>
               </>
