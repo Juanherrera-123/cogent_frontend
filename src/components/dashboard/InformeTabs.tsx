@@ -33,6 +33,7 @@ interface Props {
   controlDominioData: RiskDistributionData;
   demandasDominioData: RiskDistributionData;
   demandasAmbientalesData: RiskDistributionData;
+  demandasEmocionalesData: RiskDistributionData;
   demandasCuantitativasData: RiskDistributionData;
   influenciaTrabajoData: RiskDistributionData;
   exigenciasResponsabilidadData: RiskDistributionData;
@@ -60,6 +61,7 @@ export default function InformeTabs({
   controlDominioData,
   demandasDominioData,
   demandasAmbientalesData,
+  demandasEmocionalesData,
   demandasCuantitativasData,
   influenciaTrabajoData,
   exigenciasResponsabilidadData,
@@ -159,6 +161,13 @@ export default function InformeTabs({
     countsB: demandasAmbientalesData.countsB || {},
     totalA: demandasAmbientalesData.totalA || 0,
     totalB: demandasAmbientalesData.totalB || 0,
+  });
+  const demandasEmocionalesSentence = buildRiskSentence({
+    levelsOrder: demandasEmocionalesData.levelsOrder,
+    countsA: demandasEmocionalesData.countsA || {},
+    countsB: demandasEmocionalesData.countsB || {},
+    totalA: demandasEmocionalesData.totalA || 0,
+    totalB: demandasEmocionalesData.totalB || 0,
   });
   const influenciaTrabajoSentence = buildRiskSentence({
     levelsOrder: influenciaTrabajoData.levelsOrder,
@@ -313,6 +322,15 @@ export default function InformeTabs({
   const showSuggestionsDemandasAmbientales =
     stageDemandasAmbientalesA !== "primario" ||
     stageDemandasAmbientalesB !== "primario";
+  const stageDemandasEmocionalesA = demandasEmocionalesData.totalA
+    ? calcStage(demandasEmocionalesData.countsA || {})
+    : "primario";
+  const stageDemandasEmocionalesB = demandasEmocionalesData.totalB
+    ? calcStage(demandasEmocionalesData.countsB || {})
+    : "primario";
+  const showSuggestionsDemandasEmocionales =
+    stageDemandasEmocionalesA !== "primario" ||
+    stageDemandasEmocionalesB !== "primario";
   const stageInfluenciaTrabajoA = influenciaTrabajoData.totalA
     ? calcStage(influenciaTrabajoData.countsA || {})
     : "primario";
@@ -1476,6 +1494,56 @@ export default function InformeTabs({
                   </li>
                   <li>
                     Definición Clara de Expectativas: Asegurar que los colaboradores comprendan las expectativas de desempeño y los plazos, fomentando la comunicación bidireccional.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Demandas emocionales Forma A y B"
+          data={demandasEmocionalesData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Refiere la exposición a situaciones emocionalmente exigentes, como el contacto con personas en crisis, violencia, o la necesidad de ocultar emociones.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {demandasEmocionalesSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageDemandasEmocionalesA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageDemandasEmocionalesB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsDemandasEmocionales ? (
+              <>
+                <p>
+                  Ejemplo: Trabajos que implican interacción con el público (clientes enojados, pacientes sufriendo), exposición a eventos traumáticos, o la necesidad de mantener una "fachada" emocional.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Apoyo Psicológico y Consulta: Establecer programas de apoyo psicológico o acceso a consulta para trabajadores expuestos a situaciones emocionalmente difíciles.
+                  </li>
+                  <li>
+                    Entrenamiento en Habilidades de Comunicación y Manejo de Conflictos: Capacitar al personal en el manejo de interacciones difíciles y resolución de conflictos.
+                  </li>
+                  <li>
+                    Debriefing Psicológico: Implementar sesiones de debriefing post-incidente para trabajadores expuestos a eventos traumáticos.
+                  </li>
+                  <li>
+                    Políticas de Respeto y No Violencia: Reforzar políticas internas que promuevan un ambiente de respeto y cero tolerancia a la violencia o el acoso
                   </li>
                 </ol>
               </>
