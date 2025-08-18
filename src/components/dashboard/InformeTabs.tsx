@@ -33,6 +33,7 @@ interface Props {
   controlDominioData: RiskDistributionData;
   demandasDominioData: RiskDistributionData;
   demandasAmbientalesData: RiskDistributionData;
+  influenciaTrabajoData: RiskDistributionData;
   exigenciasResponsabilidadData: RiskDistributionData;
   demandasCargaMentalData: RiskDistributionData;
   demandasJornadaData: RiskDistributionData;
@@ -58,6 +59,7 @@ export default function InformeTabs({
   controlDominioData,
   demandasDominioData,
   demandasAmbientalesData,
+  influenciaTrabajoData,
   exigenciasResponsabilidadData,
   demandasCargaMentalData,
   demandasJornadaData,
@@ -155,6 +157,13 @@ export default function InformeTabs({
     countsB: demandasAmbientalesData.countsB || {},
     totalA: demandasAmbientalesData.totalA || 0,
     totalB: demandasAmbientalesData.totalB || 0,
+  });
+  const influenciaTrabajoSentence = buildRiskSentence({
+    levelsOrder: influenciaTrabajoData.levelsOrder,
+    countsA: influenciaTrabajoData.countsA || {},
+    countsB: influenciaTrabajoData.countsB || {},
+    totalA: influenciaTrabajoData.totalA || 0,
+    totalB: influenciaTrabajoData.totalB || 0,
   });
   const exigenciasResponsabilidadSentence = buildRiskSentence({
     levelsOrder: exigenciasResponsabilidadData.levelsOrder,
@@ -295,6 +304,15 @@ export default function InformeTabs({
   const showSuggestionsDemandasAmbientales =
     stageDemandasAmbientalesA !== "primario" ||
     stageDemandasAmbientalesB !== "primario";
+  const stageInfluenciaTrabajoA = influenciaTrabajoData.totalA
+    ? calcStage(influenciaTrabajoData.countsA || {})
+    : "primario";
+  const stageInfluenciaTrabajoB = influenciaTrabajoData.totalB
+    ? calcStage(influenciaTrabajoData.countsB || {})
+    : "primario";
+  const showSuggestionsInfluenciaTrabajo =
+    stageInfluenciaTrabajoA !== "primario" ||
+    stageInfluenciaTrabajoB !== "primario";
   const stageDemandasCargaMentalA = demandasCargaMentalData.totalA
     ? calcStage(demandasCargaMentalData.countsA || {})
     : "primario";
@@ -1352,6 +1370,45 @@ export default function InformeTabs({
                   <li>
                     Reconocimiento y Valoración: Implementar sistemas de reconocimiento para el manejo exitoso de responsabilidades, validando el esfuerzo y la presión.
                   </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Influencia del trabajo sobre el entorno extralaboral Forma A y B"
+          data={influenciaTrabajoData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Esta dimensión mide hasta qué punto las exigencias laborales afectan la vida personal, familiar y social del trabajador.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {influenciaTrabajoSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageInfluenciaTrabajoA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageInfluenciaTrabajoB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsInfluenciaTrabajo ? (
+              <>
+                <p>Tenga en cuenta las políticas de conciliación laboral-familiar.</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>Ajuste cargas y jornadas para facilitar tiempo con familia y actividades.</li>
+                  <li>Flexibilice horarios o implemente trabajo remoto en casa.</li>
+                  <li>Evite llamadas, mensajes o correos fuera del horario laboral salvo emergencias.</li>
+                  <li>Establezca políticas claras de desconexión digital.</li>
                 </ol>
               </>
             ) : (
