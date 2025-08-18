@@ -44,6 +44,7 @@ interface Props {
   recompensasPertenenciaData: RiskDistributionData;
   reconocimientoCompensacionData: RiskDistributionData;
   extralaboralData: RiskDistributionData;
+  tiempoFueraTrabajoData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -76,6 +77,7 @@ export default function InformeTabs({
   recompensasPertenenciaData,
   reconocimientoCompensacionData,
   extralaboralData,
+  tiempoFueraTrabajoData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -246,6 +248,13 @@ export default function InformeTabs({
     countsB: extralaboralData.countsB || {},
     totalA: extralaboralData.totalA || 0,
     totalB: extralaboralData.totalB || 0,
+  });
+  const tiempoFueraTrabajoSentence = buildRiskSentence({
+    levelsOrder: tiempoFueraTrabajoData.levelsOrder,
+    countsA: tiempoFueraTrabajoData.countsA || {},
+    countsB: tiempoFueraTrabajoData.countsB || {},
+    totalA: tiempoFueraTrabajoData.totalA || 0,
+    totalB: tiempoFueraTrabajoData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -459,6 +468,15 @@ export default function InformeTabs({
     : "primario";
   const showSuggestionsExtralaboral =
     stageExtralaboralA !== "primario" || stageExtralaboralB !== "primario";
+  const stageTiempoFueraTrabajoA = tiempoFueraTrabajoData.totalA
+    ? calcStage(tiempoFueraTrabajoData.countsA || {})
+    : "primario";
+  const stageTiempoFueraTrabajoB = tiempoFueraTrabajoData.totalB
+    ? calcStage(tiempoFueraTrabajoData.countsB || {})
+    : "primario";
+  const showSuggestionsTiempoFueraTrabajo =
+    stageTiempoFueraTrabajoA !== "primario" ||
+    stageTiempoFueraTrabajoB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -1813,6 +1831,56 @@ export default function InformeTabs({
                     <li>Programas que promuevan el equilibrio vida-trabajo y horarios flexibles.</li>
                     <li>Fortalecimiento de redes de apoyo familiar y comunitario.</li>
                     <li>Asesoría financiera y facilidades para mejorar condiciones de vivienda.</li>
+                  </ol>
+                </>
+              ) : (
+                <p>
+                  El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+                </p>
+              )}
+            </div>
+          </div>
+          <RiskDistributionChart
+            title="Tiempo fuera del trabajo Forma A y B"
+            data={tiempoFueraTrabajoData}
+          />
+          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            Refiere la disponibilidad y calidad del tiempo libre y de descanso del trabajador, considerando la extensión de la jornada laboral y los desplazamientos.
+          </p>
+          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {tiempoFueraTrabajoSentence}
+          </p>
+          <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-col items-center">
+                <p className="font-semibold">Forma A</p>
+                <SemaphoreDial stage={stageTiempoFueraTrabajoA} />
+              </div>
+              <div className="flex flex-col items-center">
+                <p className="font-semibold">Forma B</p>
+                <SemaphoreDial stage={stageTiempoFueraTrabajoB} />
+              </div>
+            </div>
+            <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+              {showSuggestionsTiempoFueraTrabajo ? (
+                <>
+                  <p>
+                    Ejemplo: Jornadas laborales extenuantes que no dejan tiempo para actividades personales, familiares o de ocio. Largos tiempos de desplazamiento al trabajo o a casa que reducen el tiempo de descanso.
+                  </p>
+                  <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                  <ol className="list-decimal ml-5 space-y-1">
+                    <li>
+                      Fomento de la Desconexión Laboral: Establecer y comunicar políticas claras sobre el derecho a la desconexión laboral, desincentivando correos o llamadas fuera del horario de trabajo.
+                    </li>
+                    <li>
+                      Gestión de Horas Extras: Monitorear y limitar la cantidad de horas extras para asegurar que los empleados tengan tiempo suficiente para el descanso y la recuperación.
+                    </li>
+                    <li>
+                      Flexibilidad Laboral: Explorar opciones como horarios flexibles, trabajo híbrido o teletrabajo que puedan reducir tiempos de desplazamiento y mejorar la gestión del tiempo personal.
+                    </li>
+                    <li>
+                      Promoción de un Equilibrio Vida-Trabajo: Fomentar una cultura organizacional que valore el tiempo personal y familiar, no solo la productividad.
+                    </li>
                   </ol>
                 </>
               ) : (
