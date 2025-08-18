@@ -34,6 +34,7 @@ interface Props {
   demandasDominioData: RiskDistributionData;
   demandasAmbientalesData: RiskDistributionData;
   demandasJornadaData: RiskDistributionData;
+  consistenciaRolData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -56,6 +57,7 @@ export default function InformeTabs({
   demandasDominioData,
   demandasAmbientalesData,
   demandasJornadaData,
+  consistenciaRolData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -156,6 +158,13 @@ export default function InformeTabs({
     countsB: demandasJornadaData.countsB || {},
     totalA: demandasJornadaData.totalA || 0,
     totalB: demandasJornadaData.totalB || 0,
+  });
+  const consistenciaRolSentence = buildRiskSentence({
+    levelsOrder: consistenciaRolData.levelsOrder,
+    countsA: consistenciaRolData.countsA || {},
+    countsB: consistenciaRolData.countsB || {},
+    totalA: consistenciaRolData.totalA || 0,
+    totalB: consistenciaRolData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -277,6 +286,15 @@ export default function InformeTabs({
   const showSuggestionsDemandasJornada =
     stageDemandasJornadaA !== "primario" ||
     stageDemandasJornadaB !== "primario";
+  const stageConsistenciaRolA = consistenciaRolData.totalA
+    ? calcStage(consistenciaRolData.countsA || {})
+    : "primario";
+  const stageConsistenciaRolB = consistenciaRolData.totalB
+    ? calcStage(consistenciaRolData.countsB || {})
+    : "primario";
+  const showSuggestionsConsistenciaRol =
+    stageConsistenciaRolA !== "primario" ||
+    stageConsistenciaRolB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -1142,6 +1160,65 @@ export default function InformeTabs({
             ) : (
               <p>
                 El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Consistencia del rol Forma A y B"
+          data={consistenciaRolData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Esta dimension establece que tan coherente, estable y clara es la
+          informacion que el trabajador recibe sobre sus funciones, metas,
+          prioridades y expectativas.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {consistenciaRolSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageConsistenciaRolA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageConsistenciaRolB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsConsistenciaRol ? (
+              <>
+                <p>
+                  Se sugiere revisar cambios que no sean frecuentes y
+                  contradictorios, además de ser claros y no dejar instrucciones
+                  que se superpongan.
+                </p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>Actualice y entregue las definiciones del cargo.</li>
+                  <li>
+                    Asegure que cada trabajador tenga claridad sobre qué se
+                    espera de él y qué no le corresponde.
+                  </li>
+                  <li>
+                    Establezca canales de comunicación, use medios oficiales
+                    como correos, intranet u otros.
+                  </li>
+                  <li>
+                    Evite dar instrucciones críticas de manera improvisada o
+                    por terceros.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin
+                presencia significativa de riesgo. No se requieren acciones
+                adicionales ni planes de mejora inmediatos; sin embargo, es
+                importante continuar fortaleciendo las prácticas actuales para
+                mantener estos resultados. ¡Felicitaciones por destacar en esta
+                área y seguir siendo un ejemplo de excelencia!
               </p>
             )}
           </div>
