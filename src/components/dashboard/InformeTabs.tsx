@@ -31,6 +31,7 @@ interface Props {
   participacionData: RiskDistributionData;
   oportunidadesData: RiskDistributionData;
   controlDominioData: RiskDistributionData;
+  demandasDominioData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -50,6 +51,7 @@ export default function InformeTabs({
   participacionData,
   oportunidadesData,
   controlDominioData,
+  demandasDominioData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -129,6 +131,13 @@ export default function InformeTabs({
     countsB: controlDominioData.countsB || {},
     totalA: controlDominioData.totalA || 0,
     totalB: controlDominioData.totalB || 0,
+  });
+  const demandasSentence = buildRiskSentence({
+    levelsOrder: demandasDominioData.levelsOrder,
+    countsA: demandasDominioData.countsA || {},
+    countsB: demandasDominioData.countsB || {},
+    totalA: demandasDominioData.totalA || 0,
+    totalB: demandasDominioData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -224,6 +233,14 @@ export default function InformeTabs({
     : "primario";
   const showSuggestionsControl =
     stageControlA !== "primario" || stageControlB !== "primario";
+  const stageDemandasA = demandasDominioData.totalA
+    ? calcStage(demandasDominioData.countsA || {})
+    : "primario";
+  const stageDemandasB = demandasDominioData.totalB
+    ? calcStage(demandasDominioData.countsB || {})
+    : "primario";
+  const showSuggestionsDemandas =
+    stageDemandasA !== "primario" || stageDemandasB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -934,6 +951,58 @@ export default function InformeTabs({
                 importante continuar fortaleciendo las prácticas actuales para
                 mantener estos resultados. ¡Felicitaciones por destacar en esta
                 área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="DOMINIO DEMANDAS DEL TRABAJO FORMA A Y FORMA B"
+          data={demandasDominioData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Refiere las exigencias que el trabajo impone al individuo. Pueden ser de diversa naturaleza, cuantitativas, cognitivas, mentales, emocionales, de responsabilidad, del ambiente físico laboral y de la jornada de trabajo. Cuando las demandas exceden los recursos o la capacidad del trabajador, pueden generar estrés y afectar su salud.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {demandasSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageDemandasA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageDemandasB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsDemandas ? (
+              <>
+                <p>
+                  Se sugiere generar una revisión y distribución de cargas laborales:
+                </p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>Analice tareas y responsabilidades para evitar sobrecarga.</li>
+                  <li>
+                    Establezca prioridades claras y elimine actividades
+                    innecesarias.
+                  </li>
+                  <li>Ajuste metas y plazos según recursos disponibles.</li>
+                  <li>
+                    Evite tareas de último minuto como norma de trabajo.
+                  </li>
+                  <li>Promueva las pausas y los microdescansos.</li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia
+                significativa de riesgo. No se requieren acciones adicionales ni
+                planes de mejora inmediatos; sin embargo, es importante continuar
+                fortaleciendo las prácticas actuales para mantener estos resultados.
+                ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo
+                de excelencia!
               </p>
             )}
           </div>
