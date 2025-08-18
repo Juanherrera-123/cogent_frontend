@@ -653,6 +653,7 @@ export default function InformeTabs({
                 </p>
                 <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
                 <p className="mt-1 font-semibold">Capacitación para la autogestión</p>
+
                 <ol className="list-decimal ml-5 space-y-1">
                   <li>
                     Formación en organización del tiempo, resolución de problemas y toma de decisiones. Coaching o mentoría para fortalecer la autonomía.
