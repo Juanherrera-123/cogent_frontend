@@ -48,6 +48,7 @@ interface Props {
   relacionesFamiliaresData: RiskDistributionData;
   comunicacionRelacionesData: RiskDistributionData;
   situacionEconomicaData: RiskDistributionData;
+  caracteristicasViviendaData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -84,6 +85,7 @@ export default function InformeTabs({
   relacionesFamiliaresData,
   comunicacionRelacionesData,
   situacionEconomicaData,
+  caracteristicasViviendaData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -282,6 +284,13 @@ export default function InformeTabs({
     countsB: situacionEconomicaData.countsB || {},
     totalA: situacionEconomicaData.totalA || 0,
     totalB: situacionEconomicaData.totalB || 0,
+  });
+  const caracteristicasViviendaSentence = buildRiskSentence({
+    levelsOrder: caracteristicasViviendaData.levelsOrder,
+    countsA: caracteristicasViviendaData.countsA || {},
+    countsB: caracteristicasViviendaData.countsB || {},
+    totalA: caracteristicasViviendaData.totalA || 0,
+    totalB: caracteristicasViviendaData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -531,6 +540,15 @@ export default function InformeTabs({
   const showSuggestionsSituacionEconomica =
     stageSituacionEconomicaA !== "primario" ||
     stageSituacionEconomicaB !== "primario";
+  const stageCaracteristicasViviendaA = caracteristicasViviendaData.totalA
+    ? calcStage(caracteristicasViviendaData.countsA || {})
+    : "primario";
+  const stageCaracteristicasViviendaB = caracteristicasViviendaData.totalB
+    ? calcStage(caracteristicasViviendaData.countsB || {})
+    : "primario";
+  const showSuggestionsCaracteristicasVivienda =
+    stageCaracteristicasViviendaA !== "primario" ||
+    stageCaracteristicasViviendaB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -2075,6 +2093,53 @@ export default function InformeTabs({
                   </li>
                   <li>
                     Políticas Salariales Justas: Asegurar que la política de remuneración sea competitiva y justa, revisando periódicamente las estructuras salariales.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Características de la vivienda y de su entorno Forma A y B"
+          data={caracteristicasViviendaData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Refiere la calidad de la vivienda, seguridad del contexto, acceso a servicios básicos y a espacios de esparcimiento
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {caracteristicasViviendaSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageCaracteristicasViviendaA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageCaracteristicasViviendaB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsCaracteristicasVivienda ? (
+              <>
+                <p>
+                  Ejemplo: Problemas de vivienda, inseguridad en el barrio, falta de acceso a servicios esenciales o a espacios de recreación.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Información sobre Programas de Vivienda: Orientar a los empleados sobre programas gubernamentales o iniciativas que faciliten el acceso a vivienda digna.
+                  </li>
+                  <li>
+                    Programas de Transporte: Evaluar y, si es posible, implementar o mejorar programas de transporte para los empleados que residan en zonas con dificultades de acceso.
+                  </li>
+                  <li>
+                    Promoción de la Salud Comunitaria: Si aplica, colaborar con iniciativas comunitarias que busquen mejorar la seguridad o el acceso a servicios en las zonas donde residen los empleados.
                   </li>
                 </ol>
               </>
