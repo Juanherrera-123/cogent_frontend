@@ -1113,6 +1113,66 @@ export default function DashboardResultados({
     return data;
   }, [datosA, datosB]);
 
+  const demandasJornadaData: RiskDistributionData = useMemo(() => {
+    const counts: Record<string, number> = {};
+    const countsA: Record<string, number> = {};
+    const countsB: Record<string, number> = {};
+    levelsOrder.forEach((lvl) => {
+      counts[lvl] = 0;
+      countsA[lvl] = 0;
+      countsB[lvl] = 0;
+    });
+    let invalid = 0;
+    let total = 0;
+    let totalA = 0;
+    let totalB = 0;
+    const nombre = "Demandas de la jornada de trabajo";
+    [...datosA, ...datosB].forEach((d) => {
+      let seccion: any =
+        d.resultadoFormaA?.dimensiones?.[nombre] ||
+        d.resultadoFormaB?.dimensiones?.[nombre];
+      if (!seccion && Array.isArray(d.resultadoFormaA?.dimensiones)) {
+        seccion = d.resultadoFormaA.dimensiones.find(
+          (x: any) => x.nombre === nombre
+        );
+      }
+      if (!seccion && Array.isArray(d.resultadoFormaB?.dimensiones)) {
+        seccion = d.resultadoFormaB.dimensiones.find(
+          (x: any) => x.nombre === nombre
+        );
+      }
+      const nivel = seccion?.nivel;
+      if (nivel) {
+        const base =
+          nivel === "Sin riesgo" ? "Muy bajo" : shortNivelRiesgo(nivel);
+        if (counts[base] !== undefined) {
+          counts[base] += 1;
+          if (d.tipo === "A") {
+            countsA[base] += 1;
+            totalA++;
+          } else {
+            countsB[base] += 1;
+            totalB++;
+          }
+          total++;
+        } else {
+          invalid++;
+        }
+      }
+    });
+    const data: RiskDistributionData = {
+      total,
+      counts,
+      levelsOrder: [...levelsOrder],
+      countsA,
+      countsB,
+      totalA,
+      totalB,
+    };
+    if (invalid > 0) data.invalid = invalid;
+    return data;
+  }, [datosA, datosB]);
+
   const demandasDominioData: RiskDistributionData = useMemo(() => {
     const counts: Record<string, number> = {};
     const countsA: Record<string, number> = {};
@@ -1988,6 +2048,7 @@ export default function DashboardResultados({
                   controlDominioData={controlDominioData}
                   demandasDominioData={demandasDominioData}
                   demandasAmbientalesData={demandasAmbientalesData}
+                  demandasJornadaData={demandasJornadaData}
                 />
             </section>
           </div>

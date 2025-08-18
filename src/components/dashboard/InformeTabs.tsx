@@ -33,6 +33,7 @@ interface Props {
   controlDominioData: RiskDistributionData;
   demandasDominioData: RiskDistributionData;
   demandasAmbientalesData: RiskDistributionData;
+  demandasJornadaData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -54,6 +55,7 @@ export default function InformeTabs({
   controlDominioData,
   demandasDominioData,
   demandasAmbientalesData,
+  demandasJornadaData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -147,6 +149,13 @@ export default function InformeTabs({
     countsB: demandasAmbientalesData.countsB || {},
     totalA: demandasAmbientalesData.totalA || 0,
     totalB: demandasAmbientalesData.totalB || 0,
+  });
+  const demandasJornadaSentence = buildRiskSentence({
+    levelsOrder: demandasJornadaData.levelsOrder,
+    countsA: demandasJornadaData.countsA || {},
+    countsB: demandasJornadaData.countsB || {},
+    totalA: demandasJornadaData.totalA || 0,
+    totalB: demandasJornadaData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -259,6 +268,15 @@ export default function InformeTabs({
   const showSuggestionsDemandasAmbientales =
     stageDemandasAmbientalesA !== "primario" ||
     stageDemandasAmbientalesB !== "primario";
+  const stageDemandasJornadaA = demandasJornadaData.totalA
+    ? calcStage(demandasJornadaData.countsA || {})
+    : "primario";
+  const stageDemandasJornadaB = demandasJornadaData.totalB
+    ? calcStage(demandasJornadaData.countsB || {})
+    : "primario";
+  const showSuggestionsDemandasJornada =
+    stageDemandasJornadaA !== "primario" ||
+    stageDemandasJornadaB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -1065,6 +1083,59 @@ export default function InformeTabs({
                   </li>
                   <li>
                     Programas de Seguridad y Salud en el Trabajo: Reforzar los programas de seguridad industrial y salud ocupacional para prevenir accidentes y enfermedades laborales.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Demandas de la jornada de trabajo Forma A y B"
+          data={demandasJornadaData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Refiere la extensión, flexibilidad y distribución de la jornada laboral, incluyendo turnos y horas extras.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {demandasJornadaSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageDemandasJornadaA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageDemandasJornadaB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsDemandasJornada ? (
+              <>
+                <p>
+                  Ejemplo: Jornadas laborales excesivamente largas, trabajo por turnos que afecta el ciclo circadiano, falta de flexibilidad en los horarios, trabajo nocturno.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Políticas de Horarios Flexibles: Explorar la implementación de horarios flexibles o modalidades de teletrabajo cuando sea posible y adecuado.
+                  </li>
+                  <li>
+                    Gestión de Horas Extras: Monitorear y limitar las horas extras, asegurando que sean voluntarias y compensadas adecuadamente.
+                  </li>
+                  <li>
+                    Diseño de Turnos Equitativos: Optimizar los sistemas de turnos para minimizar el impacto en la salud y vida personal de los trabajadores.
+                  </li>
+                  <li>
+                    Fomento del Equilibrio Vida-Trabajo: Promover una cultura organizacional que valore el equilibrio entre la vida laboral y personal, desincentivando la "cultura del presentismo".
+                  </li>
+                  <li>
+                    Verifique los problemas de salud mental que puedan exacerbar síntomas y empeorar la salud de los colaboradores.
                   </li>
                 </ol>
               </>
