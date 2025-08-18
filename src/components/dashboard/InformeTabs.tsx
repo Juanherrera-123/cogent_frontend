@@ -457,8 +457,17 @@ export default function InformeTabs({
         <TabsTrigger className={tabClass} value="sociodemografia">
           Sociodemografía
         </TabsTrigger>
-        <TabsTrigger className={tabClass} value="graficas">
-          Gráficas
+        <TabsTrigger className={tabClass} value="graficas-intralaboral">
+          Gráficas Intralaboral
+        </TabsTrigger>
+        <TabsTrigger className={tabClass} value="graficas-extralaboral">
+          Gráficas Extralaboral
+        </TabsTrigger>
+        <TabsTrigger className={tabClass} value="graficas-estres">
+          Gráficas Estrés
+        </TabsTrigger>
+        <TabsTrigger className={tabClass} value="graficas-total">
+          Gráficas Total
         </TabsTrigger>
         <TabsTrigger className={tabClass} value="estrategias">
           Estrategias
@@ -487,7 +496,7 @@ export default function InformeTabs({
           )}
           <TablaSociodemo payload={payload} />
         </TabsContent>
-        <TabsContent value="graficas">
+        <TabsContent value="graficas-intralaboral">
         <RiskDistributionChart
           title="DOMINIO LIDERAZGO Y RELACIONES SOCIALES EN EL TRABAJO FORMA A Y FORMA B"
           data={liderazgoDominioData}
@@ -1754,7 +1763,22 @@ export default function InformeTabs({
           </div>
         </div>
         </TabsContent>
-          <TabsContent value="estrategias" />
+        <TabsContent value="graficas-extralaboral">
+          <p className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            Aquí se mostrarán las gráficas extralaborales.
+          </p>
+        </TabsContent>
+        <TabsContent value="graficas-estres">
+          <p className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            Aquí se mostrarán las gráficas de estrés.
+          </p>
+        </TabsContent>
+        <TabsContent value="graficas-total">
+          <p className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            Aquí se mostrarán las gráficas totales.
+          </p>
+        </TabsContent>
+        <TabsContent value="estrategias" />
         </Tabs>
       );
   }
