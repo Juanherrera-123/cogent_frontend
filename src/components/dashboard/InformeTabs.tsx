@@ -46,6 +46,7 @@ interface Props {
   extralaboralData: RiskDistributionData;
   tiempoFueraTrabajoData: RiskDistributionData;
   relacionesFamiliaresData: RiskDistributionData;
+  comunicacionRelacionesData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -80,6 +81,7 @@ export default function InformeTabs({
   extralaboralData,
   tiempoFueraTrabajoData,
   relacionesFamiliaresData,
+  comunicacionRelacionesData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -264,6 +266,13 @@ export default function InformeTabs({
     countsB: relacionesFamiliaresData.countsB || {},
     totalA: relacionesFamiliaresData.totalA || 0,
     totalB: relacionesFamiliaresData.totalB || 0,
+  });
+  const comunicacionRelacionesSentence = buildRiskSentence({
+    levelsOrder: comunicacionRelacionesData.levelsOrder,
+    countsA: comunicacionRelacionesData.countsA || {},
+    countsB: comunicacionRelacionesData.countsB || {},
+    totalA: comunicacionRelacionesData.totalA || 0,
+    totalB: comunicacionRelacionesData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -495,6 +504,15 @@ export default function InformeTabs({
   const showSuggestionsRelacionesFamiliares =
     stageRelacionesFamiliaresA !== "primario" ||
     stageRelacionesFamiliaresB !== "primario";
+  const stageComunicacionRelacionesA = comunicacionRelacionesData.totalA
+    ? calcStage(comunicacionRelacionesData.countsA || {})
+    : "primario";
+  const stageComunicacionRelacionesB = comunicacionRelacionesData.totalB
+    ? calcStage(comunicacionRelacionesData.countsB || {})
+    : "primario";
+  const showSuggestionsComunicacionRelaciones =
+    stageComunicacionRelacionesA !== "primario" ||
+    stageComunicacionRelacionesB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -1945,6 +1963,53 @@ export default function InformeTabs({
                   </li>
                   <li>
                     Canales de Apoyo Confidencial: Brindar acceso a orientación psicológica o comunicacional que pueda abordar situaciones de conflicto o dificultad en el ámbito familiar.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Comunicación y relaciones interpersonales Forma A y B"
+          data={comunicacionRelacionesData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Calidad de las redes de apoyo social y las interacciones con amigos y otras personas fuera del ámbito familiar.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {comunicacionRelacionesSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageComunicacionRelacionesA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageComunicacionRelacionesB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsComunicacionRelaciones ? (
+              <>
+                <p>
+                  Ejemplo: Aislamiento social, falta de amigos o redes de apoyo fuera del trabajo, dificultades para establecer relaciones interpersonales.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Promoción de Actividades Extralaborales: Fomentar la participación en actividades recreativas o deportivas fuera del trabajo, o incluso eventos sociales patrocinados por la empresa (fiestas, encuentros deportivos).
+                  </li>
+                  <li>
+                    Grupos de Interés o Hobbies: Facilitar la creación de grupos de interés o hobbies dentro de la empresa para que los empleados con intereses similares puedan conectarse y construir relaciones.
+                  </li>
+                  <li>
+                    Información sobre Recursos Comunitarios: Proporcionar información sobre recursos o actividades comunitarias que puedan facilitar la socialización y la construcción de redes de apoyo.
                   </li>
                 </ol>
               </>
