@@ -33,6 +33,7 @@ interface Props {
   controlDominioData: RiskDistributionData;
   demandasDominioData: RiskDistributionData;
   demandasAmbientalesData: RiskDistributionData;
+  demandasCuantitativasData: RiskDistributionData;
   exigenciasResponsabilidadData: RiskDistributionData;
   demandasCargaMentalData: RiskDistributionData;
   demandasJornadaData: RiskDistributionData;
@@ -58,6 +59,7 @@ export default function InformeTabs({
   controlDominioData,
   demandasDominioData,
   demandasAmbientalesData,
+  demandasCuantitativasData,
   exigenciasResponsabilidadData,
   demandasCargaMentalData,
   demandasJornadaData,
@@ -155,6 +157,13 @@ export default function InformeTabs({
     countsB: demandasAmbientalesData.countsB || {},
     totalA: demandasAmbientalesData.totalA || 0,
     totalB: demandasAmbientalesData.totalB || 0,
+  });
+  const demandasCuantitativasSentence = buildRiskSentence({
+    levelsOrder: demandasCuantitativasData.levelsOrder,
+    countsA: demandasCuantitativasData.countsA || {},
+    countsB: demandasCuantitativasData.countsB || {},
+    totalA: demandasCuantitativasData.totalA || 0,
+    totalB: demandasCuantitativasData.totalB || 0,
   });
   const exigenciasResponsabilidadSentence = buildRiskSentence({
     levelsOrder: exigenciasResponsabilidadData.levelsOrder,
@@ -295,6 +304,15 @@ export default function InformeTabs({
   const showSuggestionsDemandasAmbientales =
     stageDemandasAmbientalesA !== "primario" ||
     stageDemandasAmbientalesB !== "primario";
+  const stageDemandasCuantitativasA = demandasCuantitativasData.totalA
+    ? calcStage(demandasCuantitativasData.countsA || {})
+    : "primario";
+  const stageDemandasCuantitativasB = demandasCuantitativasData.totalB
+    ? calcStage(demandasCuantitativasData.countsB || {})
+    : "primario";
+  const showSuggestionsDemandasCuantitativas =
+    stageDemandasCuantitativasA !== "primario" ||
+    stageDemandasCuantitativasB !== "primario";
   const stageDemandasCargaMentalA = demandasCargaMentalData.totalA
     ? calcStage(demandasCargaMentalData.countsA || {})
     : "primario";
@@ -1333,37 +1351,87 @@ export default function InformeTabs({
             </div>
           </div>
           <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
-            {showSuggestionsExigenciasResponsabilidad ? (
-              <>
-                <p>
-                  Ejemplo: Puestos que conllevan una alta responsabilidad por la vida o seguridad de otros, por grandes cantidades de dinero, o por decisiones que tienen un impacto significativo en la organización.
-                </p>
-                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
-                <ol className="list-decimal ml-5 space-y-1">
-                  <li>
-                    Claridad en las Funciones y Límites de Responsabilidad: Asegurar una descripción clara del puesto y los límites de la responsabilidad.
-                  </li>
-                  <li>
-                    Sistemas de Apoyo y Consulta: Establecer mecanismos para que los trabajadores puedan consultar y recibir apoyo en la toma de decisiones críticas.
-                  </li>
-                  <li>
-                    Capacitación en Liderazgo y Toma de Decisiones: Desarrollar habilidades de liderazgo y toma de decisiones para manejar eficazmente la responsabilidad.
-                  </li>
-                  <li>
-                    Reconocimiento y Valoración: Implementar sistemas de reconocimiento para el manejo exitoso de responsabilidades, validando el esfuerzo y la presión.
-                  </li>
-                </ol>
-              </>
-            ) : (
+          {showSuggestionsExigenciasResponsabilidad ? (
+            <>
               <p>
-                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+                Ejemplo: Puestos que conllevan una alta responsabilidad por la vida o seguridad de otros, por grandes cantidades de dinero, o por decisiones que tienen un impacto significativo en la organización.
               </p>
-            )}
+              <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+              <ol className="list-decimal ml-5 space-y-1">
+                <li>
+                  Claridad en las Funciones y Límites de Responsabilidad: Asegurar una descripción clara del puesto y los límites de la responsabilidad.
+                </li>
+                <li>
+                  Sistemas de Apoyo y Consulta: Establecer mecanismos para que los trabajadores puedan consultar y recibir apoyo en la toma de decisiones críticas.
+                </li>
+                <li>
+                  Capacitación en Liderazgo y Toma de Decisiones: Desarrollar habilidades de liderazgo y toma de decisiones para manejar eficazmente la responsabilidad.
+                </li>
+                <li>
+                  Reconocimiento y Valoración: Implementar sistemas de reconocimiento para el manejo exitoso de responsabilidades, validando el esfuerzo y la presión.
+                </li>
+              </ol>
+            </>
+          ) : (
+            <p>
+              El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+            </p>
+          )}
+        </div>
+      </div>
+      <RiskDistributionChart
+        title="Demandas cuantitativas Forma A y B"
+        data={demandasCuantitativasData}
+      />
+      <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+        Refieren la cantidad de trabajo que se debe realizar en relación con el tiempo disponible. Una alta demanda cuantitativa puede llevar a sobrecarga de trabajo y jornadas laborales extensas.
+      </p>
+      <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+        {demandasCuantitativasSentence}
+      </p>
+      <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center">
+            <p className="font-semibold">Forma A</p>
+            <SemaphoreDial stage={stageDemandasCuantitativasA} />
+          </div>
+          <div className="flex flex-col items-center">
+            <p className="font-semibold">Forma B</p>
+            <SemaphoreDial stage={stageDemandasCuantitativasB} />
           </div>
         </div>
-      </TabsContent>
-        <TabsContent value="estrategias" />
-      </Tabs>
-    );
-  }
+        <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {showSuggestionsDemandasCuantitativas ? (
+            <>
+              <p>
+                Ejemplo: Presión por cumplir plazos ajustados, gran volumen de tareas, necesidad de trabajar horas extras.
+              </p>
+              <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+              <ol className="list-decimal ml-5 space-y-1">
+                <li>
+                  Optimización de Cargas de Trabajo: Realizar estudios de carga laboral para asegurar una distribución equitativa y realista de las tareas.
+                </li>
+                <li>
+                  Gestión del Tiempo: Ofrecer capacitaciones en técnicas de gestión del tiempo y priorización de tareas.
+                </li>
+                <li>
+                  Dotación de Personal Suficiente: Evaluar la necesidad de contratar más personal o redistribuir responsabilidades para evitar la sobrecarga crónica.
+                </li>
+                <li>
+                  Definición Clara de Expectativas: Asegurar que los colaboradores comprendan las expectativas de desempeño y los plazos, fomentando la comunicación bidireccional
+                </li>
+              </ol>
+            </>
+          ) : (
+            <p>
+              El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+            </p>
+          )}
+        </div>
+      </div>
+    </TabsContent>
+      <TabsContent value="estrategias" />
+    </Tabs>
+  );
+}
 
