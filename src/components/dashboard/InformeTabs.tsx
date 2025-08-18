@@ -33,6 +33,7 @@ interface Props {
   controlDominioData: RiskDistributionData;
   demandasDominioData: RiskDistributionData;
   demandasAmbientalesData: RiskDistributionData;
+  demandasCargaMentalData: RiskDistributionData;
   demandasJornadaData: RiskDistributionData;
   consistenciaRolData: RiskDistributionData;
 }
@@ -56,6 +57,7 @@ export default function InformeTabs({
   controlDominioData,
   demandasDominioData,
   demandasAmbientalesData,
+  demandasCargaMentalData,
   demandasJornadaData,
   consistenciaRolData,
 }: Props) {
@@ -151,6 +153,13 @@ export default function InformeTabs({
     countsB: demandasAmbientalesData.countsB || {},
     totalA: demandasAmbientalesData.totalA || 0,
     totalB: demandasAmbientalesData.totalB || 0,
+  });
+  const demandasCargaMentalSentence = buildRiskSentence({
+    levelsOrder: demandasCargaMentalData.levelsOrder,
+    countsA: demandasCargaMentalData.countsA || {},
+    countsB: demandasCargaMentalData.countsB || {},
+    totalA: demandasCargaMentalData.totalA || 0,
+    totalB: demandasCargaMentalData.totalB || 0,
   });
   const demandasJornadaSentence = buildRiskSentence({
     levelsOrder: demandasJornadaData.levelsOrder,
@@ -277,6 +286,15 @@ export default function InformeTabs({
   const showSuggestionsDemandasAmbientales =
     stageDemandasAmbientalesA !== "primario" ||
     stageDemandasAmbientalesB !== "primario";
+  const stageDemandasCargaMentalA = demandasCargaMentalData.totalA
+    ? calcStage(demandasCargaMentalData.countsA || {})
+    : "primario";
+  const stageDemandasCargaMentalB = demandasCargaMentalData.totalB
+    ? calcStage(demandasCargaMentalData.countsB || {})
+    : "primario";
+  const showSuggestionsDemandasCargaMental =
+    stageDemandasCargaMentalA !== "primario" ||
+    stageDemandasCargaMentalB !== "primario";
   const stageDemandasJornadaA = demandasJornadaData.totalA
     ? calcStage(demandasJornadaData.countsA || {})
     : "primario";
@@ -1219,6 +1237,56 @@ export default function InformeTabs({
                 importante continuar fortaleciendo las prácticas actuales para
                 mantener estos resultados. ¡Felicitaciones por destacar en esta
                 área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Demandas de carga mental Forma A y B"
+          data={demandasCargaMentalData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Son las Exigencias de procesamiento cognitivo que implica la tarea, como la minuciosidad, concentración, complejidad y variedad.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {demandasCargaMentalSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageDemandasCargaMentalA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageDemandasCargaMentalB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsDemandasCargaMental ? (
+              <>
+                <p>
+                  Ejemplo: Tareas que requieren alta concentración, resolución de problemas complejos, toma de decisiones rápidas, multitarea constante o trabajo monótono que genera fatiga mental.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Rotación de Tareas: Implementar la rotación de tareas para reducir la monotonía y la fatiga mental en trabajos repetitivos.
+                  </li>
+                  <li>
+                    Pausas Activas y Cognitivas: Fomentar y estructurar pausas regulares que permitan a los trabajadores desconectarse brevemente de sus tareas y recargar energías.
+                  </li>
+                  <li>
+                    Diseño de Puestos de Trabajo: Rediseñar tareas o procesos para simplificar su complejidad o proporcionar herramientas que faciliten el trabajo cognitivo.
+                  </li>
+                  <li>
+                    Capacitación en Manejo del Estrés: Ofrecer talleres sobre técnicas de relajación, mindfulness y afrontamiento del estrés para mejorar la resiliencia mental.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
               </p>
             )}
           </div>
