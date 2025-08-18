@@ -868,7 +868,7 @@ export default function InformeTabs({
           </div>
         </div>
         <RiskDistributionChart
-          title="Oportunidades para el uso y desarrollo de habilidades y conocimientos Forma A y B"
+          title="Oportunidades para el uso y desarrollo de habilidades Forma A y B"
           data={oportunidadesData}
         />
         <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
@@ -895,9 +895,9 @@ export default function InformeTabs({
               <>
                 <p>
                   La Dimensión Oportunidades para el uso y desarrollo de
-                  habilidades y conocimientos: Refiere todas las Oportunidades
-                  que ofrece el puesto para utilizar y desarrollar las
-                  habilidades existentes y adquirir nuevos conocimientos.
+                  habilidades: Refiere todas las Oportunidades que ofrece el
+                  puesto para utilizar y desarrollar las habilidades existentes
+                  y adquirir nuevos conocimientos.
                   <br />
                   Ejemplo: Realización de tareas repetitivas que no exigen el
                   uso de habilidades complejas, falta de oportunidades de
