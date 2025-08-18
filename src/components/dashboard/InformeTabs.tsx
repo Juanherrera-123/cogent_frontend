@@ -47,6 +47,7 @@ interface Props {
   tiempoFueraTrabajoData: RiskDistributionData;
   relacionesFamiliaresData: RiskDistributionData;
   comunicacionRelacionesData: RiskDistributionData;
+  situacionEconomicaData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -82,6 +83,7 @@ export default function InformeTabs({
   tiempoFueraTrabajoData,
   relacionesFamiliaresData,
   comunicacionRelacionesData,
+  situacionEconomicaData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -273,6 +275,13 @@ export default function InformeTabs({
     countsB: comunicacionRelacionesData.countsB || {},
     totalA: comunicacionRelacionesData.totalA || 0,
     totalB: comunicacionRelacionesData.totalB || 0,
+  });
+  const situacionEconomicaSentence = buildRiskSentence({
+    levelsOrder: situacionEconomicaData.levelsOrder,
+    countsA: situacionEconomicaData.countsA || {},
+    countsB: situacionEconomicaData.countsB || {},
+    totalA: situacionEconomicaData.totalA || 0,
+    totalB: situacionEconomicaData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -513,6 +522,15 @@ export default function InformeTabs({
   const showSuggestionsComunicacionRelaciones =
     stageComunicacionRelacionesA !== "primario" ||
     stageComunicacionRelacionesB !== "primario";
+  const stageSituacionEconomicaA = situacionEconomicaData.totalA
+    ? calcStage(situacionEconomicaData.countsA || {})
+    : "primario";
+  const stageSituacionEconomicaB = situacionEconomicaData.totalB
+    ? calcStage(situacionEconomicaData.countsB || {})
+    : "primario";
+  const showSuggestionsSituacionEconomica =
+    stageSituacionEconomicaA !== "primario" ||
+    stageSituacionEconomicaB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -2010,6 +2028,53 @@ export default function InformeTabs({
                   </li>
                   <li>
                     Información sobre Recursos Comunitarios: Proporcionar información sobre recursos o actividades comunitarias que puedan facilitar la socialización y la construcción de redes de apoyo.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Situación económica del grupo familiar Forma A y B"
+          data={situacionEconomicaData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Refiere Percepción de estabilidad económica y suficiencia de ingresos para cubrir las necesidades básicas de la familia.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {situacionEconomicaSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageSituacionEconomicaA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageSituacionEconomicaB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsSituacionEconomica ? (
+              <>
+                <p>
+                  Ejemplo: Preocupaciones financieras, deudas, inseguridad económica que generan estrés y ansiedad.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Programas de Educación Financiera: Ofrecer talleres sobre manejo de finanzas personales, presupuesto, ahorro e inversión para empoderar a los empleados en la gestión de su economía.
+                  </li>
+                  <li>
+                    Acceso a Beneficios y Asesorías: Informar sobre beneficios corporativos (planes de ahorro, auxilios) o convenios con entidades financieras que puedan ofrecer condiciones ventajosas.
+                  </li>
+                  <li>
+                    Políticas Salariales Justas: Asegurar que la política de remuneración sea competitiva y justa, revisando periódicamente las estructuras salariales.
                   </li>
                 </ol>
               </>
