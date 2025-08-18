@@ -40,6 +40,7 @@ interface Props {
   demandasCargaMentalData: RiskDistributionData;
   demandasJornadaData: RiskDistributionData;
   consistenciaRolData: RiskDistributionData;
+  recompensasDominioData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -68,6 +69,7 @@ export default function InformeTabs({
   demandasCargaMentalData,
   demandasJornadaData,
   consistenciaRolData,
+  recompensasDominioData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -210,6 +212,13 @@ export default function InformeTabs({
     countsB: consistenciaRolData.countsB || {},
     totalA: consistenciaRolData.totalA || 0,
     totalB: consistenciaRolData.totalB || 0,
+  });
+  const recompensasSentence = buildRiskSentence({
+    levelsOrder: recompensasDominioData.levelsOrder,
+    countsA: recompensasDominioData.countsA || {},
+    countsB: recompensasDominioData.countsB || {},
+    totalA: recompensasDominioData.totalA || 0,
+    totalB: recompensasDominioData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -387,6 +396,14 @@ export default function InformeTabs({
   const showSuggestionsDemandasCuantitativas =
     stageDemandasCuantitativasA !== "primario" ||
     stageDemandasCuantitativasB !== "primario";
+  const stageRecompensasA = recompensasDominioData.totalA
+    ? calcStage(recompensasDominioData.countsA || {})
+    : "primario";
+  const stageRecompensasB = recompensasDominioData.totalB
+    ? calcStage(recompensasDominioData.countsB || {})
+    : "primario";
+  const showSuggestionsRecompensas =
+    stageRecompensasA !== "primario" || stageRecompensasB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -1544,6 +1561,53 @@ export default function InformeTabs({
                   </li>
                   <li>
                     Políticas de Respeto y No Violencia: Reforzar políticas internas que promuevan un ambiente de respeto y cero tolerancia a la violencia o el acoso
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="DOMINIO RECOMPENSAS FORMA A Y FORMA B"
+          data={recompensasDominioData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          RRefiere la retribución que un trabajador obtiene a cambio de sus esfuerzos y contribuciones laborales. Incluye tanto la recompensa económica como el reconocimiento, la promoción y la satisfacción personal derivada del trabajo
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {recompensasSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageRecompensasA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageRecompensasB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsRecompensas ? (
+              <>
+                <p>
+                  Recompensa Financiera: Compensación económica por el trabajo realizado (salario, bonificaciones, beneficios).<br />Ejemplo: Salarios bajos, falta de bonificaciones o incentivos, percepción de inequidad salarial.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Revisión y Ajuste de Estructuras Salariales: Realizar estudios de mercado salarial para asegurar que la compensación sea competitiva y justa.
+                  </li>
+                  <li>
+                    Sistemas de Incentivos y Bonificaciones: Implementar programas de incentivos y bonificaciones basados en el desempeño y los resultados.
+                  </li>
+                  <li>
+                    Transparencia en la Política Salarial: Comunicar claramente los criterios de compensación y los procesos de revisión salarial.
                   </li>
                 </ol>
               </>
