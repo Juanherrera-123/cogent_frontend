@@ -13,6 +13,9 @@ import Generalidades from "./Generalidades";
 import Metodologia from "./Metodologia";
 import { buildRiskSentence } from "@/utils/riskSentence";
 import SemaphoreDial from "@/components/SemaphoreDial";
+import ResultadosGeneralesCards, {
+  type ResultadosGeneralesItem,
+} from "@/components/ResultadosGeneralesCards";
 
 interface Props {
   tabClass: string;
@@ -648,6 +651,41 @@ export default function InformeTabs({
     const stageIntralaboralTotalB = intralaboralTotalData.totalB
       ? calcStage(intralaboralTotalData.countsB || {})
       : "primario";
+    const stageFactorEstres = factorEstresData.total
+      ? calcStage(factorEstresData.counts || {})
+      : "primario";
+    const stageExtralaboral = extralaboralData.total
+      ? calcStage(extralaboralData.counts || {})
+      : "primario";
+    const generalItems: ResultadosGeneralesItem[] = [];
+    if (intralaboralTotalData.totalA) {
+      generalItems.push({
+        key: "formaA",
+        label: "Forma A",
+        level: stageIntralaboralTotalA.toUpperCase() as ResultadosGeneralesItem["level"],
+      });
+    }
+    if (intralaboralTotalData.totalB) {
+      generalItems.push({
+        key: "formaB",
+        label: "Forma B",
+        level: stageIntralaboralTotalB.toUpperCase() as ResultadosGeneralesItem["level"],
+      });
+    }
+    if (factorEstresData.total) {
+      generalItems.push({
+        key: "estres",
+        label: "Estrés",
+        level: stageFactorEstres.toUpperCase() as ResultadosGeneralesItem["level"],
+      });
+    }
+    if (extralaboralData.total) {
+      generalItems.push({
+        key: "extra",
+        label: "Extralaboral",
+        level: stageExtralaboral.toUpperCase() as ResultadosGeneralesItem["level"],
+      });
+    }
     const showSuggestionsFactorEstres =
       stageFactorEstresA !== "primario" || stageFactorEstresB !== "primario";
     return (
@@ -2522,7 +2560,12 @@ export default function InformeTabs({
             </div>
           </div>
         </TabsContent>
-        <TabsContent value="estrategias" />
+        <TabsContent value="estrategias">
+          <ResultadosGeneralesCards
+            items={generalItems}
+            onSelect={(item) => console.log(item)}
+          />
+        </TabsContent>
         </Tabs>
       );
   }
