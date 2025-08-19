@@ -50,6 +50,7 @@ interface Props {
   situacionEconomicaData: RiskDistributionData;
   caracteristicasViviendaData: RiskDistributionData;
   influenciaEntornoTrabajoData: RiskDistributionData;
+  desplazamientoViviendaTrabajoData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -88,6 +89,7 @@ export default function InformeTabs({
   situacionEconomicaData,
   caracteristicasViviendaData,
   influenciaEntornoTrabajoData,
+  desplazamientoViviendaTrabajoData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -300,6 +302,13 @@ export default function InformeTabs({
     countsB: influenciaEntornoTrabajoData.countsB || {},
     totalA: influenciaEntornoTrabajoData.totalA || 0,
     totalB: influenciaEntornoTrabajoData.totalB || 0,
+  });
+  const desplazamientoViviendaTrabajoSentence = buildRiskSentence({
+    levelsOrder: desplazamientoViviendaTrabajoData.levelsOrder,
+    countsA: desplazamientoViviendaTrabajoData.countsA || {},
+    countsB: desplazamientoViviendaTrabajoData.countsB || {},
+    totalA: desplazamientoViviendaTrabajoData.totalA || 0,
+    totalB: desplazamientoViviendaTrabajoData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -567,6 +576,15 @@ export default function InformeTabs({
   const showSuggestionsInfluenciaEntornoTrabajo =
     stageInfluenciaEntornoTrabajoA !== "primario" ||
     stageInfluenciaEntornoTrabajoB !== "primario";
+  const stageDesplazamientoViviendaTrabajoA = desplazamientoViviendaTrabajoData.totalA
+    ? calcStage(desplazamientoViviendaTrabajoData.countsA || {})
+    : "primario";
+  const stageDesplazamientoViviendaTrabajoB = desplazamientoViviendaTrabajoData.totalB
+    ? calcStage(desplazamientoViviendaTrabajoData.countsB || {})
+    : "primario";
+  const showSuggestionsDesplazamientoViviendaTrabajo =
+    stageDesplazamientoViviendaTrabajoA !== "primario" ||
+    stageDesplazamientoViviendaTrabajoB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -2208,6 +2226,56 @@ export default function InformeTabs({
                   </li>
                   <li>
                     Flexibilidad para Citas Médicas: Establecer políticas que permitan a los empleados asistir a sus citas médicas sin que esto genere un impacto negativo en su trabajo o remuneración.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Desplazamiento vivienda trabajo vivienda Forma A y B"
+          data={desplazamientoViviendaTrabajoData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Se refiere a la facilidad y tiempo que toma trasladarse del hogar al trabajo y viceversa.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {desplazamientoViviendaTrabajoSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageDesplazamientoViviendaTrabajoA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageDesplazamientoViviendaTrabajoB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsDesplazamientoViviendaTrabajo ? (
+              <>
+                <p>
+                  Ejemplo: Largos tiempos de desplazamiento, congestión vehicular, dificultades en el transporte público, inseguridad en las rutas.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Opciones de Transporte Colaborativo: Fomentar o facilitar el uso de vehículos compartidos o rutas de transporte empresarial.
+                  </li>
+                  <li>
+                    Incentivos al Uso de Medios Alternativos: Promover el uso de la bicicleta o caminar si las distancias y condiciones lo permiten, con incentivos o facilidades (parqueaderos seguros, duchas).
+                  </li>
+                  <li>
+                    Negociación con Empresas de Transporte: Si es posible, establecer convenios con empresas de transporte para mejorar el acceso y la seguridad de las rutas para los empleados.
+                  </li>
+                  <li>
+                    Evaluación de Ubicación de Puestos de Trabajo: Para futuras expansiones o reubicaciones, considerar la facilidad de acceso y tiempos de desplazamiento para los empleados.
                   </li>
                 </ol>
               </>
