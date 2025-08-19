@@ -661,6 +661,43 @@ export default function InformeTabs({
     const stageExtralaboral = extralaboralData.total
       ? calcStage(extralaboralData.counts || {})
       : "primario";
+    const isSecTer = (s: Stage) => s === "secundario" || s === "terciario";
+    const factorsAtRisk: string[] = [];
+    if (isSecTer(stageIntralaboralTotalA) || isSecTer(stageIntralaboralTotalB)) {
+      factorsAtRisk.push('Intralaboral');
+    }
+    if (isSecTer(stageFactorEstres)) {
+      factorsAtRisk.push('Estrés');
+    }
+    if (isSecTer(stageExtralaboral)) {
+      factorsAtRisk.push('Extralaboral');
+    }
+    const factorText =
+      factorsAtRisk.length > 1
+        ? `${factorsAtRisk.slice(0, -1).join(', ')} y ${factorsAtRisk[factorsAtRisk.length - 1]}`
+        : factorsAtRisk[0] || 'Intralaboral';
+    const nivelRiesgo = (() => {
+      const stages: Stage[] = [];
+      if (factorsAtRisk.includes('Intralaboral')) {
+        stages.push(stageIntralaboralTotalA, stageIntralaboralTotalB);
+      }
+      if (factorsAtRisk.includes('Estrés')) {
+        stages.push(stageFactorEstres);
+      }
+      if (factorsAtRisk.includes('Extralaboral')) {
+        stages.push(stageExtralaboral);
+      }
+      const maxStage = stages.includes('terciario')
+        ? 'terciario'
+        : stages.includes('secundario')
+        ? 'secundario'
+        : 'primario';
+      if (maxStage === 'terciario') return 'riesgo alto';
+      if (maxStage === 'secundario') return 'riesgo medio';
+      return 'riesgo bajo';
+    })();
+    const periodoAplicacion =
+      factorsAtRisk.includes('Intralaboral') ? '(1) año' : '(2) años';
     const generalItems: ResultadosGeneralesItem[] = [];
     if (intralaboralTotalData.totalA) {
       generalItems.push({
@@ -2630,6 +2667,34 @@ export default function InformeTabs({
           </div>
           <div className="mt-6">
             <CuadroAreasDeMejora data={areasMejoraData} />
+          </div>
+          <div className="mt-6 space-y-2 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            <p className="font-semibold">Recomendaciones:</p>
+            <p>
+              Tenga en cuenta La Guía Técnica General contempla acciones de
+              intervención y control frente a cada uno de sus dominios y
+              dimensiones presentados en la Batería de Instrumento de Evaluación
+              de los factores de riesgo psicosocial y sus efectos, al igual que
+              las específicas de actuación frente al “Burn out” o síndrome del
+              agotamiento laboral, acoso laboral, manejo en situaciones de duelo,
+              estrés postraumático, estrés agudo y depresión, y guías por
+              actividades económicas prioritarias, las cuales establecen
+              estrategias de intervención de factores psicosociales en los
+              diferentes sectores económicos.
+            </p>
+          </div>
+          <div className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            <p>
+              {`Teniendo en cuenta lo anterior y de acuerdo a resultados se evidencia un "${nivelRiesgo}" en el factor "${factorText}", por lo cual su aplicación se realizará dentro de ${periodoAplicacion}. Lo anterior dando cumplimiento a la resolución 2764 de 2022.`}
+            </p>
+          </div>
+          <div className="mt-8 text-center text-[#313B4A] font-montserrat text-base leading-relaxed">
+            <p>Cordialmente,</p>
+            <div className="flex justify-center py-2">
+              <img src="/signature.png" alt="Firma" className="w-40 h-auto" />
+            </div>
+            <p>Psicóloga Especialista En SST Licencia No. 823</p>
+            <p>Cel 320-4006809</p>
           </div>
         </TabsContent>
         </Tabs>
