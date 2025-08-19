@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   buildIntroduccion,
@@ -8,7 +8,7 @@ import TablaSociodemo from "@/components/TablaSociodemo";
 import RiskDistributionChart, {
   type RiskDistributionData,
 } from "@/components/RiskDistributionChart";
-import { ReportPayload } from "@/types/report";
+import { ReportPayload, type Nivel } from "@/types/report";
 import Generalidades from "./Generalidades";
 import Metodologia from "./Metodologia";
 import { buildRiskSentence } from "@/utils/riskSentence";
@@ -16,6 +16,9 @@ import SemaphoreDial from "@/components/SemaphoreDial";
 import ResultadosGeneralesCards, {
   type ResultadosGeneralesItem,
 } from "@/components/ResultadosGeneralesCards";
+import CuadroAreasDeMejora from "@/components/CuadroAreasDeMejora";
+import { esquemaFormaA } from "@/data/esquemaFormaA";
+import { esquemaFormaB } from "@/data/esquemaFormaB";
 
 interface Props {
   tabClass: string;
@@ -686,6 +689,38 @@ export default function InformeTabs({
         level: stageExtralaboral.toUpperCase() as ResultadosGeneralesItem["level"],
       });
     }
+
+    const dimensionDomainMap = useMemo(() => {
+      const map: Record<string, string> = {};
+      [...esquemaFormaA, ...esquemaFormaB].forEach((q) => {
+        if (q.dimension && !map[q.dimension]) {
+          map[q.dimension] = q.dominio;
+        }
+      });
+      return map;
+    }, []);
+
+    const areasMejoraData = useMemo(() => {
+      const result: { dominio: string; dimension: string; nivelRiesgo: Nivel }[] = [];
+      const fuentes: Array<keyof ReportPayload["dimensiones"]> = [
+        "formaA",
+        "formaB",
+        "extralaboral",
+      ];
+      fuentes.forEach((key) => {
+        const dims = payload.dimensiones[key];
+        if (!dims) return;
+        Object.entries(dims).forEach(([dimension, indicador]) => {
+          const nivel = (indicador as { nivel?: Nivel }).nivel;
+          if (!nivel) return;
+          const dominio =
+            dimensionDomainMap[dimension] || (key === "extralaboral" ? "Extralaboral" : "");
+          result.push({ dominio, dimension, nivelRiesgo: nivel });
+        });
+      });
+      return result;
+    }, [payload, dimensionDomainMap]);
+
     const showSuggestionsFactorEstres =
       stageFactorEstresA !== "primario" || stageFactorEstresB !== "primario";
     return (
@@ -2574,6 +2609,9 @@ export default function InformeTabs({
               cuenta las recomendaciones y sugerencias establecidas en este diagnóstico
               para las siguientes categorías:
             </p>
+          </div>
+          <div className="mt-6">
+            <CuadroAreasDeMejora data={areasMejoraData} />
           </div>
         </TabsContent>
         </Tabs>
