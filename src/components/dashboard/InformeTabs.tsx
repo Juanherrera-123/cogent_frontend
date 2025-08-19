@@ -662,18 +662,42 @@ export default function InformeTabs({
       ? calcStage(extralaboralData.counts || {})
       : "primario";
     const isSecTer = (s: Stage) => s === "secundario" || s === "terciario";
-    const riesgoDetectado = (() => {
-      if (isSecTer(stageIntralaboralTotalA) || isSecTer(stageIntralaboralTotalB)) {
-        return "Intralaboral";
+    const factorsAtRisk: string[] = [];
+    if (isSecTer(stageIntralaboralTotalA) || isSecTer(stageIntralaboralTotalB)) {
+      factorsAtRisk.push('Intralaboral');
+    }
+    if (isSecTer(stageFactorEstres)) {
+      factorsAtRisk.push('Estrés');
+    }
+    if (isSecTer(stageExtralaboral)) {
+      factorsAtRisk.push('Extralaboral');
+    }
+    const factorText =
+      factorsAtRisk.length > 1
+        ? `${factorsAtRisk.slice(0, -1).join(', ')} y ${factorsAtRisk[factorsAtRisk.length - 1]}`
+        : factorsAtRisk[0] || 'Intralaboral';
+    const nivelRiesgo = (() => {
+      const stages: Stage[] = [];
+      if (factorsAtRisk.includes('Intralaboral')) {
+        stages.push(stageIntralaboralTotalA, stageIntralaboralTotalB);
       }
-      if (isSecTer(stageFactorEstres)) return "Estrés";
-      if (isSecTer(stageExtralaboral)) return "Extralaboral";
-      return "Intralaboral";
+      if (factorsAtRisk.includes('Estrés')) {
+        stages.push(stageFactorEstres);
+      }
+      if (factorsAtRisk.includes('Extralaboral')) {
+        stages.push(stageExtralaboral);
+      }
+      const maxStage = stages.includes('terciario')
+        ? 'terciario'
+        : stages.includes('secundario')
+        ? 'secundario'
+        : 'primario';
+      if (maxStage === 'terciario') return 'riesgo alto';
+      if (maxStage === 'secundario') return 'riesgo medio';
+      return 'riesgo bajo';
     })();
     const periodoAplicacion =
-      isSecTer(stageIntralaboralTotalA) || isSecTer(stageIntralaboralTotalB)
-        ? "(1) año"
-        : "(2) años";
+      factorsAtRisk.includes('Intralaboral') ? '(1) año' : '(2) años';
     const generalItems: ResultadosGeneralesItem[] = [];
     if (intralaboralTotalData.totalA) {
       generalItems.push({
@@ -2661,7 +2685,7 @@ export default function InformeTabs({
           </div>
           <div className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
             <p>
-              {`Teniendo en cuenta lo anterior y de acuerdo a resultados se evidencia un "${riesgoDetectado}", por lo cual su aplicación se realizará dentro de ${periodoAplicacion}. Lo anterior dando cumplimiento a la resolución 2764 de 2022.`}
+              {`Teniendo en cuenta lo anterior y de acuerdo a resultados se evidencia un "${nivelRiesgo}" en el factor "${factorText}", por lo cual su aplicación se realizará dentro de ${periodoAplicacion}. Lo anterior dando cumplimiento a la resolución 2764 de 2022.`}
             </p>
           </div>
         </TabsContent>
