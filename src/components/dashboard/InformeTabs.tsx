@@ -51,6 +51,7 @@ interface Props {
   caracteristicasViviendaData: RiskDistributionData;
   influenciaEntornoTrabajoData: RiskDistributionData;
   desplazamientoViviendaTrabajoData: RiskDistributionData;
+  factorEstresData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -90,6 +91,7 @@ export default function InformeTabs({
   caracteristicasViviendaData,
   influenciaEntornoTrabajoData,
   desplazamientoViviendaTrabajoData,
+  factorEstresData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -309,6 +311,13 @@ export default function InformeTabs({
     countsB: desplazamientoViviendaTrabajoData.countsB || {},
     totalA: desplazamientoViviendaTrabajoData.totalA || 0,
     totalB: desplazamientoViviendaTrabajoData.totalB || 0,
+  });
+  const factorEstresSentence = buildRiskSentence({
+    levelsOrder: factorEstresData.levelsOrder,
+    countsA: factorEstresData.countsA || {},
+    countsB: factorEstresData.countsB || {},
+    totalA: factorEstresData.totalA || 0,
+    totalB: factorEstresData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -585,6 +594,14 @@ export default function InformeTabs({
   const showSuggestionsDesplazamientoViviendaTrabajo =
     stageDesplazamientoViviendaTrabajoA !== "primario" ||
     stageDesplazamientoViviendaTrabajoB !== "primario";
+  const stageFactorEstresA = factorEstresData.totalA
+    ? calcStage(factorEstresData.countsA || {})
+    : "primario";
+  const stageFactorEstresB = factorEstresData.totalB
+    ? calcStage(factorEstresData.countsB || {})
+    : "primario";
+  const showSuggestionsFactorEstres =
+    stageFactorEstresA !== "primario" || stageFactorEstresB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -2288,9 +2305,135 @@ export default function InformeTabs({
         </div>
         </TabsContent>
         <TabsContent value="graficas-estres">
-          <p className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
-            Aquí se mostrarán las gráficas de estrés.
+          <RiskDistributionChart
+            title="RESULTADO GENERAL FACTOR ESTRÉS FORMA A Y B"
+            data={factorEstresData}
+          />
+          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            El cuestionario diseñado para evaluar los síntomas relacionados con el estrés es una herramienta creada con el propósito de identificar indicios de reacciones de estrés. Estos síntomas se encuentran clasificados en cuatro categorías principales, cada una vinculada a un tipo específico de manifestación del estrés: a) síntomas fisiológicos, b) síntomas de comportamiento social, c) síntomas intelectuales y laborales, y d) síntomas psico-emocionales. Aunque el cuestionario se organiza en grupos de síntomas, los resultados válidos solo pueden ser presentados en su conjunto, considerando la totalidad del cuestionario. Se considera de gran importancia llevar a cabo una evaluación exhaustiva de la sintomatología relacionada con el estrés, dado que esta sintomatología constituye la consecuencia más inmediata de la exposición a los riesgos psicosociales.
           </p>
+          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {factorEstresSentence}
+          </p>
+          <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-col items-center">
+                <p className="font-semibold">Forma A</p>
+                <SemaphoreDial stage={stageFactorEstresA} />
+              </div>
+              <div className="flex flex-col items-center">
+                <p className="font-semibold">Forma B</p>
+                <SemaphoreDial stage={stageFactorEstresB} />
+              </div>
+            </div>
+            <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+              {showSuggestionsFactorEstres ? (
+                <>
+                  <p className="font-semibold">
+                    Estrategias para el Manejo del Estrés Laboral
+                  </p>
+                  <p>Se recomienda trabajar en las siguientes recomendaciones:</p>
+                  <ol className="list-decimal ml-5 space-y-1">
+                    <li>
+                      <p className="font-semibold">
+                        Sugerencias a Nivel Organizacional (Prevención y Mitigación)
+                      </p>
+                      <p>
+                        Estas acciones se centran en el diseño del trabajo y la cultura organizacional para reducir las fuentes de estrés.
+                      </p>
+                      <p className="font-semibold">Identificación y Evaluación Continua:</p>
+                      <ul className="list-disc ml-5 space-y-1">
+                        <li>
+                          Monitoreo Constante: No te quedes solo con la Batería de Riesgo Psicosocial. Implementa encuestas de clima laboral, buzones de sugerencias o reuniones periódicas para identificar fuentes emergentes de estrés.
+                        </li>
+                        <li>
+                          Análisis de Datos: Utiliza los resultados de las evaluaciones para identificar los departamentos o roles con mayores niveles de estrés y entender las causas específicas.
+                        </li>
+                      </ul>
+                      <p className="font-semibold">Diseño de Puestos de Trabajo Saludables:</p>
+                      <ul className="list-disc ml-5 space-y-1">
+                        <li>
+                          Claridad de Roles y Expectativas: Asegura que cada empleado conozca sus funciones, responsabilidades y las expectativas de desempeño.
+                        </li>
+                        <li>
+                          Cargas de Trabajo Razonables: Realiza estudios de carga laboral para garantizar que las tareas sean equitativas y realistas. Evita la sobrecarga crónica.
+                        </li>
+                        <li>
+                          Fomento del Control y la Autonomía: Siempre que sea posible, da a los empleados control sobre cómo, cuándo y dónde realizan su trabajo. La autonomía reduce la sensación de impotencia y el estrés.
+                        </li>
+                        <li>
+                          Oportunidades de Desarrollo: Proporciona oportunidades para el uso y desarrollo de habilidades. Sentirse estancado profesionalmente es frustrante y estresante.
+                        </li>
+                      </ul>
+                      <p className="font-semibold">Liderazgo Consciente y Formación de Líderes:</p>
+                      <ul className="list-disc ml-5 space-y-1">
+                        <li>
+                          Capacitación en Habilidades Blandas: Entrena a los líderes en comunicación efectiva, manejo de conflictos, empatía y retroalimentación constructiva. Un buen líder es un amortiguador del estrés.
+                        </li>
+                        <li>
+                          Liderazgo de Apoyo: Fomenta un estilo de liderazgo que brinde apoyo, reconocimiento y guíe a los equipos, en lugar de uno puramente directivo o microgestor.
+                        </li>
+                        <li>
+                          Delegación Efectiva: Enseña a los líderes a delegar adecuadamente, distribuyendo las responsabilidades y empoderando a sus equipos.
+                        </li>
+                      </ul>
+                      <p className="font-semibold">Fomento de un Clima Laboral Positivo:</p>
+                      <ul className="list-disc ml-5 space-y-1">
+                        <li>
+                          Comunicación Abierta y Transparente: Mantén a los empleados informados sobre decisiones que les afectan, especialmente durante periodos de cambio. La incertidumbre genera estrés.
+                        </li>
+                        <li>
+                          Promoción del Apoyo Social: Crea espacios y fomenta actividades que mejoren las relaciones entre compañeros y entre equipos. Un fuerte apoyo social actúa como un colchón contra el estrés.
+                        </li>
+                        <li>
+                          Reconocimiento y Recompensa: Implementa sistemas justos de reconocimiento y recompensa. Sentirse valorado reduce la percepción de desequilibrio esfuerzo-recompensa.
+                        </li>
+                        <li>
+                          Políticas de Conciliación: Ofrece flexibilidad horaria, teletrabajo (si aplica), o permisos para facilitar el equilibrio entre la vida laboral y personal.
+                        </li>
+                      </ul>
+                      <p className="font-semibold">Salud y Bienestar Integrales:</p>
+                      <ul className="list-disc ml-5 space-y-1">
+                        <li>
+                          Programas de Bienestar: Implementa programas que promuevan la salud física y mental: pausas activas, talleres de nutrición, jornadas de actividad física, etc.
+                        </li>
+                        <li>
+                          Acceso a Apoyo Psicológico: Facilita el acceso a servicios de orientación psicológica o counselling confidencial para los empleados que lo necesiten. Esto puede ser a través de un convenio o un programa interno.
+                        </li>
+                        <li>
+                          Gestión de Conflictos y Acoso: Establece procedimientos claros y efectivos para la prevención y el manejo de conflictos y acoso laboral. Un ambiente seguro es fundamental para reducir el estrés.
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <p className="font-semibold">
+                        Sugerencias a Nivel Individual (Herramientas para los Empleados)
+                      </p>
+                      <p>
+                        Estas recomendaciones buscan empoderar a los empleados con técnicas y hábitos para gestionar su propio estrés. La organización puede facilitar el acceso a estas herramientas.
+                      </p>
+                      <p className="font-semibold">Técnicas de Relajación y Mindfulness:</p>
+                      <ul className="list-disc ml-5 space-y-1">
+                        <li>
+                          Respiración Profunda: Enseña ejercicios sencillos de respiración diafragmática para momentos de alta tensión.
+                        </li>
+                        <li>
+                          Meditación Guiada: Ofrece acceso a aplicaciones o talleres de mindfulness para practicar la atención plena y reducir la rumiación mental.
+                        </li>
+                        <li>
+                          Relajación Muscular Progresiva: Una técnica efectiva para liberar la tensión física acumulada.
+                        </li>
+                      </ul>
+                    </li>
+                  </ol>
+                </>
+              ) : (
+                <p>
+                  El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+                </p>
+              )}
+            </div>
+          </div>
         </TabsContent>
         <TabsContent value="graficas-total">
           <p className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
