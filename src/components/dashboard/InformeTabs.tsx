@@ -2688,6 +2688,14 @@ export default function InformeTabs({
               {`Teniendo en cuenta lo anterior y de acuerdo a resultados se evidencia un "${nivelRiesgo}" en el factor "${factorText}", por lo cual su aplicación se realizará dentro de ${periodoAplicacion}. Lo anterior dando cumplimiento a la resolución 2764 de 2022.`}
             </p>
           </div>
+          <div className="mt-8 text-center text-[#313B4A] font-montserrat text-base leading-relaxed">
+            <p>Cordialmente,</p>
+            <div className="flex justify-center py-2">
+              <img src="/signature.png" alt="Firma" className="w-40 h-auto" />
+            </div>
+            <p>Psicóloga Especialista En SST Licencia No. 823</p>
+            <p>Cel 320-4006809</p>
+          </div>
         </TabsContent>
         </Tabs>
       );
