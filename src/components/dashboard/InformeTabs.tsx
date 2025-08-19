@@ -43,6 +43,7 @@ interface Props {
   recompensasDominioData: RiskDistributionData;
   recompensasPertenenciaData: RiskDistributionData;
   reconocimientoCompensacionData: RiskDistributionData;
+  intralaboralTotalData: RiskDistributionData;
   extralaboralData: RiskDistributionData;
   tiempoFueraTrabajoData: RiskDistributionData;
   relacionesFamiliaresData: RiskDistributionData;
@@ -80,11 +81,12 @@ export default function InformeTabs({
   demandasCargaMentalData,
   demandasJornadaData,
   consistenciaRolData,
-  recompensasDominioData,
-  recompensasPertenenciaData,
-  reconocimientoCompensacionData,
-  extralaboralData,
-  tiempoFueraTrabajoData,
+    recompensasDominioData,
+    recompensasPertenenciaData,
+    reconocimientoCompensacionData,
+    intralaboralTotalData,
+    extralaboralData,
+    tiempoFueraTrabajoData,
   relacionesFamiliaresData,
   comunicacionRelacionesData,
   situacionEconomicaData,
@@ -312,15 +314,35 @@ export default function InformeTabs({
     totalA: desplazamientoViviendaTrabajoData.totalA || 0,
     totalB: desplazamientoViviendaTrabajoData.totalB || 0,
   });
-  const factorEstresSentence = buildRiskSentence({
-    levelsOrder: factorEstresData.levelsOrder,
-    countsA: factorEstresData.countsA || {},
-    countsB: factorEstresData.countsB || {},
-    totalA: factorEstresData.totalA || 0,
-    totalB: factorEstresData.totalB || 0,
-  });
+    const factorEstresSentence = buildRiskSentence({
+      levelsOrder: factorEstresData.levelsOrder,
+      countsA: factorEstresData.countsA || {},
+      countsB: factorEstresData.countsB || {},
+      totalA: factorEstresData.totalA || 0,
+      totalB: factorEstresData.totalB || 0,
+    });
+    const intralaboralTotalSentence = (() => {
+      const counts = intralaboralTotalData.countsA || {};
+      const total = intralaboralTotalData.totalA || 0;
+      let modal = intralaboralTotalData.levelsOrder[0] || "";
+      let max = counts[modal] ?? 0;
+      for (const lvl of intralaboralTotalData.levelsOrder) {
+        const value = counts[lvl] ?? 0;
+        if (value > max) {
+          max = value;
+          modal = lvl;
+        }
+      }
+      const pct = total ? (max / total) * 100 : 0;
+      const pctStr =
+        pct.toLocaleString("es-CO", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }) + "%";
+      return `Esta gráfica refiere mayor incidencia en el riesgo "${modal}" para el "${pctStr}" de la población de la forma A.`;
+    })();
 
-  type Stage = "primario" | "secundario" | "terciario";
+    type Stage = "primario" | "secundario" | "terciario";
 
   const calcStage = (counts: Record<string, number>): Stage => {
     const stageCounts = { primario: 0, secundario: 0, terciario: 0 };
@@ -594,15 +616,21 @@ export default function InformeTabs({
   const showSuggestionsDesplazamientoViviendaTrabajo =
     stageDesplazamientoViviendaTrabajoA !== "primario" ||
     stageDesplazamientoViviendaTrabajoB !== "primario";
-  const stageFactorEstresA = factorEstresData.totalA
-    ? calcStage(factorEstresData.countsA || {})
-    : "primario";
-  const stageFactorEstresB = factorEstresData.totalB
-    ? calcStage(factorEstresData.countsB || {})
-    : "primario";
-  const showSuggestionsFactorEstres =
-    stageFactorEstresA !== "primario" || stageFactorEstresB !== "primario";
-  return (
+    const stageFactorEstresA = factorEstresData.totalA
+      ? calcStage(factorEstresData.countsA || {})
+      : "primario";
+    const stageFactorEstresB = factorEstresData.totalB
+      ? calcStage(factorEstresData.countsB || {})
+      : "primario";
+    const stageIntralaboralTotalA = intralaboralTotalData.totalA
+      ? calcStage(intralaboralTotalData.countsA || {})
+      : "primario";
+    const stageIntralaboralTotalB = intralaboralTotalData.totalB
+      ? calcStage(intralaboralTotalData.countsB || {})
+      : "primario";
+    const showSuggestionsFactorEstres =
+      stageFactorEstresA !== "primario" || stageFactorEstresB !== "primario";
+    return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
         <TabsTrigger className={tabClass} value="introduccion">
@@ -2439,6 +2467,23 @@ export default function InformeTabs({
           <p className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
             Aquí se mostrarán las gráficas totales.
           </p>
+          <RiskDistributionChart
+            title="Intralaboral forma A"
+            data={intralaboralTotalData}
+          />
+          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {intralaboralTotalSentence}
+          </p>
+          <div className="mt-4 flex justify-center gap-6">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageIntralaboralTotalA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageIntralaboralTotalB} />
+            </div>
+          </div>
         </TabsContent>
         <TabsContent value="estrategias" />
         </Tabs>
