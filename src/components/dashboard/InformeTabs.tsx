@@ -341,6 +341,26 @@ export default function InformeTabs({
         }) + "%";
       return `Esta gráfica refiere mayor incidencia en el riesgo "${modal}" para el "${pctStr}" de la población de la forma A.`;
     })();
+    const intralaboralTotalSentenceB = (() => {
+      const counts = intralaboralTotalData.countsB || {};
+      const total = intralaboralTotalData.totalB || 0;
+      let modal = intralaboralTotalData.levelsOrder[0] || "";
+      let max = counts[modal] ?? 0;
+      for (const lvl of intralaboralTotalData.levelsOrder) {
+        const value = counts[lvl] ?? 0;
+        if (value > max) {
+          max = value;
+          modal = lvl;
+        }
+      }
+      const pct = total ? (max / total) * 100 : 0;
+      const pctStr =
+        pct.toLocaleString("es-CO", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }) + "%";
+      return `Esta gráfica refiere mayor incidencia en el riesgo "${modal}" para el "${pctStr}" de la población de la forma B.`;
+    })();
 
     type Stage = "primario" | "secundario" | "terciario";
 
@@ -2473,6 +2493,23 @@ export default function InformeTabs({
           />
           <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
             {intralaboralTotalSentence}
+          </p>
+          <div className="mt-4 flex justify-center gap-6">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageIntralaboralTotalA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageIntralaboralTotalB} />
+            </div>
+          </div>
+          <RiskDistributionChart
+            title="Intralaboral forma B"
+            data={intralaboralTotalData}
+          />
+          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {intralaboralTotalSentenceB}
           </p>
           <div className="mt-4 flex justify-center gap-6">
             <div className="flex flex-col items-center">
