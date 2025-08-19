@@ -49,6 +49,7 @@ interface Props {
   comunicacionRelacionesData: RiskDistributionData;
   situacionEconomicaData: RiskDistributionData;
   caracteristicasViviendaData: RiskDistributionData;
+  influenciaEntornoTrabajoData: RiskDistributionData;
 }
 
 export default function InformeTabs({
@@ -86,6 +87,7 @@ export default function InformeTabs({
   comunicacionRelacionesData,
   situacionEconomicaData,
   caracteristicasViviendaData,
+  influenciaEntornoTrabajoData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
   const intro = buildIntroduccion(introduccionData);
@@ -291,6 +293,13 @@ export default function InformeTabs({
     countsB: caracteristicasViviendaData.countsB || {},
     totalA: caracteristicasViviendaData.totalA || 0,
     totalB: caracteristicasViviendaData.totalB || 0,
+  });
+  const influenciaEntornoTrabajoSentence = buildRiskSentence({
+    levelsOrder: influenciaEntornoTrabajoData.levelsOrder,
+    countsA: influenciaEntornoTrabajoData.countsA || {},
+    countsB: influenciaEntornoTrabajoData.countsB || {},
+    totalA: influenciaEntornoTrabajoData.totalA || 0,
+    totalB: influenciaEntornoTrabajoData.totalB || 0,
   });
 
   type Stage = "primario" | "secundario" | "terciario";
@@ -549,6 +558,15 @@ export default function InformeTabs({
   const showSuggestionsCaracteristicasVivienda =
     stageCaracteristicasViviendaA !== "primario" ||
     stageCaracteristicasViviendaB !== "primario";
+  const stageInfluenciaEntornoTrabajoA = influenciaEntornoTrabajoData.totalA
+    ? calcStage(influenciaEntornoTrabajoData.countsA || {})
+    : "primario";
+  const stageInfluenciaEntornoTrabajoB = influenciaEntornoTrabajoData.totalB
+    ? calcStage(influenciaEntornoTrabajoData.countsB || {})
+    : "primario";
+  const showSuggestionsInfluenciaEntornoTrabajo =
+    stageInfluenciaEntornoTrabajoA !== "primario" ||
+    stageInfluenciaEntornoTrabajoB !== "primario";
   return (
     <Tabs value={value} onValueChange={setValue} className="w-full">
       <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -2140,6 +2158,56 @@ export default function InformeTabs({
                   </li>
                   <li>
                     Promoción de la Salud Comunitaria: Si aplica, colaborar con iniciativas comunitarias que busquen mejorar la seguridad o el acceso a servicios en las zonas donde residen los empleados.
+                  </li>
+                </ol>
+              </>
+            ) : (
+              <p>
+                El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
+              </p>
+            )}
+          </div>
+        </div>
+        <RiskDistributionChart
+          title="Influencia del entorno extralaboral sobre el trabajo Forma A y B"
+          data={influenciaEntornoTrabajoData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          Refiere los problemas que se generarse por condiciones fuera del trabajo pueden ser  de diversa naturaleza dentro de las más destacadas encontramos la falta de Acceso a Servicios de Salud física y mental.
+        </p>
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {influenciaEntornoTrabajoSentence}
+        </p>
+        <div className="mt-4 flex flex-col md:flex-row items-start gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma A</p>
+              <SemaphoreDial stage={stageInfluenciaEntornoTrabajoA} />
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold">Forma B</p>
+              <SemaphoreDial stage={stageInfluenciaEntornoTrabajoB} />
+            </div>
+          </div>
+          <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            {showSuggestionsInfluenciaEntornoTrabajo ? (
+              <>
+                <p>
+                  Ejemplo: Dificultades para acceder a citas médicas, barreras económicas o geográficas para recibir atención, desconocimiento de los servicios disponibles.
+                </p>
+                <p className="font-semibold mt-2">Acciones de Intervención Sugeridas:</p>
+                <ol className="list-decimal ml-5 space-y-1">
+                  <li>
+                    Información sobre el Sistema de Salud: Educar a los empleados sobre cómo funciona el sistema de salud, sus derechos y los canales para acceder a servicios.
+                  </li>
+                  <li>
+                    Programas de Promoción y Prevención de la Salud: Impulsar campañas de vacunación, exámenes médicos preventivos y charlas sobre hábitos de vida saludable.
+                  </li>
+                  <li>
+                    Apoyo para Acceso a Salud Mental: Facilitar el acceso a servicios de salud mental, ya sea a través de la EPS, convenios con psicólogos o programas de apoyo al empleado.
+                  </li>
+                  <li>
+                    Flexibilidad para Citas Médicas: Establecer políticas que permitan a los empleados asistir a sus citas médicas sin que esto genere un impacto negativo en su trabajo o remuneración.
                   </li>
                 </ol>
               </>
