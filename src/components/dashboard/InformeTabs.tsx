@@ -661,6 +661,19 @@ export default function InformeTabs({
     const stageExtralaboral = extralaboralData.total
       ? calcStage(extralaboralData.counts || {})
       : "primario";
+    const isSecTer = (s: Stage) => s === "secundario" || s === "terciario";
+    const riesgoDetectado = (() => {
+      if (isSecTer(stageIntralaboralTotalA) || isSecTer(stageIntralaboralTotalB)) {
+        return "Intralaboral";
+      }
+      if (isSecTer(stageFactorEstres)) return "Estrés";
+      if (isSecTer(stageExtralaboral)) return "Extralaboral";
+      return "Intralaboral";
+    })();
+    const periodoAplicacion =
+      isSecTer(stageIntralaboralTotalA) || isSecTer(stageIntralaboralTotalB)
+        ? "(1) año"
+        : "(2) años";
     const generalItems: ResultadosGeneralesItem[] = [];
     if (intralaboralTotalData.totalA) {
       generalItems.push({
@@ -2630,6 +2643,26 @@ export default function InformeTabs({
           </div>
           <div className="mt-6">
             <CuadroAreasDeMejora data={areasMejoraData} />
+          </div>
+          <div className="mt-6 space-y-2 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            <p className="font-semibold">Recomendaciones:</p>
+            <p>
+              Tenga en cuenta La Guía Técnica General contempla acciones de
+              intervención y control frente a cada uno de sus dominios y
+              dimensiones presentados en la Batería de Instrumento de Evaluación
+              de los factores de riesgo psicosocial y sus efectos, al igual que
+              las específicas de actuación frente al “Burn out” o síndrome del
+              agotamiento laboral, acoso laboral, manejo en situaciones de duelo,
+              estrés postraumático, estrés agudo y depresión, y guías por
+              actividades económicas prioritarias, las cuales establecen
+              estrategias de intervención de factores psicosociales en los
+              diferentes sectores económicos.
+            </p>
+          </div>
+          <div className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+            <p>
+              {`Teniendo en cuenta lo anterior y de acuerdo a resultados se evidencia un "${riesgoDetectado}", por lo cual su aplicación se realizará dentro de ${periodoAplicacion}. Lo anterior dando cumplimiento a la resolución 2764 de 2022.`}
+            </p>
           </div>
         </TabsContent>
         </Tabs>
