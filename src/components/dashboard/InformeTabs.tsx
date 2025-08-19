@@ -19,6 +19,7 @@ import ResultadosGeneralesCards, {
 import CuadroAreasDeMejora from "@/components/CuadroAreasDeMejora";
 import { esquemaFormaA } from "@/data/esquemaFormaA";
 import { esquemaFormaB } from "@/data/esquemaFormaB";
+import { shortNivelRiesgo } from "@/utils/shortNivelRiesgo";
 
 interface Props {
   tabClass: string;
@@ -701,7 +702,11 @@ export default function InformeTabs({
     }, []);
 
     const areasMejoraData = useMemo(() => {
-      const result: { dominio: string; dimension: string; nivelRiesgo: Nivel }[] = [];
+      const sevOrder = ["Muy alto", "Alto", "Medio", "Bajo", "Muy bajo"];
+      const map = new Map<
+        string,
+        { dominio: string; nivel: Nivel }
+      >();
       const fuentes: Array<keyof ReportPayload["dimensiones"]> = [
         "formaA",
         "formaB",
@@ -711,12 +716,25 @@ export default function InformeTabs({
         const dims = payload.dimensiones[key];
         if (!dims) return;
         Object.entries(dims).forEach(([dimension, indicador]) => {
-          const nivel = (indicador as { nivel?: Nivel }).nivel;
-          if (!nivel) return;
+          const nivelRaw = (indicador as { nivel?: string }).nivel;
+          if (!nivelRaw) return;
+          const nivel = shortNivelRiesgo(nivelRaw) as Nivel;
           const dominio =
             dimensionDomainMap[dimension] || (key === "extralaboral" ? "Extralaboral" : "");
-          result.push({ dominio, dimension, nivelRiesgo: nivel });
+          const prev = map.get(dimension);
+          if (
+            !prev ||
+            sevOrder.indexOf(nivel) < sevOrder.indexOf(prev.nivel)
+          ) {
+            map.set(dimension, { dominio, nivel });
+          }
         });
+      });
+      const result: { dominio: string; dimension: string; nivelRiesgo: Nivel }[] = [];
+      map.forEach(({ dominio, nivel }, dimension) => {
+        if (["Medio", "Alto", "Muy alto"].includes(nivel)) {
+          result.push({ dominio, dimension, nivelRiesgo: nivel });
+        }
       });
       return result;
     }, [payload, dimensionDomainMap]);
