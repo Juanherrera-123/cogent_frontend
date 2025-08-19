@@ -2565,6 +2565,16 @@ export default function InformeTabs({
             items={generalItems}
             onSelect={(item) => console.log(item)}
           />
+          <div className="mt-6 space-y-2">
+            <p className="font-semibold">CONCLUSIONES:</p>
+            <p>
+              De acuerdo a resultados analizados se evidencian riesgos ALTOS Y MUY
+              ALTOS, en las siguientes dimensiones por lo que se sugiere Realizar un
+              programa de Vigilancia epidemiológico por Riesgo psicosocial y tener en
+              cuenta las recomendaciones y sugerencias establecidas en este diagnóstico
+              para las siguientes categorías:
+            </p>
+          </div>
         </TabsContent>
         </Tabs>
       );
