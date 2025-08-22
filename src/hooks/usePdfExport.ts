@@ -14,7 +14,7 @@ export function usePdfExport() {
     // ciclo de pintado y confirmar que el DOM se actualizó tras los
     // cambios de estado.
     await new Promise<void>((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(resolve))
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
     );
     try {
       if (ref.current) {
