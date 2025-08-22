@@ -22,6 +22,7 @@ import CartaCustodiaSST from "@/components/CartaCustodiaSST";
 import TablaInformativa from "@/components/TablaInformativa";
 import TablaConstructosVariables from "@/components/TablaConstructosVariables";
 import TablaDimensionesExtralaborales from "@/components/TablaDimensionesExtralaborales";
+import TablaSintomasEstres from "@/components/TablaSintomasEstres";
 import { esquemaFormaA } from "@/data/esquemaFormaA";
 import { esquemaFormaB } from "@/data/esquemaFormaB";
 import { shortNivelRiesgo } from "@/utils/shortNivelRiesgo";
@@ -3030,7 +3031,7 @@ export default function InformeTabs({
               isOpen={activeItem === "tabla-cuestionario-estres"}
               onToggle={() => handleToggle("tabla-cuestionario-estres")}
             >
-              <p>Contenido pendiente</p>
+              <TablaSintomasEstres />
             </AccordionItem>
             <AccordionItem
               id="como-interpretar-graficas"
