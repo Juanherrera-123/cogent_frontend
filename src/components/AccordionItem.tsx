@@ -1,14 +1,21 @@
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 
 interface AccordionItemProps {
   id: string;
   title: string;
   children: ReactNode;
+  isOpen: boolean;
+  onToggle: () => void;
 }
 
-export default function AccordionItem({ id, title, children }: AccordionItemProps) {
-  const [open, setOpen] = useState(false);
+export default function AccordionItem({
+  id,
+  title,
+  children,
+  isOpen,
+  onToggle,
+}: AccordionItemProps) {
   const contentId = `${id}-content`;
 
   return (
@@ -16,14 +23,14 @@ export default function AccordionItem({ id, title, children }: AccordionItemProp
       <button
         id={id}
         type="button"
-        aria-expanded={open}
+        aria-expanded={isOpen}
         aria-controls={contentId}
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={onToggle}
         className="w-full flex items-center justify-between px-4 py-3 text-left font-semibold text-[#313B4A]"
       >
         {title}
         <ChevronDown
-          className={`h-5 w-5 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
           aria-hidden="true"
         />
       </button>
@@ -31,7 +38,7 @@ export default function AccordionItem({ id, title, children }: AccordionItemProp
         id={contentId}
         role="region"
         aria-labelledby={id}
-        className={open ? "block" : "hidden"}
+        className={isOpen ? "block" : "hidden"}
       >
         <div className="px-4 pb-4">{children}</div>
       </div>

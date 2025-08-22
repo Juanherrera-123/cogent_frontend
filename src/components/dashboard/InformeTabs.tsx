@@ -105,6 +105,9 @@ export default function InformeTabs({
   factorEstresData,
 }: Props) {
   const [value, setValue] = useState("introduccion");
+  const [activeItem, setActiveItem] = useState<string | null>(null);
+  const handleToggle = (id: string) =>
+    setActiveItem((prev) => (prev === id ? null : id));
   const intro = buildIntroduccion(introduccionData);
   const dominioSentence = buildRiskSentence({
     levelsOrder: liderazgoDominioData.levelsOrder,
@@ -2674,6 +2677,8 @@ export default function InformeTabs({
             <AccordionItem
               id="dominio-demandas-del-trabajo-cont"
               title="Cont. Dominio demandas del trabajo"
+              isOpen={activeItem === "dominio-demandas-del-trabajo-cont"}
+              onToggle={() => handleToggle("dominio-demandas-del-trabajo-cont")}
             >
               <TablaInformativa
                 headers={[
@@ -2705,6 +2710,8 @@ export default function InformeTabs({
             <AccordionItem
               id="dominio-recompensas-cont"
               title="Cont. Dominio recompensas"
+              isOpen={activeItem === "dominio-recompensas-cont"}
+              onToggle={() => handleToggle("dominio-recompensas-cont")}
             >
               <TablaInformativa
                 headers={[
@@ -2740,6 +2747,8 @@ export default function InformeTabs({
             <AccordionItem
               id="dominio-liderazgo-relaciones-cont"
               title="Cont. Dominio características de liderazgo y relaciones sociales"
+              isOpen={activeItem === "dominio-liderazgo-relaciones-cont"}
+              onToggle={() => handleToggle("dominio-liderazgo-relaciones-cont")}
             >
               <TablaInformativa
                 headers={[
@@ -2796,6 +2805,8 @@ export default function InformeTabs({
             <AccordionItem
               id="factores-extralaborales-cont"
               title="Cont. Factores psicosociales extralaborales"
+              isOpen={activeItem === "factores-extralaborales-cont"}
+              onToggle={() => handleToggle("factores-extralaborales-cont")}
             >
               <TablaInformativa
                 headers={[
@@ -2867,6 +2878,8 @@ export default function InformeTabs({
             <AccordionItem
               id="efectos-riesgo-psicosocial-cont"
               title="Cont. Efectos de los factores de riesgo psicosocial"
+              isOpen={activeItem === "efectos-riesgo-psicosocial-cont"}
+              onToggle={() => handleToggle("efectos-riesgo-psicosocial-cont")}
             >
               <TablaInformativa
                 headers={[
@@ -2923,6 +2936,8 @@ export default function InformeTabs({
             <AccordionItem
               id="efectos-riesgo-psicosocial-cont-2"
               title="Cont. Efectos de los factores de riesgo psicosocial"
+              isOpen={activeItem === "efectos-riesgo-psicosocial-cont-2"}
+              onToggle={() => handleToggle("efectos-riesgo-psicosocial-cont-2")}
             >
               <TablaInformativa
                 headers={[
