@@ -90,6 +90,7 @@ export interface FichaDatosGenerales {
 }
 
 export interface ResultRow {
+  id?: string;
   ficha?: FichaDatosGenerales;
   respuestas?: SurveyResponses;
   resultadoFormaA?: IntralaboralResultado;

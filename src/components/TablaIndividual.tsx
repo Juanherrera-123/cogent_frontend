@@ -65,6 +65,7 @@ export default function TablaIndividual({ datos, tipo }: { datos: ResultRow[]; t
         : "";
     return { puntaje: promPuntaje, nivel: promNivel };
   }, [datos, tipo]);
+  const dateFormatter = useMemo(() => new Intl.DateTimeFormat(), []);
   if (datos.length === 0) {
     return <div className="py-6 text-gray-400">No hay resultados individuales para mostrar.</div>;
   }
@@ -112,13 +113,15 @@ export default function TablaIndividual({ datos, tipo }: { datos: ResultRow[]; t
           </tr>
         </thead>
         <tbody>
-          {datos.map((d, i) => (
-            <tr key={i} className="border-b">
-              <td>{i + 1}</td>
-              <td>{d.ficha?.empresa}</td>
-              <td>{d.ficha?.nombre}</td>
-              <td>{d.ficha?.sexo}</td>
-              <td>{d.ficha?.cargo}</td>
+          {datos.map((d, i) => {
+            const fecha = d.fecha ? dateFormatter.format(new Date(d.fecha)) : "";
+            return (
+              <tr key={d.id} className="border-b">
+                <td>{i + 1}</td>
+                <td>{d.ficha?.empresa}</td>
+                <td>{d.ficha?.nombre}</td>
+                <td>{d.ficha?.sexo}</td>
+                <td>{d.ficha?.cargo}</td>
               {tipo === "formaA" && (
                 <>
                   <td>{d.resultadoFormaA?.total?.transformado ?? ""}</td>
@@ -166,9 +169,10 @@ export default function TablaIndividual({ datos, tipo }: { datos: ResultRow[]; t
                   <td>{d.resultadoEstres?.nivel ?? ""}</td>
                 </>
               )}
-              <td>{d.fecha ? new Date(d.fecha).toLocaleString() : ""}</td>
+              <td>{fecha}</td>
             </tr>
-          ))}
+            );
+          })}
           <tr className="font-semibold bg-gray-100">
             <td></td>
             <td>Promedio</td>
