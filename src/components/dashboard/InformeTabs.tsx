@@ -22,7 +22,7 @@ import CartaCustodiaSST from "@/components/CartaCustodiaSST";
 import TablaInformativa from "@/components/TablaInformativa";
 import TablaConstructosVariables from "@/components/TablaConstructosVariables";
 import TablaDimensionesExtralaborales from "@/components/TablaDimensionesExtralaborales";
-import TablaSintomasEstres from "@/components/TablaSintomasEstres";
+import TablaTiposRiesgo from "@/components/TablaTiposRiesgo";
 import { esquemaFormaA } from "@/data/esquemaFormaA";
 import { esquemaFormaB } from "@/data/esquemaFormaB";
 import { shortNivelRiesgo } from "@/utils/shortNivelRiesgo";
@@ -3047,7 +3047,7 @@ export default function InformeTabs({
               isOpen={activeItem === "como-interpretar-niveles-riesgo"}
               onToggle={() => handleToggle("como-interpretar-niveles-riesgo")}
             >
-              <p>Contenido pendiente</p>
+              <TablaTiposRiesgo />
             </AccordionItem>
           </div>
         </TabsContent>
