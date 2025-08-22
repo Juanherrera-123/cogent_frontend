@@ -2864,6 +2864,62 @@ export default function InformeTabs({
                 exportMode={false}
               />
             </AccordionItem>
+            <AccordionItem
+              id="efectos-riesgo-psicosocial-cont"
+              title="Cont. Efectos de los factores de riesgo psicosocial"
+            >
+              <TablaInformativa
+                headers={[
+                  "Efectos de los factores de riesgo psicosocial",
+                  "Acciones de promoción e intervención",
+                ]}
+                rows={[
+                  {
+                    dimension: "Estrés / estrés agudo",
+                    acciones: [
+                      "Fomento de estilos de vida saludables.",
+                      "Manejo eficaz del tiempo.",
+                      "Mejoramiento participativo de las condiciones psicosociales de trabajo.",
+                      "Rol de los jefes en la prevención y manejo del estrés.",
+                      "Entrenamiento en el manejo de la ansiedad y el estrés.",
+                      "Promoción de la salud mental y prevención del trastorno mental en el trabajo.",
+                      "Atención en crisis y primeros auxilios psicológicos.",
+                      "Desarrollo y fortalecimiento de la resiliencia en el ambiente laboral.",
+                    ],
+                  },
+                  {
+                    dimension: "Síndrome de agotamiento laboral o burnout",
+                    acciones: [
+                      "Fomento de estilos de vida saludables.",
+                      "Técnicas para la desensibilización sistemática ante situaciones de ansiedad.",
+                      "Manejo eficaz del tiempo.",
+                      "Mejoramiento participativo de las condiciones psicosociales de trabajo.",
+                      "Promoción de la salud mental y prevención del trastorno mental en el trabajo.",
+                      "Desarrollo y fortalecimiento de la resiliencia en el ambiente laboral.",
+                    ],
+                  },
+                  {
+                    dimension: "Trastorno de estrés postraumático",
+                    acciones: [
+                      "Fomento de estilos de vida saludables.",
+                      "Técnicas para la desensibilización sistemática ante situaciones de ansiedad.",
+                      "Mejoramiento participativo de las condiciones psicosociales de trabajo.",
+                      "Promoción de la salud mental y prevención del trastorno mental en el trabajo.",
+                    ],
+                  },
+                  {
+                    dimension: "Duelo",
+                    acciones: [
+                      "Fomento de estilos de vida saludables.",
+                      "Técnicas para la desensibilización sistemática ante situaciones de ansiedad.",
+                      "Atención en crisis y primeros auxilios psicológicos.",
+                      "Desarrollo y fortalecimiento de la resiliencia en el ambiente laboral.",
+                    ],
+                  },
+                ]}
+                exportMode={false}
+              />
+            </AccordionItem>
           </div>
           <div className="mt-6 space-y-2 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
             <p className="font-semibold">Recomendaciones:</p>
