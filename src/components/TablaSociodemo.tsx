@@ -39,7 +39,7 @@ export default function TablaSociodemo({ payload, exportMode = false }: Props) {
   }
 
   return (
-    <div className="rounded-2xl shadow-sm bg-white p-4 md:p-6 font-montserrat text-[#172349]">
+    <div className="rounded-2xl shadow-sm bg-white p-4 md:p-6 font-montserrat text-[#172349] avoid-break">
       <div className="mb-4">
         <h3 className="text-lg font-semibold">Ficha sociodemográfica</h3>
         <p className="text-sm text-gray-500">N = {total}</p>
@@ -53,7 +53,7 @@ export default function TablaSociodemo({ payload, exportMode = false }: Props) {
               <div className="inline-block bg-blue-50 text-blue-700 text-xs font-semibold uppercase rounded-xl px-3 py-1 mb-2">
                 {titulo}
               </div>
-              <table className="w-full text-sm">
+              <table className="w-full text-sm avoid-break">
                 <thead className="hidden lg:table-header-group text-gray-500">
                   <tr className="border-b">
                     <th className="text-left py-2">Detalle</th>
@@ -67,7 +67,7 @@ export default function TablaSociodemo({ payload, exportMode = false }: Props) {
                     const porcentaje = formatter.format(percent);
                     const rowClass = `border-b ${!exportMode ? "hover:bg-slate-50" : ""}`;
                     return (
-                      <tr key={label} className={rowClass}>
+                      <tr key={label} className={`${rowClass} avoid-break`}>
                         <td className="py-2">{label}</td>
                         <td className="py-2 text-right align-top">
                           <span className="hidden lg:inline">{total > 0 ? count : "—"}</span>

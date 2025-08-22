@@ -10,11 +10,11 @@ interface TablaInformativaProps {
 }
 
 export default function TablaInformativa({ headers, rows, exportMode = false }: TablaInformativaProps) {
-  const containerClasses = `rounded-2xl bg-white ${exportMode ? "shadow-none" : "shadow-sm"} p-4 md:p-6 font-montserrat text-text-main`;
+  const containerClasses = `rounded-2xl bg-white ${exportMode ? "shadow-none" : "shadow-sm"} p-4 md:p-6 font-montserrat text-text-main avoid-break`;
 
   return (
     <div className={containerClasses}>
-      <table className="w-full text-left border-collapse">
+      <table className="w-full text-left border-collapse avoid-break">
         <thead className="bg-gradient-to-r from-primary-gradient-from to-primary-gradient-to text-white font-semibold">
           <tr>
             <th scope="col" className="py-2 px-3">{headers[0]}</th>
@@ -25,7 +25,7 @@ export default function TablaInformativa({ headers, rows, exportMode = false }: 
           {rows.map((row) => (
             <tr
               key={row.dimension}
-              className={`block md:table-row border-b border-slate-100 odd:bg-primary-light even:bg-white text-text-main ${!exportMode ? "hover:bg-primary-light" : ""}`}
+              className={`block md:table-row border-b border-slate-100 odd:bg-primary-light even:bg-white text-text-main ${!exportMode ? "hover:bg-primary-light" : ""} avoid-break`}
             >
               <th
                 scope="row"

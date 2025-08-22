@@ -111,6 +111,28 @@
 }
 
 
-@page { size: A4; margin: 24pt; }
+/* Tamaño y márgenes del PDF */
+@page { size: A4; margin: 12mm; }
+
+/* Modo impresión */
+@media print {
+  html, body { height: auto !important; }
+
+  /* Quitar sombras/bordes ruidosos y sticky/fixed */
+  .shadow, .shadow-sm, .shadow-md { box-shadow: none !important; }
+  [class*="sticky"], [style*="position: sticky"] { position: static !important; top: auto !important; }
+  [class*="fixed"] { position: static !important; }
+
+  /* Abrir paneles de acordeón y evitar recortes */
+  [id^="panel-"] { height: auto !important; overflow: visible !important; }
+
+  /* Reglas anti-corte */
+  .avoid-break { break-inside: avoid-page; page-break-inside: avoid; }
+  table { break-inside: auto; }
+  tr, th, td { break-inside: avoid; page-break-inside: avoid; }
+
+  /* Reset visual para PDF limpio */
+  .print-reset { box-shadow: none !important; border-color: #e5e7eb !important; }
+}
+
 .page-break { page-break-before: always; }
-h1, h2, h3, ul, li, table { page-break-inside: avoid; }
