@@ -3031,7 +3031,7 @@ export default function InformeTabs({
               isOpen={activeItem === "tabla-cuestionario-estres"}
               onToggle={() => handleToggle("tabla-cuestionario-estres")}
             >
-              <p>Contenido pendiente</p>
+              <TablaSintomasEstres />
             </AccordionItem>
             <AccordionItem
               id="como-interpretar-graficas"
