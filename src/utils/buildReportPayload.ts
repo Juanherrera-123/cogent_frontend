@@ -1,6 +1,14 @@
 import { ReportPayload, EmpresaInfo, Sociodemo } from "@/types/report";
 import { FlatResult } from "@/utils/gatherResults";
 
+// Field names used to detect the presence of results for each questionnaire.
+const TOTAL_FORMA_A =
+  "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial intralaboral - Forma A (puntaje transformado)" as keyof FlatResult;
+const TOTAL_FORMA_B =
+  "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial intralaboral - Forma B (puntaje transformado)" as keyof FlatResult;
+const TOTAL_EXTRALABORAL =
+  "PUNTAJE TOTAL del cuestionario de factores de riesgo psicosocial extralaboral (puntaje transformado)" as keyof FlatResult;
+
 function distribucion<T extends keyof FlatResult>(
   data: FlatResult[],
   key: T
@@ -36,6 +44,12 @@ function mapIndicadores(
   return out;
 }
 
+/**
+ * Construye la estructura de datos consumida por los reportes.
+ * La cantidad de respuestas por formulario se calcula verificando la
+ * presencia de los campos totales de cada cuestionario dentro de cada fila
+ * plana.
+ */
 export function buildReportPayload(params: {
   empresa: EmpresaInfo;
   flat: FlatResult[];
@@ -76,10 +90,11 @@ export function buildReportPayload(params: {
     fechaInformeISO: new Date().toISOString(),
     muestra: {
       total: flat.length,
-      // TODO: si FlatResult trae banderas por formulario, reemplazar los true por las condiciones reales
-      formaA: flat.filter(() => true).length,
-      formaB: flat.filter(() => true).length,
-      extralaboral: flat.filter(() => true).length,
+      formaA: flat.filter((r) => r[TOTAL_FORMA_A] !== undefined && r[TOTAL_FORMA_A] !== "").length,
+      formaB: flat.filter((r) => r[TOTAL_FORMA_B] !== undefined && r[TOTAL_FORMA_B] !== "").length,
+      extralaboral: flat.filter(
+        (r) => r[TOTAL_EXTRALABORAL] !== undefined && r[TOTAL_EXTRALABORAL] !== ""
+      ).length,
     },
     global: {
       formaA:
