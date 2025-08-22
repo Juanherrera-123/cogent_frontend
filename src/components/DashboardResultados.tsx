@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 
-import * as XLSX from "xlsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { gatherFlatResults, FlatResult } from "@/utils/gatherResults";
-import { exportElementToPDF } from "@/utils/pdfExport";
 import { shortNivelRiesgo } from "@/utils/shortNivelRiesgo";
 import { usePdfExport } from "@/hooks/usePdfExport";
 import { dimensionesExtralaboral } from "@/data/esquemaExtralaboral";
@@ -23,10 +21,8 @@ import FormaTabs from "@/components/dashboard/FormaTabs";
 import InformeTabs from "@/components/dashboard/InformeTabs";
 import type { IntroduccionData } from "@/report/introduccion";
 import LogoCogent from "/logo_forma.png";
-import { FileDown, FileText, Home as HomeIcon } from "lucide-react";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
-import { calcularFormaA } from "@/utils/calcularFormaA";
 import { buildReportPayload } from "@/utils/buildReportPayload";
 import { ReportPayload } from "@/types/report";
 import type { ReportOptions } from "@/types/report";
@@ -35,6 +31,12 @@ import { buildNarrativaContext } from "@/utils/narrativeMapper";
 import { getNarrativaSociodemo } from "@/services/narrativa";
 import { getRecomendacionSociodemo } from "@/services/recomendacionSociodemo";
 import type { RiskDistributionData } from "@/components/RiskDistributionChart";
+import useDashboardData from "@/components/dashboard/useDashboardData";
+import DashboardFilters from "@/components/dashboard/DashboardFilters";
+import ExtralaboralSection from "@/components/dashboard/ExtralaboralSection";
+import EstresSection from "@/components/dashboard/EstresSection";
+import useDashboardExport from "@/components/dashboard/useDashboardExport";
+import ExportActions from "@/components/dashboard/ExportActions";
 
 const nivelesRiesgo = [
   "Riesgo muy bajo",
@@ -319,17 +321,28 @@ export default function DashboardResultados({
   onEditarEmpresa,
   onBack
 }: Props) {
-  const [datos, setDatos] = useState<(ResultRow & { id: string })[]>([]);
-  const [empresaSeleccionada, setEmpresaSeleccionada] = useState(empresaFiltro || "todas");
-  const [empresaEliminar, setEmpresaEliminar] = useState("todas");
+  const {
+    datos,
+    setDatos,
+    empresaSeleccionada,
+    setEmpresaSeleccionada,
+    empresaEliminar,
+    setEmpresaEliminar,
+    empresasResultados,
+    datosMostrados,
+    datosEliminar,
+    datosA,
+    datosB,
+    datosExtra,
+    datosEstres,
+  } = useDashboardData(empresaFiltro);
+
   const [tab, setTab] = useState("general");
   const [tabGeneral, setTabGeneral] = useState("resumen");
   const [categoriaFicha, setCategoriaFicha] = useState<string>(
     categoriasFicha[0].key
   );
   const [tabIntra, setTabIntra] = useState("global"); // Para sub-tabs de formaA/B
-
-  const [tabExtra, setTabExtra] = useState("global");
 
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
   const [seleccionados, setSeleccionados] = useState<number[]>([]);
@@ -342,55 +355,7 @@ export default function DashboardResultados({
   const tabPill =
     "px-5 py-2 rounded-full font-semibold border border-[#B2E2FF] text-[#172349] shrink-0 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#38BDF8] data-[state=active]:to-[#265FF2]";
   
-  useEffect(() => {
-    const cargar = async () => {
-      const snap = await getDocs(collection(db, "resultadosCogent"));
-      const arr = snap.docs.map((d) => {
-        const data = { id: d.id, ...(d.data() as ResultRow) };
-        if (
-          data.tipo === "A" &&
-          data.respuestas?.bloques &&
-          !data.resultadoFormaA?.dimensiones?.["Retroalimentación del desempeño"]
-        ) {
-          data.resultadoFormaA = calcularFormaA(data.respuestas.bloques);
-        }
-        return data;
-      });
-      setDatos(arr);
-    };
-    cargar();
-  }, []);
-
-  // Empresas únicas (para filtro manual, psicóloga)
-  const empresasResultados = Array.from(new Set(datos.map((d) => d.ficha?.empresa || "Sin empresa")));
-
-  // Aplica el filtro según el rol
-  const datosMostrados = datos.filter(
-    (d) =>
-      (empresaSeleccionada === "todas" || d.ficha?.empresa === empresaSeleccionada)
-  );
-
-  const datosEliminar = useMemo(
-    () =>
-      datos.filter(
-        (d) => empresaEliminar === "todas" || d.ficha?.empresa === empresaEliminar
-      ),
-    [datos, empresaEliminar]
-  );
-
   // ---- Agrupación por tipo de resultado ----
-  const datosA = datosMostrados.filter(
-    (d) => d.tipo === "A" && d.resultadoFormaA && d.resultadoFormaA.valido !== false
-  );
-  const datosB = datosMostrados.filter(
-    (d) => d.tipo === "B" && d.resultadoFormaB && d.resultadoFormaB.valido !== false
-  );
-  const datosExtra = datosMostrados.filter(
-    (d) => d.resultadoExtralaboral && d.resultadoExtralaboral.valido !== false
-  );
-  const datosEstres = datosMostrados.filter(
-    (d) => d.resultadoEstres && d.resultadoEstres.valido !== false
-  );
 
   const levelsOrder = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto"];
   const liderazgoDominioData: RiskDistributionData = useMemo(() => {
@@ -2655,6 +2620,18 @@ export default function DashboardResultados({
     ciudad: ciudadInforme,
   };
 
+  const { handleExportar, handleExportPDF } = useDashboardExport({
+    tab,
+    datosMostrados,
+    datosA,
+    datosB,
+    datosExtra,
+    datosEstres,
+    datosInforme,
+    allHeaders,
+    containerRef,
+  });
+
   const narrativaCtx = buildNarrativaContext(reportPayload);
   const narrativaSociodemo = getNarrativaSociodemo(narrativaCtx);
   const recomendacionesSociodemo = getRecomendacionSociodemo(reportPayload.sociodemo);
@@ -2730,73 +2707,6 @@ export default function DashboardResultados({
     await exportNow(fn);
   }
 
-  // ---- Exportar a Excel ----
-  const handleExportar = () => {
-    let datosExportar: ResultRow[] | FlatResult[] = [];
-    if (tab === "general") datosExportar = datosMostrados;
-    else if (tab === "formaA") datosExportar = datosA;
-    else if (tab === "formaB") datosExportar = datosB;
-    else if (tab === "extralaboral") datosExportar = datosExtra;
-    else if (tab === "estres") datosExportar = datosEstres;
-    else if (tab === "informe" || tab === "informeCompleto")
-      datosExportar = datosInforme;
-
-      const filas =
-        tab === "informe" || tab === "informeCompleto"
-          ? datosInforme
-          : (datosExportar as ResultRow[]).map((d, i) => {
-              const row = d as ResultRow;
-              return {
-                Nro: i + 1,
-                Empresa: row.ficha?.empresa || "",
-                Nombre: row.ficha?.nombre || "",
-                Sexo: row.ficha?.sexo || "",
-                Cargo: row.ficha?.cargo || "",
-            ...(tab === "formaA" && {
-              "Puntaje Forma A": d.resultadoFormaA?.total?.transformado ?? "",
-              "Nivel Forma A": d.resultadoFormaA?.total?.nivel ?? "",
-            }),
-            ...(tab === "formaB" && {
-              "Puntaje Forma B":
-                d.resultadoFormaB?.total?.transformado ??
-                d.resultadoFormaB?.puntajeTransformadoTotal ??
-                d.resultadoFormaB?.puntajeTransformado ??
-                d.resultadoFormaB?.puntajeTotalTransformado ??
-                "",
-              "Nivel Forma B":
-                d.resultadoFormaB?.total?.nivel ??
-                d.resultadoFormaB?.nivelTotal ??
-                d.resultadoFormaB?.nivel ??
-                "",
-            }),
-            ...(tab === "extralaboral" && {
-              "Puntaje Extralaboral":
-                d.resultadoExtralaboral?.puntajeTransformadoTotal ?? "",
-              "Nivel Extralaboral": d.resultadoExtralaboral?.nivelGlobal ?? "",
-            }),
-            ...(tab === "estres" && {
-              "Puntaje Estrés": d.resultadoEstres?.puntajeTransformado ?? "",
-              "Nivel Estrés": d.resultadoEstres?.nivel ?? "",
-            }),
-              Fecha: row.fecha ? new Date(row.fecha).toLocaleString() : "",
-              };
-            });
-
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(filas, { header: allHeaders });
-    XLSX.utils.book_append_sheet(wb, ws, "Resultados");
-    XLSX.writeFile(wb, "resultados.xlsx");
-  };
-
-  // ---- Exportar a PDF ----
-  const handleExportPDF = async () => {
-    if (!containerRef.current) return;
-    const active = containerRef.current.querySelector('[data-state="active"]');
-    if (active) {
-      await exportElementToPDF(active as HTMLElement, "resultados.pdf");
-    }
-  };
-
   const toggleSeleccion = (index: number) => {
     setSeleccionados((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
@@ -2858,20 +2768,12 @@ export default function DashboardResultados({
 
         {/* Filtro empresa, solo para psicóloga */}
         {!empresaFiltro && (
-          <div className="flex gap-2 items-center mb-2">
-          <label className="font-semibold mr-2">Filtrar por empresa:</label>
-          <select
-            value={empresaSeleccionada}
-            onChange={(e) => setEmpresaSeleccionada(e.target.value)}
-            className="rounded-xl border border-[#B2E2FF] p-2 text-[#265FF2] font-semibold"
-          >
-            <option value="todas">Todas</option>
-            {empresasResultados.map((e, idx) => (
-              <option key={idx} value={e}>{e}</option>
-            ))}
-          </select>
-        </div>
-      )}
+          <DashboardFilters
+            empresaSeleccionada={empresaSeleccionada}
+            setEmpresaSeleccionada={setEmpresaSeleccionada}
+            empresasResultados={empresasResultados}
+          />
+        )}
 
       {/* Selector tipo de gráfico */}
       <div className="flex gap-2 items-center mb-4">
@@ -2980,58 +2882,23 @@ export default function DashboardResultados({
 
         {/* ---- EXTRALABORAL ---- */}
         <TabsContent value="extralaboral">
-          <Tabs value={tabExtra} onValueChange={setTabExtra} className="w-full">
-
-            <TabsList className="mb-6 py-2 px-4 scroll-pl-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
-
-              <TabsTrigger className={tabPill} value="global">Global</TabsTrigger>
-              <TabsTrigger className={tabPill} value="dimensiones">Por Dimensión</TabsTrigger>
-            </TabsList>
-            <TabsContent value="global">
-              {datosExtra.length === 0
-                ? <div className="text-[var(--gray-medium)] py-4">No hay resultados Extralaborales.</div>
-                : (
-                  <>
-                    <GraficaBarraSimple resumen={resumenExtra} titulo="Niveles Extralaborales" chartType={chartType} />
-                    {!soloGenerales && <TablaIndividual datos={datosExtra} tipo="extralaboral" />}
-                  </>
-                )
-              }
-            </TabsContent>
-            <TabsContent value="dimensiones">
-              {datosExtra.length === 0
-                ? <div className="text-[var(--gray-medium)] py-4">No hay datos para dimensiones.</div>
-                : (
-                  <>
-                    <GraficaBarra
-                      resumen={promediosDimensionesExtra}
-                      titulo="Promedio de Puntaje Transformado por Dimensión"
-                      chartType={chartType}
-                    />
-                    {!soloGenerales && (
-                      <TablaDimensiones
-                        datos={datosExtra}
-                        dimensiones={dimensionesExtra}
-                        keyResultado="resultadoExtralaboral"
-                      />
-                    )}
-                  </>
-                )}
-            </TabsContent>
-          </Tabs>
+          <ExtralaboralSection
+            datosExtra={datosExtra}
+            resumenExtra={resumenExtra}
+            promediosDimensionesExtra={promediosDimensionesExtra}
+            chartType={chartType}
+            soloGenerales={soloGenerales}
+          />
         </TabsContent>
 
         {/* ---- ESTRÉS ---- */}
         <TabsContent value="estres">
-          {datosEstres.length === 0
-            ? <div className="text-[var(--gray-medium)] py-4">No hay resultados de Estrés.</div>
-            : (
-              <>
-                <GraficaBarraSimple resumen={resumenEstres} titulo="Niveles de Estrés" chartType={chartType} />
-                {!soloGenerales && <TablaIndividual datos={datosEstres} tipo="estres" />}
-              </>
-            )
-          }
+          <EstresSection
+            datosEstres={datosEstres}
+            resumenEstres={resumenEstres}
+            chartType={chartType}
+            soloGenerales={soloGenerales}
+          />
         </TabsContent>
         {/* ---- INFORME COMPLETO ---- */}
         {rol === "psicologa" && (
@@ -3278,33 +3145,13 @@ export default function DashboardResultados({
       </Tabs>
 
       {/* Botones de acciones */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-4">
-        {onBack && (
-          <button
-            onClick={onBack}
-            className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-[#172349] font-bold rounded-2xl hover:bg-[#E5EAF6]"
-          >
-            <HomeIcon size={20} /> Volver al inicio
-          </button>
-        )}
-        {rol === "psicologa" &&
-          (tab === "informe" || tab === "informeCompleto") && (
-            <div className="flex gap-2">
-              <button
-                onClick={handleExportar}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90"
-              >
-                <FileDown size={20} /> Descargar Excel
-              </button>
-              <button
-                onClick={handleExportPDF}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#265FF2] text-white font-bold rounded-2xl shadow-md hover:brightness-90"
-              >
-                <FileText size={20} /> Descargar PDF
-              </button>
-            </div>
-          )}
-      </div>
+      <ExportActions
+        onBack={onBack}
+        rol={rol}
+        tab={tab}
+        handleExportar={handleExportar}
+        handleExportPDF={handleExportPDF}
+      />
       </div>
     </div>
     );
