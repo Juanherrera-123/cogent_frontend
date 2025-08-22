@@ -333,45 +333,42 @@ export default function InformeTabs({
       totalA: factorEstresData.totalA || 0,
       totalB: factorEstresData.totalB || 0,
     });
-    const intralaboralTotalSentence = (() => {
-      const counts = intralaboralTotalData.countsA || {};
-      const total = intralaboralTotalData.totalA || 0;
-      let modal = intralaboralTotalData.levelsOrder[0] || "";
-      let max = counts[modal] ?? 0;
+    const intralaboralTotalSentenceAB = (() => {
+      const countsA = intralaboralTotalData.countsA || {};
+      const totalA = intralaboralTotalData.totalA || 0;
+      let modalA = intralaboralTotalData.levelsOrder[0] || "";
+      let maxA = countsA[modalA] ?? 0;
       for (const lvl of intralaboralTotalData.levelsOrder) {
-        const value = counts[lvl] ?? 0;
-        if (value > max) {
-          max = value;
-          modal = lvl;
+        const value = countsA[lvl] ?? 0;
+        if (value > maxA) {
+          maxA = value;
+          modalA = lvl;
         }
       }
-      const pct = total ? (max / total) * 100 : 0;
-      const pctStr =
-        pct.toLocaleString("es-CO", {
+      const pctA = totalA ? (maxA / totalA) * 100 : 0;
+      const pctStrA =
+        pctA.toLocaleString("es-CO", {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         }) + "%";
-      return `Esta gráfica refiere mayor incidencia en el riesgo "${modal}" para el "${pctStr}" de la población de la forma A.`;
-    })();
-    const intralaboralTotalSentenceB = (() => {
-      const counts = intralaboralTotalData.countsB || {};
-      const total = intralaboralTotalData.totalB || 0;
-      let modal = intralaboralTotalData.levelsOrder[0] || "";
-      let max = counts[modal] ?? 0;
+      const countsB = intralaboralTotalData.countsB || {};
+      const totalB = intralaboralTotalData.totalB || 0;
+      let modalB = intralaboralTotalData.levelsOrder[0] || "";
+      let maxB = countsB[modalB] ?? 0;
       for (const lvl of intralaboralTotalData.levelsOrder) {
-        const value = counts[lvl] ?? 0;
-        if (value > max) {
-          max = value;
-          modal = lvl;
+        const value = countsB[lvl] ?? 0;
+        if (value > maxB) {
+          maxB = value;
+          modalB = lvl;
         }
       }
-      const pct = total ? (max / total) * 100 : 0;
-      const pctStr =
-        pct.toLocaleString("es-CO", {
+      const pctB = totalB ? (maxB / totalB) * 100 : 0;
+      const pctStrB =
+        pctB.toLocaleString("es-CO", {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         }) + "%";
-      return `Esta gráfica refiere mayor incidencia en el riesgo "${modal}" para el "${pctStr}" de la población de la forma B.`;
+      return `Esta gráfica refiere mayor incidencia en el riesgo "${modalA}" para el "${pctStrA}" de la población de la forma A y mayor incidencia en el riesgo "${modalB}" para el "${pctStrB}" de la forma B.`;
     })();
 
     type Stage = "primario" | "secundario" | "terciario";
@@ -807,9 +804,6 @@ export default function InformeTabs({
         <TabsTrigger className={tabClass} value="graficas-estres">
           Gráficas Estrés
         </TabsTrigger>
-        <TabsTrigger className={tabClass} value="graficas-total">
-          Gráficas Total
-        </TabsTrigger>
         <TabsTrigger className={tabClass} value="estrategias">
           Estrategias
         </TabsTrigger>
@@ -838,6 +832,23 @@ export default function InformeTabs({
           <TablaSociodemo payload={payload} />
         </TabsContent>
         <TabsContent value="graficas-intralaboral">
+        <RiskDistributionChart
+          title="Intralaboral Forma A y Forma B"
+          data={intralaboralTotalData}
+        />
+        <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
+          {intralaboralTotalSentenceAB}
+        </p>
+        <div className="mt-4 flex justify-center gap-6">
+          <div className="flex flex-col items-center">
+            <p className="font-semibold">Forma A</p>
+            <SemaphoreDial stage={stageIntralaboralTotalA} />
+          </div>
+          <div className="flex flex-col items-center">
+            <p className="font-semibold">Forma B</p>
+            <SemaphoreDial stage={stageIntralaboralTotalB} />
+          </div>
+        </div>
         <RiskDistributionChart
           title="DOMINIO LIDERAZGO Y RELACIONES SOCIALES EN EL TRABAJO FORMA A Y FORMA B"
           data={liderazgoDominioData}
@@ -2613,45 +2624,6 @@ export default function InformeTabs({
                   El dominio evaluado se encuentra en un nivel óptimo, sin presencia significativa de riesgo. No se requieren acciones adicionales ni planes de mejora inmediatos; sin embargo, es importante continuar fortaleciendo las prácticas actuales para mantener estos resultados. ¡Felicitaciones por destacar en esta área y seguir siendo un ejemplo de excelencia!
                 </p>
               )}
-            </div>
-          </div>
-        </TabsContent>
-        <TabsContent value="graficas-total">
-          <p className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
-            Aquí se mostrarán las gráficas totales.
-          </p>
-          <RiskDistributionChart
-            title="Intralaboral forma A"
-            data={intralaboralTotalData}
-          />
-          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
-            {intralaboralTotalSentence}
-          </p>
-          <div className="mt-4 flex justify-center gap-6">
-            <div className="flex flex-col items-center">
-              <p className="font-semibold">Forma A</p>
-              <SemaphoreDial stage={stageIntralaboralTotalA} />
-            </div>
-            <div className="flex flex-col items-center">
-              <p className="font-semibold">Forma B</p>
-              <SemaphoreDial stage={stageIntralaboralTotalB} />
-            </div>
-          </div>
-          <RiskDistributionChart
-            title="Intralaboral forma B"
-            data={intralaboralTotalData}
-          />
-          <p className="mt-4 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
-            {intralaboralTotalSentenceB}
-          </p>
-          <div className="mt-4 flex justify-center gap-6">
-            <div className="flex flex-col items-center">
-              <p className="font-semibold">Forma A</p>
-              <SemaphoreDial stage={stageIntralaboralTotalA} />
-            </div>
-            <div className="flex flex-col items-center">
-              <p className="font-semibold">Forma B</p>
-              <SemaphoreDial stage={stageIntralaboralTotalB} />
             </div>
           </div>
         </TabsContent>
