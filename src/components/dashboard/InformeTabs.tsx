@@ -20,6 +20,7 @@ import CuadroAreasDeMejora from "@/components/CuadroAreasDeMejora";
 import AccordionItem from "@/components/AccordionItem";
 import CartaCustodiaSST from "@/components/CartaCustodiaSST";
 import TablaInformativa from "@/components/TablaInformativa";
+import TablaDimensionesExtralaborales from "@/components/TablaDimensionesExtralaborales";
 import { esquemaFormaA } from "@/data/esquemaFormaA";
 import { esquemaFormaB } from "@/data/esquemaFormaB";
 import { shortNivelRiesgo } from "@/utils/shortNivelRiesgo";
@@ -3020,7 +3021,7 @@ export default function InformeTabs({
                 handleToggle("tabla-dimensiones-factores-extralaborales")
               }
             >
-              <p>Contenido pendiente</p>
+              <TablaDimensionesExtralaborales />
             </AccordionItem>
             <AccordionItem
               id="tabla-cuestionario-estres"
