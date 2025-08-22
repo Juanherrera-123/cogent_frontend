@@ -2723,12 +2723,6 @@ export default function DashboardResultados({
     hallazgosClave: hallazgos,
   });
 
-  useEffect(() => {
-    console.log("ReportPayload", reportPayload);
-    console.log("Recomendaciones →", recomendaciones);
-    console.log("Conclusiones →", conclusiones);
-  }, [reportPayload, recomendaciones, conclusiones]);
-
   async function onGenerarInformePDF() {
     const fn = `Informe_${reportPayload.empresa.nombre}_${new Date(
       reportPayload.fechaInformeISO
