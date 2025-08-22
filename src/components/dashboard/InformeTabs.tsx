@@ -21,6 +21,7 @@ import AccordionItem from "@/components/AccordionItem";
 import CartaCustodiaSST from "@/components/CartaCustodiaSST";
 import TablaInformativa from "@/components/TablaInformativa";
 import TablaConstructosVariables from "@/components/TablaConstructosVariables";
+import TablaDimensionesExtralaborales from "@/components/TablaDimensionesExtralaborales";
 import { esquemaFormaA } from "@/data/esquemaFormaA";
 import { esquemaFormaB } from "@/data/esquemaFormaB";
 import { shortNivelRiesgo } from "@/utils/shortNivelRiesgo";
