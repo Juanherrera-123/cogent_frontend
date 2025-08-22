@@ -813,6 +813,9 @@ export default function InformeTabs({
         <TabsTrigger className={tabClass} value="estrategias">
           Estrategias
         </TabsTrigger>
+        <TabsTrigger className={tabClass} value="anexos">
+          Anexos
+        </TabsTrigger>
       </TabsList>
         <TabsContent value="introduccion">
           <div className="text-[#313B4A] text-justify font-montserrat text-base leading-relaxed space-y-4">
@@ -3011,6 +3014,62 @@ export default function InformeTabs({
             </div>
             <p>Psicóloga Especialista En SST Licencia No. 823</p>
             <p>Cel 320-4006809</p>
+          </div>
+        </TabsContent>
+        <TabsContent value="anexos">
+          <div className="space-y-4">
+            <AccordionItem
+              id="custodia-historia-clinica"
+              title="Custodia de Historia Clinica"
+              isOpen={activeItem === "custodia-historia-clinica"}
+              onToggle={() => handleToggle("custodia-historia-clinica")}
+            >
+              <p>Contenido pendiente</p>
+            </AccordionItem>
+            <AccordionItem
+              id="tabla-condiciones-sociodemograficas"
+              title="Tabla Condiciones Sociodemograficas"
+              isOpen={activeItem === "tabla-condiciones-sociodemograficas"}
+              onToggle={() => handleToggle("tabla-condiciones-sociodemograficas")}
+            >
+              <p>Contenido pendiente</p>
+            </AccordionItem>
+            <AccordionItem
+              id="tabla-dimensiones-factores-extralaborales"
+              title="Tabla Dimensiones de los Factores Extralaborales"
+              isOpen={
+                activeItem === "tabla-dimensiones-factores-extralaborales"
+              }
+              onToggle={() =>
+                handleToggle("tabla-dimensiones-factores-extralaborales")
+              }
+            >
+              <p>Contenido pendiente</p>
+            </AccordionItem>
+            <AccordionItem
+              id="tabla-cuestionario-estres"
+              title="Tabla Cuestionario de Estres"
+              isOpen={activeItem === "tabla-cuestionario-estres"}
+              onToggle={() => handleToggle("tabla-cuestionario-estres")}
+            >
+              <p>Contenido pendiente</p>
+            </AccordionItem>
+            <AccordionItem
+              id="como-interpretar-graficas"
+              title="Como interpretar las graficas"
+              isOpen={activeItem === "como-interpretar-graficas"}
+              onToggle={() => handleToggle("como-interpretar-graficas")}
+            >
+              <p>Contenido pendiente</p>
+            </AccordionItem>
+            <AccordionItem
+              id="como-interpretar-niveles-riesgo"
+              title="Como interpretar los niveles de riesgo"
+              isOpen={activeItem === "como-interpretar-niveles-riesgo"}
+              onToggle={() => handleToggle("como-interpretar-niveles-riesgo")}
+            >
+              <p>Contenido pendiente</p>
+            </AccordionItem>
           </div>
         </TabsContent>
         </Tabs>
