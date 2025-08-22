@@ -16,6 +16,7 @@ import {
   calcularGlobalBExtrala,
 } from "../utils/calcularGlobalA";
 import removeUndefined from "../utils/removeUndefined";
+import { toast } from "../utils/toast";
 
 interface Params {
   ficha: FichaDatos | null;
@@ -84,7 +85,7 @@ export async function guardarResultados({
     await addDoc(collection(db, "resultadosCogent"), cleanData);
   } catch (err) {
     console.error("Error al guardar resultados", err);
-    alert("No se pudieron guardar los resultados");
+    toast("No se pudieron guardar los resultados");
   }
 
   return { resultadoForma, resultadoGlobal };

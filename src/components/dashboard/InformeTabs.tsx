@@ -2636,10 +2636,7 @@ export default function InformeTabs({
           </div>
         </TabsContent>
         <TabsContent value="estrategias">
-          <ResultadosGeneralesCards
-            items={generalItems}
-            onSelect={(item) => console.log(item)}
-          />
+          <ResultadosGeneralesCards items={generalItems} />
           <div className="mt-6 space-y-2">
             <p className="font-semibold">CONCLUSIONES:</p>
             <p>

@@ -10,6 +10,7 @@ import {
 import { db } from "../firebaseConfig";
 import { CredencialEmpresa } from "../types";
 import { demoCredencialesConst } from "../data/demoCredenciales";
+import { toast } from "../utils/toast";
 
 export default function useCredenciales() {
   const demoCredenciales: (CredencialEmpresa & { rol: string })[] = JSON.parse(
@@ -76,7 +77,7 @@ export default function useCredenciales() {
       return true;
     } catch (err) {
       console.error("Error al agregar empresa", err);
-      alert("No se pudo agregar la empresa");
+      toast("No se pudo agregar la empresa");
       return false;
     }
   };
@@ -90,7 +91,7 @@ export default function useCredenciales() {
       return true;
     } catch (err) {
       console.error("Error al eliminar empresa", err);
-      alert("No se pudo eliminar la empresa");
+      toast("No se pudo eliminar la empresa");
       return false;
     }
   };
@@ -119,7 +120,7 @@ export default function useCredenciales() {
       return true;
     } catch (err) {
       console.error("Error al editar empresa", err);
-      alert("No se pudo editar la empresa");
+      toast("No se pudo editar la empresa");
       return false;
     }
   };
