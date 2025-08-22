@@ -22,6 +22,7 @@ import CartaCustodiaSST from "@/components/CartaCustodiaSST";
 import TablaInformativa from "@/components/TablaInformativa";
 import TablaConstructosVariables from "@/components/TablaConstructosVariables";
 import TablaDimensionesExtralaborales from "@/components/TablaDimensionesExtralaborales";
+import TablaSintomasEstres from "@/components/TablaSintomasEstres";
 import TablaTiposRiesgo from "@/components/TablaTiposRiesgo";
 import { esquemaFormaA } from "@/data/esquemaFormaA";
 import { esquemaFormaB } from "@/data/esquemaFormaB";
