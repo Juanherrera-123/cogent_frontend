@@ -17,6 +17,8 @@ import ResultadosGeneralesCards, {
   type ResultadosGeneralesItem,
 } from "@/components/ResultadosGeneralesCards";
 import CuadroAreasDeMejora from "@/components/CuadroAreasDeMejora";
+import AccordionItem from "@/components/AccordionItem";
+import TablaInformativa from "@/components/TablaInformativa";
 import { esquemaFormaA } from "@/data/esquemaFormaA";
 import { esquemaFormaB } from "@/data/esquemaFormaB";
 import { shortNivelRiesgo } from "@/utils/shortNivelRiesgo";
@@ -2667,6 +2669,39 @@ export default function InformeTabs({
           </div>
           <div className="mt-6">
             <CuadroAreasDeMejora data={areasMejoraData} />
+          </div>
+          <div className="mt-6">
+            <AccordionItem
+              id="dominio-demandas-del-trabajo-cont"
+              title="Cont. Dominio demandas del trabajo"
+            >
+              <TablaInformativa
+                headers={[
+                  "Dimensión psicosocial",
+                  "Acciones de promoción e intervención",
+                ]}
+                rows={[
+                  {
+                    dimension: "Consistencia de rol",
+                    acciones: [
+                      "Inducción y reinducción.",
+                      "Claridad de rol como pilar del desempeño.",
+                      "Servicio de asistencia al trabajador.",
+                      "Mejoramiento participativo de las condiciones psicosociales de trabajo.",
+                    ],
+                  },
+                  {
+                    dimension: "Demandas de la jornada de trabajo",
+                    acciones: [
+                      "Gestión del trabajo por turnos.",
+                      "Gestión de las pausas en el trabajo.",
+                      "Mejoramiento participativo de las condiciones psicosociales de trabajo.",
+                    ],
+                  },
+                ]}
+                exportMode={false}
+              />
+            </AccordionItem>
           </div>
           <div className="mt-6 space-y-2 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
             <p className="font-semibold">Recomendaciones:</p>
