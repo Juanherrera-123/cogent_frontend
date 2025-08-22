@@ -2799,6 +2799,11 @@ export default function DashboardResultados({
         {!soloGenerales && (
           <TabsTrigger className={tabPill} value="empresas">Empresas</TabsTrigger>
         )}
+        {rol === "psicologa" && (
+          <TabsTrigger className={tabPill} value="informeCompleto">
+            Informe completo
+          </TabsTrigger>
+        )}
       </TabsList>
 
       <TabsList className="mb-6 py-2 px-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
@@ -2808,14 +2813,9 @@ export default function DashboardResultados({
         <TabsTrigger className={tabPill} value="extralaboral">Extralaboral</TabsTrigger>
         <TabsTrigger className={tabPill} value="estres">Estrés</TabsTrigger>
         {rol === "psicologa" && (
-          <>
-            <TabsTrigger className={tabPill} value="informeCompleto">
-              Informe completo
-            </TabsTrigger>
-            <TabsTrigger className={tabPill} value="informe">
-              Informe
-            </TabsTrigger>
-          </>
+          <TabsTrigger className={tabPill} value="informe">
+            Informe
+          </TabsTrigger>
         )}
       </TabsList>
 
