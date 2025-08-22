@@ -10,7 +10,12 @@ export function usePdfExport() {
   async function exportNow(filename: string) {
     setRendering(true);
     setProgress("Montando informe…");
-    await new Promise((r) => setTimeout(r, 350)); // dejar que React pinte
+    // Usamos un doble requestAnimationFrame para esperar al siguiente
+    // ciclo de pintado y confirmar que el DOM se actualizó tras los
+    // cambios de estado.
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(resolve))
+    );
     try {
       if (ref.current) {
         await exportElementToPDF(ref.current, filename, {
