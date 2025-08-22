@@ -18,6 +18,7 @@ import ResultadosGeneralesCards, {
 } from "@/components/ResultadosGeneralesCards";
 import CuadroAreasDeMejora from "@/components/CuadroAreasDeMejora";
 import AccordionItem from "@/components/AccordionItem";
+import CartaCustodiaSST from "@/components/CartaCustodiaSST";
 import TablaInformativa from "@/components/TablaInformativa";
 import { esquemaFormaA } from "@/data/esquemaFormaA";
 import { esquemaFormaB } from "@/data/esquemaFormaB";
@@ -2996,7 +2997,10 @@ export default function InformeTabs({
               isOpen={activeItem === "custodia-historia-clinica"}
               onToggle={() => handleToggle("custodia-historia-clinica")}
             >
-              <p>Contenido pendiente</p>
+              <CartaCustodiaSST
+                organization={payload.empresa.nombre}
+                workers={payload.muestra.total}
+              />
             </AccordionItem>
             <AccordionItem
               id="tabla-condiciones-sociodemograficas"
