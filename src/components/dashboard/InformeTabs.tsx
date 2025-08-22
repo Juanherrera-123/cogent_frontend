@@ -20,6 +20,7 @@ import CuadroAreasDeMejora from "@/components/CuadroAreasDeMejora";
 import AccordionItem from "@/components/AccordionItem";
 import CartaCustodiaSST from "@/components/CartaCustodiaSST";
 import TablaInformativa from "@/components/TablaInformativa";
+import TablaConstructosVariables from "@/components/TablaConstructosVariables";
 import { esquemaFormaA } from "@/data/esquemaFormaA";
 import { esquemaFormaB } from "@/data/esquemaFormaB";
 import { shortNivelRiesgo } from "@/utils/shortNivelRiesgo";
@@ -3008,7 +3009,7 @@ export default function InformeTabs({
               isOpen={activeItem === "tabla-condiciones-sociodemograficas"}
               onToggle={() => handleToggle("tabla-condiciones-sociodemograficas")}
             >
-              <p>Contenido pendiente</p>
+              <TablaConstructosVariables />
             </AccordionItem>
             <AccordionItem
               id="tabla-dimensiones-factores-extralaborales"
