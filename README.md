@@ -59,6 +59,16 @@ Run ESLint on the project files with:
 npm run lint
 ```
 
+## Testing
+
+This project includes a small test suite using Node's built-in test runner. To
+execute it, first compile the TypeScript sources and then run the tests:
+
+```bash
+npx tsc -p tsconfig.json --outDir dist_test
+node --test dist_test/utils/buildReportPayload.test.js
+```
+
 ## Project structure
 
 - `src/` - Application source code
