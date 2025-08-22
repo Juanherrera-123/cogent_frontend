@@ -45,7 +45,7 @@ export default function CuadroAreasDeMejora({
       return a.dimension.localeCompare(b.dimension);
     });
 
-  const containerClasses = `rounded-2xl bg-white ${exportMode ? "shadow-none" : "shadow-sm"} p-4 md:p-6 font-montserrat text-[#172349]`;
+  const containerClasses = `rounded-2xl bg-white ${exportMode ? "shadow-none" : "shadow-sm"} p-4 md:p-6 font-montserrat text-text-main`;
 
   if (filtered.length === 0) {
     return (
@@ -83,7 +83,7 @@ export default function CuadroAreasDeMejora({
   const renderDesktop = () => (
     <div className="hidden md:block">
       <table className="w-full border-collapse text-sm">
-        <thead>
+        <thead className="bg-gradient-to-r from-primary-gradient-from to-primary-gradient-to text-white font-semibold">
           <tr className="text-left">
             <th scope="col" className="py-2 px-3">Dominio</th>
             <th scope="col" className="py-2 px-3">Dimensión</th>
@@ -91,12 +91,12 @@ export default function CuadroAreasDeMejora({
             <th scope="col" className="py-2 px-3">Tipo de Intervención</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-text-main">
           {filtered.map((item, idx) => (
             <tr
               key={idx}
               onClick={() => onRowClick?.(item)}
-              className={`border-t ${!exportMode && onRowClick ? "cursor-pointer hover:bg-slate-50" : ""}`}
+              className={`border-t odd:bg-primary-light even:bg-white text-text-main ${!exportMode && onRowClick ? "cursor-pointer hover:bg-primary-light" : ""}`}
             >
               <td className="py-2 px-3">{item.dominio}</td>
               <th scope="row" className="py-2 px-3 text-left font-medium">
@@ -112,7 +112,7 @@ export default function CuadroAreasDeMejora({
   );
 
   const renderMobile = () => (
-    <div className="md:hidden divide-y">
+    <div className="md:hidden divide-y text-text-main">
       {filtered.map((item, idx) => {
         const levelChip = renderRiskCell(item);
         const intervention = INTERVENTION[item.nivelRiesgo as "Medio" | "Alto" | "Muy alto"];
@@ -120,11 +120,11 @@ export default function CuadroAreasDeMejora({
           <div
             key={idx}
             onClick={() => onRowClick?.(item)}
-            className={`flex items-center justify-between py-3 ${!exportMode && onRowClick ? "cursor-pointer hover:bg-slate-50" : ""}`}
+            className={`flex items-center justify-between py-3 odd:bg-primary-light even:bg-white text-text-main ${!exportMode && onRowClick ? "cursor-pointer hover:bg-primary-light" : ""}`}
           >
             <div className="flex flex-col">
               <span className="font-semibold">{item.dimension}</span>
-              <span className="text-slate-500 text-sm">{item.dominio}</span>
+              <span className="text-text-main text-sm">{item.dominio}</span>
             </div>
             <div className="flex gap-2 items-center">
               {levelChip}
