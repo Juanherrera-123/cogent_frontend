@@ -2670,7 +2670,7 @@ export default function InformeTabs({
           <div className="mt-6">
             <CuadroAreasDeMejora data={areasMejoraData} />
           </div>
-          <div className="mt-6">
+          <div className="mt-6 space-y-4">
             <AccordionItem
               id="dominio-demandas-del-trabajo-cont"
               title="Cont. Dominio demandas del trabajo"
@@ -2696,6 +2696,40 @@ export default function InformeTabs({
                       "Gestión del trabajo por turnos.",
                       "Gestión de las pausas en el trabajo.",
                       "Mejoramiento participativo de las condiciones psicosociales de trabajo.",
+                    ],
+                  },
+                ]}
+                exportMode={false}
+              />
+            </AccordionItem>
+            <AccordionItem
+              id="dominio-recompensas-cont"
+              title="Cont. Dominio recompensas"
+            >
+              <TablaInformativa
+                headers={[
+                  "Dimensión psicosocial",
+                  "Acciones de promoción e intervención",
+                ]}
+                rows={[
+                  {
+                    dimension:
+                      "Recompensas derivadas de la pertenencia a la organización y del trabajo que se realiza",
+                    acciones: [
+                      "Inducción y reinducción.",
+                      "Aprovechamiento integral de habilidades y destrezas individuales.",
+                      "Fomento de la calidad de las relaciones familiares.",
+                    ],
+                  },
+                  {
+                    dimension: "Reconocimiento y compensación",
+                    acciones: [
+                      "Construcción del ajuste persona – trabajo.",
+                      "Seguimiento y retroalimentación de la gestión.",
+                      "Servicio de asistencia al trabajador.",
+                      "Información sobre temas de salud, pensión, vivienda, educación, finanzas familiares y cajas de compensación familiar.",
+                      "Fomento de la calidad de las relaciones familiares.",
+                      "Fomento de actividades educativas, deportivas, recreativas y culturales.",
                     ],
                   },
                 ]}
