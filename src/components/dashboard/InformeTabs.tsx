@@ -3021,7 +3021,7 @@ export default function InformeTabs({
                 handleToggle("tabla-dimensiones-factores-extralaborales")
               }
             >
-              <p>Contenido pendiente</p>
+              <TablaDimensionesExtralaborales />
             </AccordionItem>
             <AccordionItem
               id="tabla-cuestionario-estres"
