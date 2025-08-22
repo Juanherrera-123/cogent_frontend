@@ -16,15 +16,15 @@ export default function AccordionItem({
   isOpen,
   onToggle,
 }: AccordionItemProps) {
-  const contentId = `${id}-content`;
+  const panelId = `panel-${id}`;
 
   return (
-    <div className="rounded-2xl border border-slate-200 shadow-sm bg-white">
+    <div className="rounded-2xl border border-slate-200 shadow-sm bg-white avoid-break">
       <button
         id={id}
         type="button"
         aria-expanded={isOpen}
-        aria-controls={contentId}
+        aria-controls={panelId}
         onClick={onToggle}
         className="w-full flex items-center justify-between px-4 py-3 text-left font-semibold text-[#313B4A]"
       >
@@ -35,10 +35,11 @@ export default function AccordionItem({
         />
       </button>
       <div
-        id={contentId}
+        id={panelId}
         role="region"
         aria-labelledby={id}
-        className={isOpen ? "block" : "hidden"}
+        className="overflow-hidden transition-[height] duration-300 ease-in-out print:!block avoid-break"
+        style={{ height: isOpen ? 'auto' : 0 }}
       >
         <div className="px-4 pb-4">{children}</div>
       </div>

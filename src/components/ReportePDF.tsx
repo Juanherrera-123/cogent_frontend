@@ -71,10 +71,14 @@ const ReportePDF = forwardRef<HTMLDivElement, Props>(
     );
 
     return (
-      <div ref={ref} className="w-[794pt] bg-white text-black text-sm leading-6">
+      <div
+        ref={ref}
+        id="informe-root"
+        className="w-[794pt] bg-white text-black text-sm leading-6 avoid-break"
+      >
         {sections.portada && (
           <>
-            <section className="min-h-[1123pt] p-16 flex flex-col justify-between">
+            <section className="min-h-[1123pt] p-16 flex flex-col justify-between avoid-break">
               <div>
                 <h1 className="text-3xl font-bold" style={{ color: theme.primary }}>
                   {options?.tituloPortada || "Informe de Evaluación de Riesgo Psicosocial"}
@@ -95,7 +99,7 @@ const ReportePDF = forwardRef<HTMLDivElement, Props>(
 
         {sections.resumenGlobal && (
           <>
-            <section className="p-10">
+            <section className="p-10 avoid-break">
               <Title>Resumen Global</Title>
               <div className="mt-4 grid grid-cols-2 gap-4">
                 {global.formaA && (
@@ -138,7 +142,7 @@ const ReportePDF = forwardRef<HTMLDivElement, Props>(
 
         {sections.intralaboral && (
           <>
-            <section className="p-10">
+            <section className="p-10 avoid-break">
               <Title>Resultados Intralaborales</Title>
               <div className="mt-6 space-y-6">
                 {graficos.formaA}
@@ -152,7 +156,7 @@ const ReportePDF = forwardRef<HTMLDivElement, Props>(
 
         {sections.extralaboral && (
           <>
-            <section className="p-10">
+            <section className="p-10 avoid-break">
               <Title>Resultados Extralaborales</Title>
               <div className="mt-6 space-y-6">
                 {graficos.extralaboral}
@@ -165,7 +169,7 @@ const ReportePDF = forwardRef<HTMLDivElement, Props>(
 
         {sections.sociodemografia && (
           <>
-            <section className="p-10">
+            <section className="p-10 avoid-break">
               <Title>Sociodemografía de la Muestra</Title>
               {narrativaSociodemo && <p className="mt-4 text-justify">{narrativaSociodemo}</p>}
               {recomendacionesSociodemo && <p className="mt-4 text-justify">{recomendacionesSociodemo}</p>}
@@ -177,7 +181,7 @@ const ReportePDF = forwardRef<HTMLDivElement, Props>(
 
         {sections.metodologia && (
           <>
-            <section className="p-10">
+            <section className="p-10 avoid-break">
               <Title>Metodología</Title>
               <div className="mt-3">
                 <Metodologia />
@@ -189,7 +193,7 @@ const ReportePDF = forwardRef<HTMLDivElement, Props>(
 
         {sections.normativa && (
           <>
-            <section className="p-10">
+            <section className="p-10 avoid-break">
               <Title>Normativa</Title>
               <p className="mt-3">{strings.normativa}</p>
             </section>
@@ -199,7 +203,7 @@ const ReportePDF = forwardRef<HTMLDivElement, Props>(
 
         {sections.recomendaciones && (
           <>
-            <section className="p-10">
+            <section className="p-10 avoid-break">
               <Title>Recomendaciones</Title>
               <ul className="mt-4 list-disc pl-6 space-y-1">
                 {recomendaciones.map((r, i) => (
@@ -212,7 +216,7 @@ const ReportePDF = forwardRef<HTMLDivElement, Props>(
         )}
 
         {sections.conclusiones && (
-          <section className="p-10">
+          <section className="p-10 avoid-break">
             <Title>Conclusiones</Title>
             <p className="mt-3">{conclusiones}</p>
           </section>
