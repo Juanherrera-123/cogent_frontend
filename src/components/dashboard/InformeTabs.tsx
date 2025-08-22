@@ -3039,7 +3039,31 @@ export default function InformeTabs({
               isOpen={activeItem === "como-interpretar-graficas"}
               onToggle={() => handleToggle("como-interpretar-graficas")}
             >
-              <p>Contenido pendiente</p>
+              <div className="space-y-4 text-[#313B4A] font-montserrat text-base leading-relaxed">
+                <table className="w-full text-left text-sm">
+                  <tbody>
+                    <tr>
+                      <td className="px-4 py-2">
+                        <span className="inline-block h-3 w-3 rounded-full bg-blue-500 mr-2"></span>
+                        Azul
+                      </td>
+                      <td className="px-4 py-2">Forma A</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2">
+                        <span className="inline-block h-3 w-3 rounded-full bg-orange-500 mr-2"></span>
+                        Naranja
+                      </td>
+                      <td className="px-4 py-2">Forma B</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p className="text-justify">
+                  Las barras representan el porcentaje de participantes (eje derecho) y las líneas del mismo color,
+                  el número de personas (eje izquierdo). Esta interpretación aplica para las subpestañas "Gráficas
+                  Intralaboral", "Gráficas Extralaboral" y "Gráficas Estrés".
+                </p>
+              </div>
             </AccordionItem>
             <AccordionItem
               id="como-interpretar-niveles-riesgo"
