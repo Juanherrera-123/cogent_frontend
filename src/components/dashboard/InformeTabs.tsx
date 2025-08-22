@@ -2736,6 +2736,63 @@ export default function InformeTabs({
                 exportMode={false}
               />
             </AccordionItem>
+
+            <AccordionItem
+              id="dominio-liderazgo-relaciones-cont"
+              title="Cont. Dominio características de liderazgo y relaciones sociales"
+            >
+              <TablaInformativa
+                headers={[
+                  "Dimensión psicosocial",
+                  "Acciones de promoción e intervención",
+                ]}
+                rows={[
+                  {
+                    dimension: "Características del liderazgo",
+                    acciones: [
+                      "Gestión del cambio.",
+                      "Optimización de competencias de relación y comunicación.",
+                      "Participación efectiva en los grupos de trabajo.",
+                      "Seguimiento y retroalimentación de la gestión.",
+                      "Servicio de asistencia al trabajador.",
+                      "Rol de los jefes en la prevención y manejo del estrés.",
+                    ],
+                  },
+                  {
+                    dimension: "Relaciones sociales en el trabajo",
+                    acciones: [
+                      "Inducción y reinducción.",
+                      "Promoción del apoyo social en la organización.",
+                      "Claridad de rol como pilar del desempeño.",
+                      "Optimización de competencias de relación y comunicación.",
+                      "Participación efectiva en los grupos de trabajo.",
+                      "Seguimiento y retroalimentación de la gestión.",
+                      "Servicio de asistencia al trabajador.",
+                      "Fomento de actividades educativas, deportivas, recreativas y culturales.",
+                    ],
+                  },
+                  {
+                    dimension: "Retroalimentación del desempeño",
+                    acciones: [
+                      "Claridad de rol como pilar del desempeño.",
+                      "Seguimiento y retroalimentación de la gestión.",
+                    ],
+                  },
+                  {
+                    dimension: "Relación con los colaboradores",
+                    acciones: [
+                      "Fomento de mecanismos formales de comunicación.",
+                      "Optimización de competencias de relación y comunicación.",
+                      "Participación efectiva en los grupos de trabajo.",
+                      "Seguimiento y retroalimentación de la gestión.",
+                      "Servicio de asistencia al trabajador.",
+                      "Rol de los jefes en la prevención y manejo del estrés.",
+                    ],
+                  },
+                ]}
+                exportMode={false}
+              />
+            </AccordionItem>
           </div>
           <div className="mt-6 space-y-2 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
             <p className="font-semibold">Recomendaciones:</p>
