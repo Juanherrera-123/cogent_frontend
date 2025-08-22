@@ -10,22 +10,22 @@ interface TablaInformativaProps {
 }
 
 export default function TablaInformativa({ headers, rows, exportMode = false }: TablaInformativaProps) {
-  const containerClasses = `rounded-2xl bg-white ${exportMode ? "shadow-none" : "shadow-sm"} p-4 md:p-6 font-montserrat text-[#172349]`;
+  const containerClasses = `rounded-2xl bg-white ${exportMode ? "shadow-none" : "shadow-sm"} p-4 md:p-6 font-montserrat text-text-main`;
 
   return (
     <div className={containerClasses}>
       <table className="w-full text-left border-collapse">
-        <thead className="bg-primary-main text-white font-semibold">
+        <thead className="bg-gradient-to-r from-primary-gradient-from to-primary-gradient-to text-white font-semibold">
           <tr>
             <th scope="col" className="py-2 px-3">{headers[0]}</th>
             <th scope="col" className="py-2 px-3">{headers[1]}</th>
           </tr>
         </thead>
-        <tbody className="block md:table-row-group">
-          {rows.map((row, idx) => (
+        <tbody className="block md:table-row-group text-text-main">
+          {rows.map((row) => (
             <tr
               key={row.dimension}
-              className={`block md:table-row border-b border-slate-100 ${idx % 2 === 1 ? "bg-slate-50" : ""} ${!exportMode ? "hover:bg-slate-50" : ""}`}
+              className={`block md:table-row border-b border-slate-100 odd:bg-primary-light even:bg-white text-text-main ${!exportMode ? "hover:bg-primary-light" : ""}`}
             >
               <th
                 scope="row"
