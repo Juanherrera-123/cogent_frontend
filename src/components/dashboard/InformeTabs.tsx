@@ -2793,6 +2793,77 @@ export default function InformeTabs({
                 exportMode={false}
               />
             </AccordionItem>
+            <AccordionItem
+              id="factores-extralaborales-cont"
+              title="Cont. Factores psicosociales extralaborales"
+            >
+              <TablaInformativa
+                headers={[
+                  "Dimensión psicosocial",
+                  "Acciones de promoción e intervención",
+                ]}
+                rows={[
+                  {
+                    dimension: "Uso del tiempo fuera del trabajo",
+                    acciones: [
+                      "Conciliación de entornos intra y extralaboral.",
+                      "Servicio de asistencia al trabajador.",
+                      "Implementación de la modalidad de teletrabajo.",
+                      "Información sobre temas de salud, pensión, vivienda, educación, finanzas familiares y cajas de compensación familiar.",
+                      "Fomento de la calidad de las relaciones familiares.",
+                      "Actividades de preparación para la pensión.",
+                      "Fomento de actividades educativas, deportivas, recreativas y culturales.",
+                    ],
+                  },
+                  {
+                    dimension: "Relaciones familiares",
+                    acciones: [
+                      "Optimización de competencias de relación y comunicación.",
+                      "Servicio de asistencia al trabajador.",
+                      "Fomento de la calidad de las relaciones familiares.",
+                      "Actividades de preparación para la pensión.",
+                      "Conciliación de entornos intra y extralaboral.",
+                    ],
+                  },
+                  {
+                    dimension: "Comunicación y relaciones interpersonales",
+                    acciones: [
+                      "Optimización de competencias de relación y comunicación.",
+                      "Servicio de asistencia al trabajador.",
+                    ],
+                  },
+                  {
+                    dimension: "Situación económica del grupo familiar",
+                    acciones: [
+                      "Servicio de asistencia al trabajador.",
+                      "Información sobre temas de salud, pensión, vivienda, educación, finanzas familiares y cajas de compensación familiar.",
+                      "Actividades de preparación para la pensión.",
+                    ],
+                  },
+                  {
+                    dimension: "Características de la vivienda y de su entorno",
+                    acciones: [
+                      "Información sobre temas de salud, pensión, vivienda, educación, finanzas familiares y cajas de compensación familiar.",
+                    ],
+                  },
+                  {
+                    dimension: "Influencia del entorno extralaboral sobre el trabajo",
+                    acciones: [
+                      "Servicio de asistencia al trabajador.",
+                      "Información sobre temas de salud, pensión, vivienda, educación, finanzas familiares y cajas de compensación familiar.",
+                    ],
+                  },
+                  {
+                    dimension: "Desplazamiento vivienda – trabajo – vivienda",
+                    acciones: [
+                      "Conciliación de entornos intra y extralaboral.",
+                      "Implementación de la modalidad de teletrabajo.",
+                    ],
+                  },
+                ]}
+                exportMode={false}
+              />
+            </AccordionItem>
           </div>
           <div className="mt-6 space-y-2 text-[#313B4A] text-justify font-montserrat text-base leading-relaxed">
             <p className="font-semibold">Recomendaciones:</p>
