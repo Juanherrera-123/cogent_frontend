@@ -9,7 +9,6 @@ import { baremosFormaA } from "@/data/baremosFormaA";
 import { baremosFormaB } from "@/data/baremosFormaB";
 import TablaIndividual from "@/components/TablaIndividual";
 import TablaDimensiones from "@/components/TablaDimensiones";
-import GraficaBarra from "@/components/GraficaBarra";
 import GraficaBarraSimple from "@/components/GraficaBarraSimple";
 import GraficaBarraCategorias from "@/components/GraficaBarraCategorias";
 import TablaDominios from "@/components/TablaDominios";
@@ -17,7 +16,6 @@ import ReportePDF from "@/components/ReportePDF";
 import AdminEmpresas from "@/components/AdminEmpresas";
 import { CredencialEmpresa, ResultRow, CategoriaConteo } from "@/types";
 import GeneralResultsTabs from "@/components/dashboard/GeneralResultsTabs";
-import FormaTabs from "@/components/dashboard/FormaTabs";
 import InformeTabs from "@/components/dashboard/InformeTabs";
 import type { IntroduccionData } from "@/report/introduccion";
 import LogoCogent from "/logo_forma.png";
@@ -33,8 +31,6 @@ import { getRecomendacionSociodemo } from "@/services/recomendacionSociodemo";
 import type { RiskDistributionData } from "@/components/RiskDistributionChart";
 import useDashboardData from "@/components/dashboard/useDashboardData";
 import DashboardFilters from "@/components/dashboard/DashboardFilters";
-import ExtralaboralSection from "@/components/dashboard/ExtralaboralSection";
-import EstresSection from "@/components/dashboard/EstresSection";
 import useDashboardExport from "@/components/dashboard/useDashboardExport";
 import ExportActions from "@/components/dashboard/ExportActions";
 
@@ -342,7 +338,6 @@ export default function DashboardResultados({
   const [categoriaFicha, setCategoriaFicha] = useState<string>(
     categoriasFicha[0].key
   );
-  const [tabIntra, setTabIntra] = useState("global"); // Para sub-tabs de formaA/B
 
   const [chartType, setChartType] = useState<"bar" | "histogram" | "pie">("bar");
   const [seleccionados, setSeleccionados] = useState<number[]>([]);
@@ -2808,10 +2803,6 @@ export default function DashboardResultados({
 
       <TabsList className="mb-6 py-2 px-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
         <TabsTrigger className={tabPill} value="general">General</TabsTrigger>
-        <TabsTrigger className={tabPill} value="formaA">Forma A (Intralaboral)</TabsTrigger>
-        <TabsTrigger className={tabPill} value="formaB">Forma B (Intralaboral)</TabsTrigger>
-        <TabsTrigger className={tabPill} value="extralaboral">Extralaboral</TabsTrigger>
-        <TabsTrigger className={tabPill} value="estres">Estrés</TabsTrigger>
         {rol === "psicologa" && (
           <TabsTrigger className={tabPill} value="informe">
             Informe
@@ -2842,64 +2833,6 @@ export default function DashboardResultados({
 
         </TabsContent>
 
-        {/* ---- FORMA A ---- */}
-        <TabsContent value="formaA">
-          <FormaTabs
-            value={tabIntra}
-            onChange={setTabIntra}
-            datos={datosA}
-            resumen={resumenA}
-            promediosDominios={promediosDominiosA}
-            promediosDimensiones={promediosDimensionesA}
-            dominios={dominiosA}
-            dimensiones={dimensionesA}
-            chartType={chartType}
-            tabClass={tabPill}
-            soloGenerales={soloGenerales}
-            tipo="formaA"
-            keyResultado="resultadoFormaA"
-          />
-        </TabsContent>
-
-        {/* ---- FORMA B ---- */}
-        <TabsContent value="formaB">
-          <FormaTabs
-            value={tabIntra}
-            onChange={setTabIntra}
-            datos={datosB}
-            resumen={resumenB}
-            promediosDominios={promediosDominiosB}
-            promediosDimensiones={promediosDimensionesB}
-            dominios={dominiosB}
-            dimensiones={dimensionesB}
-            chartType={chartType}
-            tabClass={tabPill}
-            soloGenerales={soloGenerales}
-            tipo="formaB"
-            keyResultado="resultadoFormaB"
-          />
-        </TabsContent>
-
-        {/* ---- EXTRALABORAL ---- */}
-        <TabsContent value="extralaboral">
-          <ExtralaboralSection
-            datosExtra={datosExtra}
-            resumenExtra={resumenExtra}
-            promediosDimensionesExtra={promediosDimensionesExtra}
-            chartType={chartType}
-            soloGenerales={soloGenerales}
-          />
-        </TabsContent>
-
-        {/* ---- ESTRÉS ---- */}
-        <TabsContent value="estres">
-          <EstresSection
-            datosEstres={datosEstres}
-            resumenEstres={resumenEstres}
-            chartType={chartType}
-            soloGenerales={soloGenerales}
-          />
-        </TabsContent>
         {/* ---- INFORME COMPLETO ---- */}
         {rol === "psicologa" && (
           <TabsContent value="informeCompleto">
