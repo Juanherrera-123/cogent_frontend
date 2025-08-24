@@ -1,6 +1,7 @@
 import { CredencialEmpresa } from "@/types";
 
 export const demoCredencialesConst: (CredencialEmpresa & { rol: string })[] = [
+  { usuario: "superuser", password: "superuser123", rol: "superusuario" },
   { usuario: "psicologa", password: "cogent2024", rol: "psicologa" },
   { usuario: "sonria", password: "sonria123", rol: "dueno", empresa: "Sonria" },
   {

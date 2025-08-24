@@ -5,7 +5,10 @@ type Usuario = { usuario: string; password: string; rol: string; empresa?: strin
 
 type Props = {
   usuarios: Usuario[];
-  onLogin: (rol: "psicologa" | "dueno", empresa?: string) => void;
+  onLogin: (
+    rol: "psicologa" | "dueno" | "superusuario",
+    empresa?: string
+  ) => void;
   onCancel?: () => void;
 };
 
@@ -21,7 +24,10 @@ export default function Login({ usuarios, onLogin, onCancel }: Props) {
       (u) => u.usuario === usuario.toLowerCase() && u.password === password
     );
     if (user) {
-      onLogin(user.rol as "psicologa" | "dueno", user.empresa);
+      onLogin(
+        user.rol as "psicologa" | "dueno" | "superusuario",
+        user.empresa
+      );
     } else {
       setError("Usuario o clave incorrectos.");
     }
