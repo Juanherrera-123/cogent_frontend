@@ -3,7 +3,7 @@ import { FileDown, FileText, Home as HomeIcon } from "lucide-react";
 
 interface Props {
   onBack?: () => void;
-  rol: "psicologa" | "dueno";
+  rol: "psicologa" | "dueno" | "superusuario";
   tab: string;
   handleExportar: () => void;
   handleExportPDF: () => void;
@@ -26,7 +26,7 @@ const ExportActions: React.FC<Props> = ({
           <HomeIcon size={20} /> Volver al inicio
         </button>
       )}
-      {rol === "psicologa" &&
+      {rol === "superusuario" &&
         (tab === "informe" || tab === "informeCompleto") && (
           <div className="flex gap-2">
             <button

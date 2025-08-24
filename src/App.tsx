@@ -29,7 +29,7 @@ import useCredenciales from "./hooks/useCredenciales";
 import useSurveySteps from "./hooks/useSurveySteps";
 import { db } from "./firebaseConfig";
 
-type RolUsuario = "ninguno" | "psicologa" | "dueno";
+type RolUsuario = "ninguno" | "psicologa" | "dueno" | "superusuario";
 
 export default function App() {
   const {
@@ -153,7 +153,7 @@ export default function App() {
       case "dashboard":
         return (
           <DashboardResultados
-            rol={rol as "psicologa" | "dueno"}
+            rol={rol as "psicologa" | "dueno" | "superusuario"}
             empresaNombre={empresaActual || undefined}
             empresaFiltro={
               rol === "dueno" ? empresaActual || undefined : undefined

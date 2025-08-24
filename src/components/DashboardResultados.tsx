@@ -43,7 +43,7 @@ const nivelesRiesgo = [
 ];
 
 type Props = {
-  rol: "psicologa" | "dueno";
+  rol: "psicologa" | "dueno" | "superusuario";
   empresaNombre?: string;
   soloGenerales?: boolean;
   empresaFiltro?: string;
@@ -344,8 +344,18 @@ export default function DashboardResultados({
   const containerRef = useRef<HTMLDivElement>(null);
   const { ref: offscreenRef, rendering, progress, exportNow } = usePdfExport();
 
-  const saludo = rol === "psicologa" ? "Hola Lilian Navas" : empresaNombre || "";
-  const cargo = rol === "psicologa" ? "Psicologist" : "Empresa";
+  const saludo =
+    rol === "psicologa"
+      ? "Hola Lilian Navas"
+      : rol === "superusuario"
+      ? "Hola Superusuario"
+      : empresaNombre || "";
+  const cargo =
+    rol === "psicologa"
+      ? "Psicologist"
+      : rol === "superusuario"
+      ? "Superusuario"
+      : "Empresa";
 
   const tabPill =
     "px-5 py-2 rounded-full font-semibold border border-[#B2E2FF] text-[#172349] shrink-0 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#38BDF8] data-[state=active]:to-[#265FF2]";
@@ -2794,7 +2804,7 @@ export default function DashboardResultados({
         {!soloGenerales && (
           <TabsTrigger className={tabPill} value="empresas">Empresas</TabsTrigger>
         )}
-        {rol === "psicologa" && (
+        {rol === "superusuario" && (
           <TabsTrigger className={tabPill} value="informeCompleto">
             Informe completo
           </TabsTrigger>
@@ -2803,7 +2813,7 @@ export default function DashboardResultados({
 
       <TabsList className="mb-6 py-2 px-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
         <TabsTrigger className={tabPill} value="general">General</TabsTrigger>
-        {rol === "psicologa" && (
+        {rol === "superusuario" && (
           <TabsTrigger className={tabPill} value="informe">
             Informe
           </TabsTrigger>
@@ -2834,7 +2844,7 @@ export default function DashboardResultados({
         </TabsContent>
 
         {/* ---- INFORME COMPLETO ---- */}
-        {rol === "psicologa" && (
+        {rol === "superusuario" && (
           <TabsContent value="informeCompleto">
             {datosInforme.length === 0 ? (
               <div className="text-[var(--gray-medium)] py-4">
@@ -2870,7 +2880,7 @@ export default function DashboardResultados({
           </TabsContent>
         )}
         {/* ---- INFORME ---- */}
-        {rol === "psicologa" && (
+        {rol === "superusuario" && (
           <TabsContent value="informe">
             <div className="max-w-4xl mx-auto">
               <section className="bg-white rounded-xl shadow p-6 space-y-6">
