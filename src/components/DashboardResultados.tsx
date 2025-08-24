@@ -334,7 +334,7 @@ export default function DashboardResultados({
   } = useDashboardData(empresaFiltro);
 
   const [tab, setTab] = useState("general");
-  const [tabGeneral, setTabGeneral] = useState("resumen");
+  const [tabGeneral, setTabGeneral] = useState("formaA");
   const [categoriaFicha, setCategoriaFicha] = useState<string>(
     categoriasFicha[0].key
   );
@@ -2818,17 +2818,28 @@ export default function DashboardResultados({
             tabClass={tabPill}
             chartType={chartType}
             datosA={datosA}
-            datosB={datosB}
-            datosExtra={datosExtra}
-            datosEstres={datosEstres}
             resumenA={resumenA}
+            promediosDominiosA={promediosDominiosA}
+            promediosDimensionesA={promediosDimensionesA}
+            dominiosA={dominiosA}
+            dimensionesA={dimensionesA}
+            datosB={datosB}
             resumenB={resumenB}
+            promediosDominiosB={promediosDominiosB}
+            promediosDimensionesB={promediosDimensionesB}
+            dominiosB={dominiosB}
+            dimensionesB={dimensionesB}
+            datosExtra={datosExtra}
             resumenExtra={resumenExtra}
+            promediosDimensionesExtra={promediosDimensionesExtra}
+            dimensionesExtra={dimensionesExtra}
+            datosEstres={datosEstres}
             resumenEstres={resumenEstres}
             categoriaFicha={categoriaFicha}
             onCategoriaChange={(v) => setCategoriaFicha(v)}
             categoriasFicha={categoriasFicha}
             fichaConteos={fichaConteosGlobal}
+            soloGenerales={soloGenerales}
           />
 
         </TabsContent>
