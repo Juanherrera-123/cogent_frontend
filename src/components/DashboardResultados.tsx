@@ -2806,7 +2806,7 @@ export default function DashboardResultados({
         )}
         {rol === "superusuario" && (
           <TabsTrigger className={tabPill} value="informeCompleto">
-            Informe completo
+            Individual
           </TabsTrigger>
         )}
       </TabsList>
@@ -2854,7 +2854,7 @@ export default function DashboardResultados({
 
         </TabsContent>
 
-        {/* ---- INFORME COMPLETO ---- */}
+        {/* ---- INDIVIDUAL ---- */}
         {rol === "superusuario" && (
           <TabsContent value="informeCompleto">
             {datosInforme.length === 0 ? (
