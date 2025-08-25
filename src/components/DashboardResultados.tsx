@@ -2804,7 +2804,7 @@ export default function DashboardResultados({
         {!soloGenerales && (
           <TabsTrigger className={tabPill} value="empresas">Empresas</TabsTrigger>
         )}
-        {rol === "superusuario" && (
+        {(rol === "superusuario" || rol === "psicologa") && (
           <TabsTrigger className={tabPill} value="informeCompleto">
             Individual
           </TabsTrigger>
@@ -2855,7 +2855,7 @@ export default function DashboardResultados({
         </TabsContent>
 
         {/* ---- INDIVIDUAL ---- */}
-        {rol === "superusuario" && (
+        {(rol === "superusuario" || rol === "psicologa") && (
           <TabsContent value="informeCompleto">
             {datosInforme.length === 0 ? (
               <div className="text-[var(--gray-medium)] py-4">

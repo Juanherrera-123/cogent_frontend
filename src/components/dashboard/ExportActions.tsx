@@ -26,7 +26,7 @@ const ExportActions: React.FC<Props> = ({
           <HomeIcon size={20} /> Volver al inicio
         </button>
       )}
-      {rol === "superusuario" &&
+      {(rol === "superusuario" || rol === "psicologa") &&
         (tab === "informe" || tab === "informeCompleto") && (
           <div className="flex gap-2">
             <button
