@@ -2806,7 +2806,7 @@ export default function DashboardResultados({
         )}
         {(rol === "superusuario" || rol === "psicologa") && (
           <TabsTrigger className={tabPill} value="informeCompleto">
-            Individual
+            Excel
           </TabsTrigger>
         )}
       </TabsList>
