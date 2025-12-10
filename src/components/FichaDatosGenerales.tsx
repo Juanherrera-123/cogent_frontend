@@ -36,6 +36,14 @@ const tipoSalario = [
   "Todo variable (a destajo/por producción/por comisión)"
 ];
 
+const inputNoAutoCorrectProps = {
+  autoComplete: "off",
+  autoCorrect: "off",
+  autoCapitalize: "none",
+  spellCheck: false,
+  translate: "no" as const,
+};
+
 export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Props) {
   const empresas = empresasIniciales;
   const [empresa, setEmpresa] = useState("");
@@ -148,9 +156,8 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
       </div>
 
       <form
-
+        translate="no"
         className="bg-white rounded-3xl shadow-xl p-8 md:p-12 w-full max-w-2xl mx-auto animate-fadeIn flex flex-col gap-4"
-
         onSubmit={handleSubmit}
       >
         <h2 className="text-2xl md:text-3xl font-bold text-[#132045] text-center mb-2 font-montserrat">
@@ -183,6 +190,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         <input
           type="date"
           name="fecha"
+          {...inputNoAutoCorrectProps}
           className={cn(
             "input mb-2 w-full border border-gray-300 bg-white rounded-xl px-4 py-2",
             erroresCampos["fecha"] && "border-red-500"
@@ -196,6 +204,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         <input
           type="text"
           name="nombre"
+          {...inputNoAutoCorrectProps}
           placeholder="Nombre completo*"
           className={cn(
             "input w-full md:flex-1 border border-gray-300 bg-white rounded-xl px-4 py-2",
@@ -207,6 +216,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         <input
           type="text"
           name="cedula"
+          {...inputNoAutoCorrectProps}
           placeholder="Cédula/Documento*"
           className={cn(
             "input w-full md:flex-1 border border-gray-300 bg-white rounded-xl px-4 py-2",
@@ -234,6 +244,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         <input
           type="number"
           name="nacimiento"
+          {...inputNoAutoCorrectProps}
           placeholder="Año de nacimiento*"
           className={cn(
             "input w-full md:flex-1 border border-gray-300 bg-white rounded-xl px-4 py-2",
@@ -280,6 +291,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
       <input
         type="text"
         name="ocupacion"
+        {...inputNoAutoCorrectProps}
         placeholder="Ocupación o profesión*"
         className={cn(
           "input w-full border border-gray-300 bg-white rounded-xl px-4 py-2",
@@ -293,6 +305,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         <input
           type="text"
           name="residenciaCiudad"
+          {...inputNoAutoCorrectProps}
           placeholder="Ciudad/Municipio residencia*"
           className={cn(
             "input w-full md:flex-1 border border-gray-300 bg-white rounded-xl px-4 py-2",
@@ -304,6 +317,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         <input
           type="text"
           name="residenciaDepto"
+          {...inputNoAutoCorrectProps}
           placeholder="Departamento residencia*"
           className={cn(
             "input w-full md:flex-1 border border-gray-300 bg-white rounded-xl px-4 py-2",
@@ -348,6 +362,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
       <input
         type="number"
         name="dependientes"
+        {...inputNoAutoCorrectProps}
         placeholder="Nº de personas que dependen de usted*"
         className="input w-full border border-gray-300 bg-white rounded-xl px-4 py-2"
         value={datos.dependientes}
@@ -360,6 +375,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         <input
           type="text"
           name="trabajoCiudad"
+          {...inputNoAutoCorrectProps}
           placeholder="Ciudad/Municipio trabajo*"
           className={cn(
             "input w-full md:flex-1 border border-gray-300 bg-white rounded-xl px-4 py-2",
@@ -371,6 +387,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         <input
           type="text"
           name="trabajoDepto"
+          {...inputNoAutoCorrectProps}
           placeholder="Departamento trabajo*"
           className={cn(
             "input w-full md:flex-1 border border-gray-300 bg-white rounded-xl px-4 py-2",
@@ -395,6 +412,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
           <input
             type="number"
             name="aniosEmpresa"
+            {...inputNoAutoCorrectProps}
             placeholder="¿Cuántos años en la empresa?*"
             className={cn(
               "input w-full md:flex-1 border border-gray-300 bg-white rounded-xl px-4 py-2",
@@ -412,6 +430,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         <input
           type="text"
           name="cargo"
+          {...inputNoAutoCorrectProps}
           placeholder="Nombre del cargo*"
           className={cn(
             "input w-full md:flex-1 border border-gray-300 bg-white rounded-xl px-4 py-2",
@@ -450,6 +469,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
           <input
             type="number"
             name="aniosCargo"
+            {...inputNoAutoCorrectProps}
             placeholder="¿Cuántos años en el cargo?*"
             className={cn(
               "input w-full md:flex-1 border border-gray-300 bg-white rounded-xl px-4 py-2",
@@ -466,6 +486,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
       <input
         type="text"
         name="area"
+        {...inputNoAutoCorrectProps}
         placeholder="Nombre del área/departamento/sección*"
         className={cn(
           "input w-full border border-gray-300 bg-white rounded-xl px-4 py-2",
@@ -493,6 +514,7 @@ export default function FichaDatosGenerales({ empresasIniciales, onGuardar }: Pr
         <input
           type="number"
           name="horasDiarias"
+          {...inputNoAutoCorrectProps}
           placeholder="Horas diarias establecidas*"
           className={cn(
             "input w-full md:flex-1 border border-gray-300 bg-white rounded-xl px-4 py-2",
