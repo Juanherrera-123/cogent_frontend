@@ -35,23 +35,18 @@ export default function AdminEmpresas({
     }
   };
 
-  const startEdit = (idx: number) => {
-    setEditIndex(idx);
-    setEditUsuario(credenciales[idx].usuario);
-    setEditPassword("");
-  };
-
   const handleGuardarEdicion = async () => {
     if (editIndex === null) return;
-    if (!editUsuario.trim() || !editPassword.trim()) return;
+    if (!editNombre.trim() || !editUsuario.trim() || !editPassword.trim()) return;
     const ok = await onEditar(
       credenciales[editIndex].usuario,
-      credenciales[editIndex].empresa || "",
+      editNombre.trim(),
       editUsuario.trim(),
       editPassword.trim()
     );
     if (ok) {
       setEditIndex(null);
+      setEditNombre("");
       setEditUsuario("");
       setEditPassword("");
     }
@@ -116,18 +111,19 @@ export default function AdminEmpresas({
                       <button
                         type="button"
                         className="px-2 py-0.5 text-xs bg-green-500 text-white rounded"
-                        onClick={() => {
-                          onEditar(c.usuario, editNombre, editUsuario, editPassword);
-
-                            setEditIndex(null);
-                        }}
+                        onClick={handleGuardarEdicion}
                       >
                         Guardar
                       </button>
                       <button
                         type="button"
                         className="px-2 py-0.5 text-xs bg-gray-300 rounded"
-                        onClick={() => setEditIndex(null)}
+                        onClick={() => {
+                          setEditIndex(null);
+                          setEditNombre("");
+                          setEditUsuario("");
+                          setEditPassword("");
+                        }}
 
                       >
                         Cancelar
@@ -195,7 +191,12 @@ export default function AdminEmpresas({
         </div>
       ) : (
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="font-semibold">{credenciales[editIndex].empresa}</span>
+          <input
+            className="input flex-1"
+            placeholder="Nombre empresa"
+            value={editNombre}
+            onChange={(e) => setEditNombre(e.target.value)}
+          />
           <input
             className="input flex-1"
             placeholder="Usuario"
@@ -219,7 +220,12 @@ export default function AdminEmpresas({
           <button
             type="button"
             className="px-4 py-1 rounded-lg border"
-            onClick={() => setEditIndex(null)}
+            onClick={() => {
+              setEditIndex(null);
+              setEditNombre("");
+              setEditUsuario("");
+              setEditPassword("");
+            }}
           >
             Cancelar
           </button>

@@ -37,7 +37,10 @@ export default function useCredenciales() {
       setCredenciales((prev) => {
         const merged = [...prev];
         extras.forEach((c) => {
-          if (!merged.some((m) => m.usuario === c.usuario)) {
+          const idx = merged.findIndex((m) => m.usuario === c.usuario);
+          if (idx >= 0) {
+            merged[idx] = { ...merged[idx], ...c };
+          } else {
             merged.push(c);
           }
         });
@@ -84,9 +87,11 @@ export default function useCredenciales() {
 
   const eliminarEmpresa = async (usuario: string): Promise<boolean> => {
     const cred = credenciales.find((c) => c.usuario === usuario);
-    if (!cred?.id) return false;
+    if (!cred) return false;
     try {
-      await deleteDoc(doc(db, "credencialesCogent", cred.id));
+      if (cred.id) {
+        await deleteDoc(doc(db, "credencialesCogent", cred.id));
+      }
       setCredenciales((prev) => prev.filter((c) => c.usuario !== usuario));
       return true;
     } catch (err) {
@@ -103,13 +108,15 @@ export default function useCredenciales() {
     password: string
   ): Promise<boolean> => {
     const cred = credenciales.find((c) => c.usuario === originalUsuario);
-    if (!cred?.id) return false;
+    if (!cred) return false;
     try {
-      await updateDoc(doc(db, "credencialesCogent", cred.id), {
-        usuario,
-        password,
-        empresa: nombre,
-      });
+      if (cred.id) {
+        await updateDoc(doc(db, "credencialesCogent", cred.id), {
+          usuario,
+          password,
+          empresa: nombre,
+        });
+      }
       setCredenciales((prev) =>
         prev.map((c) =>
           c.usuario === originalUsuario
