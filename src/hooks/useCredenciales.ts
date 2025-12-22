@@ -6,6 +6,7 @@ import {
   deleteDoc,
   getDocs,
   doc,
+  collection,
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { CredencialEmpresa } from "../types";
@@ -89,6 +90,18 @@ export default function useCredenciales() {
     const cred = credenciales.find((c) => c.usuario === usuario);
     if (!cred) return false;
     try {
+      const deletedAt = new Date();
+      const expiresAt = new Date(
+        deletedAt.getTime() + 30 * 24 * 60 * 60 * 1000
+      );
+      await addDoc(collection(db, "papeleraCogent"), {
+        tipo: "empresa",
+        sourceCollection: "credencialesCogent",
+        sourceId: cred.id ?? null,
+        deletedAt,
+        expiresAt,
+        data: cred,
+      });
       if (cred.id) {
         await deleteDoc(doc(db, "credencialesCogent", cred.id));
       }
