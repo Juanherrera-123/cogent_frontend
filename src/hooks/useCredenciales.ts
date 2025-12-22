@@ -6,7 +6,6 @@ import {
   deleteDoc,
   getDocs,
   doc,
-  collection,
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { CredencialEmpresa } from "../types";
