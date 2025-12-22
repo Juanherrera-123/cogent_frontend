@@ -147,6 +147,10 @@ export default function AdminEmpresas({
                         type="button"
                         className="px-2 py-0.5 text-xs bg-red-600 text-white rounded"
                         onClick={async () => {
+                          const confirmado = window.confirm(
+                            `¿Confirmas eliminar la empresa "${c.empresa || c.usuario}"? La información pasará a la papelera por 30 días.`
+                          );
+                          if (!confirmado) return;
                           await onEliminar(c.usuario);
                         }}
                       >

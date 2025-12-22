@@ -19,7 +19,7 @@ import GeneralResultsTabs from "@/components/dashboard/GeneralResultsTabs";
 import InformeTabs from "@/components/dashboard/InformeTabs";
 import type { IntroduccionData } from "@/report/introduccion";
 import LogoCogent from "/logo_forma.png";
-import { deleteDoc, doc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { buildReportPayload } from "@/utils/buildReportPayload";
 import { ReportPayload } from "@/types/report";
@@ -33,6 +33,7 @@ import useDashboardData from "@/components/dashboard/useDashboardData";
 import DashboardFilters from "@/components/dashboard/DashboardFilters";
 import useDashboardExport from "@/components/dashboard/useDashboardExport";
 import ExportActions from "@/components/dashboard/ExportActions";
+import { toast } from "@/utils/toast";
 
 const nivelesRiesgo = [
   "Riesgo muy bajo",
@@ -2720,16 +2721,43 @@ export default function DashboardResultados({
 
   const eliminarSeleccionados = async () => {
     if (seleccionados.length === 0) return;
+    const confirmacion = window.confirm(
+      `¿Confirmas mover ${seleccionados.length} encuesta(s) a la papelera por 30 días?`
+    );
+    if (!confirmacion) return;
     const eliminados = datos.filter((_, i) => seleccionados.includes(i));
     const restantes = datos.filter((_, i) => !seleccionados.includes(i));
+    const deletedAt = new Date();
+    const expiresAt = new Date(
+      deletedAt.getTime() + 30 * 24 * 60 * 60 * 1000
+    );
+    await Promise.all(
+      eliminados.map((d) =>
+        addDoc(collection(db, "papeleraCogent"), {
+          tipo: "resultado",
+          sourceCollection: "resultadosCogent",
+          sourceId: d.id,
+          deletedAt,
+          expiresAt,
+          data: d,
+        })
+      )
+    );
     await Promise.all(
       eliminados.map((d) => deleteDoc(doc(db, "resultadosCogent", d.id)))
     );
     setDatos(restantes);
     setSeleccionados([]);
+    toast("Encuestas enviadas a la papelera por 30 días.");
   };
 
   const eliminarPorEmpresa = async () => {
+    const confirmacion = window.confirm(
+      `¿Confirmas mover a la papelera las encuestas de "${
+        empresaEliminar === "todas" ? "todas las empresas" : empresaEliminar
+      }" por 30 días?`
+    );
+    if (!confirmacion) return;
     const eliminados =
       empresaEliminar === "todas"
         ? datos
@@ -2738,11 +2766,28 @@ export default function DashboardResultados({
       empresaEliminar === "todas"
         ? []
         : datos.filter((d) => d.ficha?.empresa !== empresaEliminar);
+    const deletedAt = new Date();
+    const expiresAt = new Date(
+      deletedAt.getTime() + 30 * 24 * 60 * 60 * 1000
+    );
+    await Promise.all(
+      eliminados.map((d) =>
+        addDoc(collection(db, "papeleraCogent"), {
+          tipo: "resultado",
+          sourceCollection: "resultadosCogent",
+          sourceId: d.id,
+          deletedAt,
+          expiresAt,
+          data: d,
+        })
+      )
+    );
     await Promise.all(
       eliminados.map((d) => deleteDoc(doc(db, "resultadosCogent", d.id)))
     );
     setDatos(restantes);
     setSeleccionados([]);
+    toast("Encuestas enviadas a la papelera por 30 días.");
   };
 
   // ---- Render tablas individuales (solo para psicóloga) ----
