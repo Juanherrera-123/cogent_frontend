@@ -2813,7 +2813,7 @@ export default function DashboardResultados({
 
       <TabsList className="mb-6 py-2 px-4 w-full flex gap-2 overflow-x-auto whitespace-nowrap">
         <TabsTrigger className={tabPill} value="general">General</TabsTrigger>
-        {rol === "superusuario" && (
+        {(rol === "superusuario" || rol === "psicologa") && (
           <TabsTrigger className={tabPill} value="informe">
             Informe
           </TabsTrigger>
@@ -2891,7 +2891,7 @@ export default function DashboardResultados({
           </TabsContent>
         )}
         {/* ---- INFORME ---- */}
-        {rol === "superusuario" && (
+        {(rol === "superusuario" || rol === "psicologa") && (
           <TabsContent value="informe">
             <div className="max-w-4xl mx-auto">
               <section className="bg-white rounded-xl shadow p-6 space-y-6">
