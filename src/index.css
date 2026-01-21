@@ -110,6 +110,35 @@
   }
 }
 
+/* Decorative background shapes */
+.background-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.background-shapes .shape {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 1rem;
+  background: linear-gradient(to bottom right, #2563eb, #bfdbfe);
+  opacity: 0.2;
+  transform: rotate(45deg);
+}
+
+.background-shapes .rhombus-1 {
+  top: 0;
+  left: 25%;
+}
+
+.background-shapes .rhombus-2 {
+  bottom: 0;
+  right: 25%;
+}
+
 
 /* Tamaño y márgenes del PDF */
 @page { size: A4; margin: 12mm; }
